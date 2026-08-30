@@ -3,9 +3,11 @@ import { schemesAPI } from '../services/api';
 import SchemeCard from '../components/SchemeCard';
 import SkeletonCard from '../components/SkeletonCard';
 import DisclaimerBanner from '../components/DisclaimerBanner';
+import { useLanguage } from '../context/LanguageContext';
 import { Search, Filter, Layers, ChevronLeft, ChevronRight, Tag } from 'lucide-react';
 
 export const ExploreSchemes = () => {
+  const { lang, t } = useLanguage();
   const [schemes, setSchemes] = useState([]);
   const [totalSchemes, setTotalSchemes] = useState(0);
   const [page, setPage] = useState(1);
@@ -87,12 +89,12 @@ export const ExploreSchemes = () => {
 
       {/* Header */}
       <div className="my-8 text-center max-w-2xl mx-auto space-y-3">
-        <div className="eyebrow justify-center mb-1">Official Government Welfare Directory</div>
+        <div className="eyebrow justify-center mb-1">{t('exploreHeader')}</div>
         <h1 className="font-serif font-bold text-3xl sm:text-4xl text-navy">
-          Explore Government Schemes
+          {t('exploreHeader')}
         </h1>
         <p className="text-xs text-ink-soft font-sans leading-relaxed">
-          Browse verified central, state, and union territory schemes across India. Filter by level, primary category, granular subcategory, state, or keyword.
+          {t('exploreSubheader')}
         </p>
       </div>
 
@@ -105,12 +107,12 @@ export const ExploreSchemes = () => {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search government schemes by keyword (e.g., ADIP, Kisan, Scholarship, Health, Loan)..."
+              placeholder={t('searchPlaceholder')}
               className="w-full bg-paper border border-navy/20 rounded pl-10 pr-4 py-2.5 text-xs font-sans focus:outline-none focus:border-gold-deep"
             />
           </div>
           <button type="submit" className="btn-primary text-xs py-2.5 px-5">
-            Search
+            {t('search')}
           </button>
         </form>
 
@@ -119,7 +121,7 @@ export const ExploreSchemes = () => {
           {/* Primary Category Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto w-full pb-1 font-mono text-xs no-scrollbar">
             <span className="text-navy font-bold flex items-center gap-1 flex-none mr-1">
-              <Filter className="w-3.5 h-3.5 text-teal-deep" /> Category:
+              <Filter className="w-3.5 h-3.5 text-teal-deep" /> {t('categoryLabel')}:
             </span>
             {categories.map((cat) => (
               <button
@@ -135,12 +137,12 @@ export const ExploreSchemes = () => {
                     : 'bg-paper text-ink-soft hover:text-navy border border-navy/15'
                 }`}
               >
-                {cat}
+                {cat === 'All' ? t('allCategories') : cat}
               </button>
             ))}
           </div>
 
-          {/* Granular Subcategory Pills (when primary category is selected) */}
+          {/* Granular Subcategory Pills */}
           {availableSubcategories.length > 0 && (
             <div className="flex items-center gap-1.5 overflow-x-auto w-full pb-1 font-mono text-xs no-scrollbar bg-paper/60 p-2 rounded border border-navy/10">
               <span className="text-gold-deep font-bold flex items-center gap-1 flex-none mr-1">
@@ -156,7 +158,7 @@ export const ExploreSchemes = () => {
                       : 'bg-card text-ink-soft hover:text-navy border border-navy/15'
                   }`}
                 >
-                  {sub}
+                  {sub === 'All' ? (lang === 'hi' ? 'सभी उपश्रेणियां' : 'All Subcategories') : sub}
                 </button>
               ))}
             </div>
@@ -166,28 +168,27 @@ export const ExploreSchemes = () => {
           <div className="flex flex-wrap items-center justify-between gap-3 font-mono text-xs pt-1">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1.5">
-                <span className="text-ink-soft">Level:</span>
+                <span className="text-ink-soft">{t('filterLevel')}:</span>
                 <select
                   value={selectedGovtLevel}
                   onChange={(e) => { setSelectedGovtLevel(e.target.value); setPage(1); }}
                   className="bg-paper border border-navy/20 rounded px-2.5 py-1 text-xs focus:outline-none focus:border-gold-deep"
                 >
-                  <option value="All">All Levels</option>
-                  <option value="Central">Central Govt</option>
-                  <option value="State">State Govt</option>
-                  <option value="Union Territory">Union Territory</option>
+                  <option value="All">{t('allLevels')}</option>
+                  <option value="Central">{t('centralGov')}</option>
+                  <option value="State">{t('stateGov')}</option>
                 </select>
               </div>
 
               <div className="flex items-center gap-1.5">
-                <span className="text-ink-soft">State:</span>
+                <span className="text-ink-soft">{t('filterState')}:</span>
                 <select
                   value={selectedState}
                   onChange={(e) => { setSelectedState(e.target.value); setPage(1); }}
                   className="bg-paper border border-navy/20 rounded px-2.5 py-1 text-xs focus:outline-none focus:border-gold-deep"
                 >
                   {indianStates.map((st) => (
-                    <option key={st} value={st}>{st}</option>
+                    <option key={st} value={st}>{st === 'All India' ? t('allStates') : st}</option>
                   ))}
                 </select>
               </div>
@@ -205,7 +206,7 @@ export const ExploreSchemes = () => {
                 }}
                 className="text-rust hover:underline font-bold text-[11px]"
               >
-                Reset Filters
+                {t('resetFilters')}
               </button>
             )}
           </div>
@@ -247,11 +248,11 @@ export const ExploreSchemes = () => {
                 className="btn-ghost text-xs py-1.5 px-3 flex items-center gap-1 disabled:opacity-40"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Previous</span>
+                <span>{t('previous')}</span>
               </button>
 
               <span>
-                Page <b>{page}</b> of <b>{totalPages}</b>
+                {t('page')} <b>{page}</b> {t('of')} <b>{totalPages}</b>
               </span>
 
               <button
@@ -259,7 +260,7 @@ export const ExploreSchemes = () => {
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 className="btn-ghost text-xs py-1.5 px-3 flex items-center gap-1 disabled:opacity-40"
               >
-                <span>Next</span>
+                <span>{t('next')}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -268,15 +269,15 @@ export const ExploreSchemes = () => {
       ) : (
         <div className="bg-card border border-navy/15 p-12 text-center rounded-lg space-y-4">
           <Layers className="w-10 h-10 text-navy/30 mx-auto" />
-          <h3 className="font-serif font-semibold text-lg text-navy">No schemes found</h3>
+          <h3 className="font-serif font-semibold text-lg text-navy">{t('noSchemesFound')}</h3>
           <p className="text-xs text-ink-soft max-w-sm mx-auto">
-            Try resetting your search filter or selecting a different category or state.
+            {t('noSchemesFound')}
           </p>
           <button 
             onClick={() => { setSearch(''); setSelectedCategory('All'); setSelectedSubcategory('All'); setSelectedState('All India'); setSelectedGovtLevel('All'); setPage(1); }} 
             className="btn-ghost text-xs py-2 px-4"
           >
-            Reset All Filters
+            {t('resetFilters')}
           </button>
         </div>
       )}

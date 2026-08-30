@@ -10,7 +10,7 @@ import { RefreshCw, BookmarkCheck, Info, User, Layers, Filter } from 'lucide-rea
 export const Results = () => {
   const navigate = useNavigate();
   const { matchResults, runEligibilityCheck, profile, loading } = useEligibility();
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   const [filterTab, setFilterTab] = useState('Matched');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
@@ -37,6 +37,28 @@ export const Results = () => {
     "Food & Nutrition"
   ];
 
+  const getCategoryLabel = (cat) => {
+    if (cat === "All Categories") return t('allCategories');
+    if (lang === 'hi') {
+      const map = {
+        "Education & Scholarships": "शिक्षा और छात्रवृत्ति",
+        "Agriculture & Farmers": "कृषि और किसान",
+        "Business & Entrepreneurship": "व्यापार और उद्यमिता",
+        "Women & Child Welfare": "महिला एवं बाल कल्याण",
+        "Pension & Social Security": "पेंशन और सामाजिक सुरक्षा",
+        "Employment & Skill Development": "रोजगार और कौशल विकास",
+        "Disability & Assistive Support": "दिव्यांगता और सहायक सहायता",
+        "Healthcare & Medical": "स्वास्थ्य और चिकित्सा",
+        "Financial Assistance & Loans": "वित्तीय सहायता और ऋण",
+        "Housing & Shelter": "आवास और आश्रय",
+        "Senior Citizens": "वरिष्ठ नागरिक",
+        "Food & Nutrition": "खाद्य और पोषण"
+      };
+      return map[cat] || cat;
+    }
+    return cat;
+  };
+
   const filteredResults = matchResults.filter(res => {
     if (filterTab === 'Matched' && !res.eligible) return false;
     if (filterTab === 'Near Miss' && !res.near_match) return false;
@@ -61,22 +83,22 @@ export const Results = () => {
         <div>
           <div className="eyebrow mb-1">Passbook Match Engine</div>
           <h1 className="font-serif font-bold text-3xl sm:text-4xl text-navy">
-            YOUR SCHEME MATCHES
+            {t('resultsTitle')}
           </h1>
           <p className="text-xs font-mono text-ink-soft mt-1.5">
-            We found <b>{matchedCount} strong matches</b> and <b>{nearMissCount} near misses</b> based on your profile.
+            {t('resultsSubtitle', { strong: matchedCount, near: nearMissCount })}
           </p>
         </div>
 
         <div className="flex flex-wrap gap-3">
           <Link to="/eligibility" className="btn-ghost text-xs py-2 px-3.5 font-mono flex items-center gap-1.5">
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Update Profile</span>
+            <span>{t('updateProfile')}</span>
           </Link>
 
           <Link to="/passbook" className="btn-primary text-xs py-2 px-4 font-mono flex items-center gap-1.5">
             <BookmarkCheck className="w-3.5 h-3.5 text-gold" />
-            <span>My Passbook →</span>
+            <span>{t('myPassbook')}</span>
           </Link>
         </div>
       </div>
@@ -85,7 +107,7 @@ export const Results = () => {
       <div className="bg-paper border border-navy/15 p-4 rounded-md mb-8 text-xs font-mono text-navy flex items-center gap-2.5">
         <Info className="w-4 h-4 text-teal flex-none" />
         <span>
-          <b>Profile Match:</b> Scores represent rule criteria overlap with your reported profile. Verify final official eligibility before applying.
+          <b>{t('profileMatch')}:</b> {t('disclaimerNote')}
         </span>
       </div>
 
@@ -97,27 +119,27 @@ export const Results = () => {
             onClick={() => setFilterTab('Matched')}
             className={`px-3.5 py-1.5 rounded transition-all whitespace-nowrap ${filterTab === 'Matched' ? 'bg-teal-deep text-white font-bold' : 'bg-card text-ink-soft hover:text-navy border border-navy/15'}`}
           >
-            Strong Matches
+            {t('strongMatches')}
           </button>
           <button
             onClick={() => setFilterTab('Near Miss')}
             className={`px-3.5 py-1.5 rounded transition-all whitespace-nowrap ${filterTab === 'Near Miss' ? 'bg-rust text-white font-bold' : 'bg-card text-ink-soft hover:text-navy border border-navy/15'}`}
           >
-            Near Misses
+            {t('nearMisses')}
           </button>
         </div>
 
         {/* Clean Category Dropdown Filter */}
         <div className="flex items-center gap-2 font-mono text-xs w-full sm:w-auto">
           <Filter className="w-3.5 h-3.5 text-gold-deep flex-none" />
-          <span className="text-ink-soft flex-none">Category:</span>
+          <span className="text-ink-soft flex-none">{t('categoryLabel')}:</span>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="w-full sm:w-auto bg-paper border border-navy/20 text-navy font-bold rounded px-3 py-1.5 text-xs focus:outline-none focus:border-gold-deep cursor-pointer"
           >
             {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option key={cat} value={cat}>{getCategoryLabel(cat)}</option>
             ))}
           </select>
         </div>
@@ -141,40 +163,40 @@ export const Results = () => {
           ) : (
             <div className="bg-card border border-navy/15 p-12 text-center rounded-lg space-y-4">
               <Layers className="w-10 h-10 text-navy/30 mx-auto" />
-              <h3 className="font-serif font-bold text-xl text-navy">No schemes found for this filter</h3>
+              <h3 className="font-serif font-bold text-xl text-navy">{t('noMatchesFilter')}</h3>
               <p className="text-xs text-ink-soft max-w-sm mx-auto">
-                Try selecting "All Categories" or updating your citizen profile criteria to see more matches.
+                {t('tryResetCategory')}
               </p>
               <button onClick={() => { setFilterTab('Matched'); setSelectedCategory('All Categories'); }} className="btn-ghost text-xs py-2 px-4">
-                Reset Category Filter
+                {t('resetCategoryFilter')}
               </button>
             </div>
           )}
         </div>
 
-        {/* Right / Profile Summary Sidebar (Requirement 16) */}
+        {/* Right / Profile Summary Sidebar */}
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-card border border-navy/20 p-6 rounded-lg sticky top-24 space-y-4">
             <div className="flex items-center gap-2 font-mono text-xs font-bold text-navy border-b border-navy/15 pb-3">
               <User className="w-4 h-4 text-teal" />
-              <span>EVALUATED PROFILE</span>
+              <span>{t('evaluatedProfile')}</span>
             </div>
 
             <div className="space-y-2.5 font-mono text-xs">
               <div className="flex justify-between text-ink-soft">
-                <span>Age:</span> <b className="text-navy">{profile.age} years</b>
+                <span>{lang === 'hi' ? 'आयु:' : 'Age:'}</span> <b className="text-navy">{profile.age} {lang === 'hi' ? 'वर्ष' : 'years'}</b>
               </div>
               <div className="flex justify-between text-ink-soft">
-                <span>State:</span> <b className="text-navy">{profile.state}</b>
+                <span>{t('filterState')}:</span> <b className="text-navy">{profile.state}</b>
               </div>
               <div className="flex justify-between text-ink-soft">
-                <span>Income:</span> <b className="text-navy">₹{Number(profile.annual_income).toLocaleString('en-IN')}/yr</b>
+                <span>{t('labelIncome').split(' ')[0]}:</span> <b className="text-navy">₹{Number(profile.annual_income).toLocaleString('en-IN')}/{lang === 'hi' ? 'वर्ष' : 'yr'}</b>
               </div>
               <div className="flex justify-between text-ink-soft">
-                <span>Occupation:</span> <b className="text-navy">{profile.occupation}</b>
+                <span>{lang === 'hi' ? 'व्यवसाय:' : 'Occupation:'}</span> <b className="text-navy">{profile.occupation}</b>
               </div>
               <div className="flex justify-between text-ink-soft">
-                <span>Category:</span> <b className="text-navy">{profile.category}</b>
+                <span>{t('categoryLabel')}:</span> <b className="text-navy">{profile.category}</b>
               </div>
             </div>
 
@@ -184,7 +206,7 @@ export const Results = () => {
                 className="w-full btn-ghost text-xs py-2 text-center font-mono font-bold flex items-center justify-center gap-1.5"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
-                <span>Edit Profile</span>
+                <span>{t('editProfile')}</span>
               </Link>
             </div>
           </div>

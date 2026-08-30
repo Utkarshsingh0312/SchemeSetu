@@ -9,7 +9,7 @@ import { ArrowLeft, ArrowRight, Sparkles, CheckCircle2, UserCheck, ShieldCheck }
 export const EligibilityWizard = () => {
   const navigate = useNavigate();
   const { profile, updateProfileField, loadDemoProfile, runEligibilityCheck, loading } = useEligibility();
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const { addToast } = useToast();
 
   const [step, setStep] = useState(1);
@@ -21,26 +21,21 @@ export const EligibilityWizard = () => {
     "Maharashtra", "Odisha", "Punjab", "Rajasthan", "Tamil Nadu", "Telangana", "Uttar Pradesh", "West Bengal"
   ];
 
-  const occupations = [
-    "Student", "Farmer", "Unemployed", "Self Employed", "Street Vendor", "Artisan", 
-    "Government Employee", "Private Sector Employee", "Daily Wage Laborer", "Homemaker", "Other"
-  ];
-
   const handleNext = () => {
     setError('');
     if (step === 1) {
       if (!profile.age || profile.age <= 0) {
-        setError('Please enter your age to continue.');
+        setError(lang === 'hi' ? 'कृपया जारी रखने के लिए अपनी आयु दर्ज करें।' : 'Please enter your age to continue.');
         return;
       }
       if (!profile.state) {
-        setError('Please select your state to continue.');
+        setError(lang === 'hi' ? 'कृपया जारी रखने के लिए अपना राज्य चुनें।' : 'Please select your state to continue.');
         return;
       }
     }
     if (step === 2) {
       if (profile.annual_income === '' || profile.annual_income < 0) {
-        setError('Please enter your annual household income to continue.');
+        setError(lang === 'hi' ? 'कृपया जारी रखने के लिए अपनी वार्षिक आय दर्ज करें।' : 'Please enter your annual household income to continue.');
         return;
       }
     }
@@ -56,18 +51,18 @@ export const EligibilityWizard = () => {
     loadDemoProfile();
     setStep(1);
     setError('');
-    addToast("✓ Demo Profile loaded: Ramesh Kumar (Age 22, UP, Student)", "success");
+    addToast(lang === 'hi' ? "✓ डेमो प्रोफ़ाइल लोड की गई: रमेश कुमार (22 वर्ष, यूपी, छात्र)" : "✓ Demo Profile loaded: Ramesh Kumar (Age 22, UP, Student)", "success");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     const results = await runEligibilityCheck();
-    addToast("✓ Eligibility evaluated against scheme database!", "success");
+    addToast(lang === 'hi' ? "✓ योजना डेटाबेस के विरुद्ध पात्रता का मूल्यांकन किया गया!" : "✓ Eligibility evaluated against scheme database!", "success");
     navigate('/results');
   };
 
-  const stepTitles = ["Basic", "Economic", "Social", "Special"];
+  const stepTitles = [t('step1'), t('step2'), t('step3'), t('step4')];
 
   return (
     <div className="min-h-screen py-10 px-4 max-w-3xl mx-auto">
@@ -78,9 +73,9 @@ export const EligibilityWizard = () => {
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-navy/15">
           <div>
-            <div className="eyebrow mb-1">Citizen Eligibility Wizard</div>
-            <h1 className="font-serif font-bold text-3xl text-navy">LET'S FIND WHAT YOU QUALIFY FOR.</h1>
-            <p className="text-xs font-mono text-ink-soft mt-1">Tell us a little about yourself. This takes about 2 minutes.</p>
+            <div className="eyebrow mb-1">{t('wizardTitle')}</div>
+            <h1 className="font-serif font-bold text-3xl text-navy">{t('wizardTitle')}</h1>
+            <p className="text-xs font-mono text-ink-soft mt-1">{t('wizardSubtext')}</p>
           </div>
 
           <button 
@@ -89,22 +84,22 @@ export const EligibilityWizard = () => {
             className="btn-ghost text-xs py-2.5 px-4 border-teal/40 text-teal-deep flex items-center gap-1.5 font-mono font-bold hover:bg-teal/10"
           >
             <Sparkles className="w-3.5 h-3.5 text-gold-deep" />
-            <span>TRY DEMO PROFILE</span>
+            <span>{t('tryDemo')}</span>
           </button>
         </div>
 
         {/* Progress Bar & Stepper */}
         <div className="mb-8 space-y-3">
           <div className="flex justify-between items-center text-xs font-mono font-bold text-navy">
-            <span>STEP {step} OF 4</span>
-            <span className="text-gold-deep">{stepTitles[step - 1]} Information</span>
+            <span>{lang === 'hi' ? `चरण ${step} / 4` : `STEP ${step} OF 4`}</span>
+            <span className="text-gold-deep">{stepTitles[step - 1]}</span>
           </div>
 
           {/* Stepper Tabs */}
           <div className="grid grid-cols-4 gap-2 font-mono text-[11px]">
             {stepTitles.map((title, i) => (
               <div 
-                key={title}
+                key={i}
                 className={`py-1.5 text-center rounded border transition-all ${
                   step === i + 1
                     ? 'bg-navy text-paper font-bold border-navy'
@@ -113,7 +108,7 @@ export const EligibilityWizard = () => {
                     : 'bg-paper text-navy/40 border-navy/15'
                 }`}
               >
-                {i + 1}. {title}
+                {title}
               </div>
             ))}
           </div>
@@ -135,49 +130,49 @@ export const EligibilityWizard = () => {
         {/* Step 1: Basic Details */}
         {step === 1 && (
           <div className="space-y-6 font-sans">
-            <h3 className="font-serif font-bold text-xl text-navy">Step 1: Basic Demographic Information</h3>
+            <h3 className="font-serif font-bold text-xl text-navy">{t('step1')}</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">What's your age? (Years)*</label>
+                <label className="block text-xs font-mono font-bold text-navy mb-2">{t('labelAge')}*</label>
                 <input
                   type="number"
                   min="1"
                   max="120"
                   value={profile.age}
                   onChange={(e) => updateProfileField('age', parseInt(e.target.value) || '')}
-                  className="w-full bg-paper border border-navy/20 rounded-md p-3 text.sm font-medium focus:outline-none focus:border-gold-deep"
+                  className="w-full bg-paper border border-navy/20 rounded-md p-3 text-sm font-medium focus:outline-none focus:border-gold-deep"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">Gender*</label>
+                <label className="block text-xs font-mono font-bold text-navy mb-2">{t('labelGender')}*</label>
                 <select
                   value={profile.gender}
                   onChange={(e) => updateProfileField('gender', e.target.value)}
                   className="w-full bg-paper border border-navy/20 rounded-md p-3 text-sm font-medium focus:outline-none focus:border-gold-deep"
                 >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other / Transgender</option>
+                  <option value="Male">{t('optMale')}</option>
+                  <option value="Female">{t('optFemale')}</option>
+                  <option value="Other">{t('optTransgender')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">Where do you live? (State)*</label>
+                <label className="block text-xs font-mono font-bold text-navy mb-2">{t('labelState')}*</label>
                 <select
                   value={profile.state}
                   onChange={(e) => updateProfileField('state', e.target.value)}
                   className="w-full bg-paper border border-navy/20 rounded-md p-3 text-sm font-medium focus:outline-none focus:border-gold-deep"
                 >
                   {indianStates.map((st) => (
-                    <option key={st} value={st}>{st}</option>
+                    <option key={st} value={st}>{st === 'All India' ? t('allStates') : st}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">District (Optional)</label>
+                <label className="block text-xs font-mono font-bold text-navy mb-2">{t('labelDistrict')}</label>
                 <input
                   type="text"
                   placeholder="e.g. Lucknow"
@@ -193,11 +188,11 @@ export const EligibilityWizard = () => {
         {/* Step 2: Economic Status */}
         {step === 2 && (
           <div className="space-y-6 font-sans">
-            <h3 className="font-serif font-bold text-xl text-navy">Step 2: Economic &amp; Income Status</h3>
+            <h3 className="font-serif font-bold text-xl text-navy">{t('step2')}</h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">Annual Household Income (₹)*</label>
+                <label className="block text-xs font-mono font-bold text-navy mb-2">{t('labelIncome')}*</label>
                 <input
                   type="number"
                   min="0"
@@ -207,35 +202,39 @@ export const EligibilityWizard = () => {
                   className="w-full bg-paper border border-navy/20 rounded-md p-3 text-sm font-medium focus:outline-none focus:border-gold-deep"
                 />
                 <span className="text-[11.5px] font-mono text-ink-soft mt-1.5 block">
-                  Income level: <b>₹{Number(profile.annual_income).toLocaleString('en-IN')} / year</b>
+                  {lang === 'hi' ? 'आय स्तर:' : 'Income level:'} <b>₹{Number(profile.annual_income).toLocaleString('en-IN')} / {lang === 'hi' ? 'वर्ष' : 'year'}</b>
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">Occupation / Profession*</label>
+                <label className="block text-xs font-mono font-bold text-navy mb-2">{t('labelOccupation')}*</label>
                 <select
                   value={profile.occupation}
                   onChange={(e) => updateProfileField('occupation', e.target.value)}
                   className="w-full bg-paper border border-navy/20 rounded-md p-3 text-sm font-medium focus:outline-none focus:border-gold-deep"
                 >
-                  {occupations.map((occ) => (
-                    <option key={occ} value={occ}>{occ}</option>
-                  ))}
+                  <option value="Student">{t('optStudent')}</option>
+                  <option value="Farmer">{t('optFarmer')}</option>
+                  <option value="Unemployed">{t('optUnemployed')}</option>
+                  <option value="Self Employed">{t('optSelfEmployed')}</option>
+                  <option value="Artisan">{t('optArtisan')}</option>
+                  <option value="Government Employee">{t('optSalaried')}</option>
+                  <option value="Retired">{t('optRetired')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">Employment Status*</label>
+                <label className="block text-xs font-mono font-bold text-navy mb-2">{t('labelEmployment')}*</label>
                 <select
                   value={profile.employment_status}
                   onChange={(e) => updateProfileField('employment_status', e.target.value)}
                   className="w-full bg-paper border border-navy/20 rounded-md p-3 text-sm font-medium focus:outline-none focus:border-gold-deep"
                 >
-                  <option value="Employed">Employed</option>
-                  <option value="Self Employed">Self Employed</option>
-                  <option value="Unemployed">Unemployed</option>
-                  <option value="Student">Student</option>
-                  <option value="Retired">Retired</option>
+                  <option value="Employed">{t('optSalaried')}</option>
+                  <option value="Self Employed">{t('optSelfEmployed')}</option>
+                  <option value="Unemployed">{t('optUnemployed')}</option>
+                  <option value="Student">{t('optStudent')}</option>
+                  <option value="Retired">{t('optRetired')}</option>
                 </select>
               </div>
             </div>
@@ -245,34 +244,33 @@ export const EligibilityWizard = () => {
         {/* Step 3: Social Category */}
         {step === 3 && (
           <div className="space-y-6 font-sans">
-            <h3 className="font-serif font-bold text-xl text-navy">Step 3: Social Category &amp; Category Status</h3>
+            <h3 className="font-serif font-bold text-xl text-navy">{t('step3')}</h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">Social Category*</label>
+                <label className="block text-xs font-mono font-bold text-navy mb-2">{t('labelCategory')}*</label>
                 <select
                   value={profile.category}
                   onChange={(e) => updateProfileField('category', e.target.value)}
                   className="w-full bg-paper border border-navy/20 rounded-md p-3 text-sm font-medium focus:outline-none focus:border-gold-deep"
                 >
-                  <option value="General">General</option>
-                  <option value="OBC">OBC (Other Backward Class)</option>
-                  <option value="SC">SC (Scheduled Caste)</option>
-                  <option value="ST">ST (Scheduled Tribe)</option>
+                  <option value="General">{t('optGeneral')}</option>
+                  <option value="OBC">{t('optOBC')}</option>
+                  <option value="SC">{t('optSC')}</option>
+                  <option value="ST">{t('optST')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">Marital Status</label>
+                <label className="block text-xs font-mono font-bold text-navy mb-2">{t('labelMarital')}</label>
                 <select
                   value={profile.marital_status}
                   onChange={(e) => updateProfileField('marital_status', e.target.value)}
                   className="w-full bg-paper border border-navy/20 rounded-md p-3 text-sm font-medium focus:outline-none focus:border-gold-deep"
                 >
-                  <option value="Single">Single</option>
-                  <option value="Married">Married</option>
-                  <option value="Widowed">Widowed</option>
-                  <option value="Divorced">Divorced</option>
+                  <option value="Single">{t('optSingle')}</option>
+                  <option value="Married">{t('optMarried')}</option>
+                  <option value="Widowed">{t('optWidow')}</option>
                 </select>
               </div>
 
@@ -284,7 +282,7 @@ export const EligibilityWizard = () => {
                     onChange={(e) => updateProfileField('disability_status', e.target.checked)}
                     className="w-4 h-4 text-teal accent-teal"
                   />
-                  <span className="text-xs font-mono text-navy font-bold">Person with Disability (Divyangjan)</span>
+                  <span className="text-xs font-mono text-navy font-bold">{t('labelDisability')}</span>
                 </label>
               </div>
             </div>
@@ -294,19 +292,19 @@ export const EligibilityWizard = () => {
         {/* Step 4: Special Conditions */}
         {step === 4 && (
           <div className="space-y-6 font-sans">
-            <h3 className="font-serif font-bold text-xl text-navy">Step 4: Special Conditions &amp; Household Criteria</h3>
-            <p className="text-xs text-ink-soft">Select all conditions that apply to you or your household:</p>
+            <h3 className="font-serif font-bold text-xl text-navy">{t('step4')}</h3>
+            <p className="text-xs text-ink-soft">{lang === 'hi' ? 'अपनी स्थिति से मेल खाने वाली शर्तें चुनें:' : 'Select all conditions that apply to you or your household:'}</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
               {[
-                { key: 'student', label: 'Enrolled Student' },
-                { key: 'farmer', label: 'Landholding / Tenant Farmer' },
-                { key: 'bpl', label: 'BPL / Ration Card Holder' },
-                { key: 'senior_citizen', label: 'Senior Citizen (60+ years)' },
-                { key: 'widow', label: 'Widow' },
-                { key: 'pregnant', label: 'Pregnant Mother / Lactating' },
-                { key: 'rural_resident', label: 'Rural Area Resident' },
-                { key: 'entrepreneur', label: 'Small Business / Entrepreneur' },
+                { key: 'student', label: t('specialStudent') },
+                { key: 'farmer', label: t('specialFarmer') },
+                { key: 'bpl', label: t('specialBpl') },
+                { key: 'senior_citizen', label: t('specialSenior') },
+                { key: 'widow', label: t('specialWidow') },
+                { key: 'pregnant', label: t('specialPregnant') },
+                { key: 'rural_resident', label: t('specialRural') },
+                { key: 'entrepreneur', label: t('specialEntrepreneur') },
               ].map(({ key, label }) => (
                 <label key={key} className={`flex items-center gap-3 p-4 border rounded-md cursor-pointer transition-all ${profile[key] ? 'bg-teal/10 border-teal text-teal-deep font-bold shadow-sm' : 'bg-paper border-navy/15 text-navy hover:border-navy/30'}`}>
                   <input
@@ -327,7 +325,7 @@ export const EligibilityWizard = () => {
           {step > 1 ? (
             <button onClick={handlePrev} className="btn-ghost text-xs py-2.5 px-4 flex items-center gap-2">
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back</span>
+              <span>{t('btnBack')}</span>
             </button>
           ) : (
             <div></div>
@@ -335,16 +333,16 @@ export const EligibilityWizard = () => {
 
           {step < 4 ? (
             <button onClick={handleNext} className="btn-primary text-xs py-2.5 px-5 flex items-center gap-2">
-              <span>Continue</span>
+              <span>{t('btnNext')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           ) : (
             <button onClick={handleSubmit} disabled={loading} className="btn-primary big text-sm font-semibold flex items-center gap-2">
               {loading ? (
-                <span>Evaluating Engine...</span>
+                <span>{t('btnEvaluating')}</span>
               ) : (
                 <>
-                  <span>Find My Schemes →</span>
+                  <span>{t('btnSubmit')}</span>
                   <CheckCircle2 className="w-4 h-4 text-gold" />
                 </>
               )}

@@ -37,19 +37,19 @@ export const Navbar = () => {
             </svg>
           </div>
           <div className="font-serif font-bold text-xl text-navy tracking-tight">
-            Scheme<em className="not-italic text-teal-deep font-normal">Setu</em>
+            {lang === 'hi' ? 'स्कीम' : 'Scheme'}<em className="not-italic text-teal-deep font-normal">{lang === 'hi' ? 'सेतु' : 'Setu'}</em>
           </div>
         </Link>
 
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-7 font-mono text-xs text-ink-soft">
-          <a href="/#why" className="hover:text-navy transition-colors">Why SchemeSetu</a>
-          <a href="/#ritual" className="hover:text-navy transition-colors">How it works</a>
+          <a href="/#why" className="hover:text-navy transition-colors">{t('navWhy')}</a>
+          <a href="/#ritual" className="hover:text-navy transition-colors">{t('navRitual')}</a>
           <Link to="/explore" className="hover:text-navy transition-colors flex items-center gap-1">
             <Search className="w-3 h-3 text-gold-deep" />
-            <span>Explore Schemes</span>
+            <span>{t('navExplore')}</span>
           </Link>
-          <a href="/#faq" className="hover:text-navy transition-colors">FAQ</a>
+          <a href="/#faq" className="hover:text-navy transition-colors">{t('navFaq')}</a>
         </nav>
 
         {/* Desktop Controls */}
@@ -58,7 +58,7 @@ export const Navbar = () => {
           <button 
             onClick={toggleLanguage}
             className="flex items-center gap-1.5 font-mono text-xs font-semibold px-2.5 py-1.5 rounded border border-navy/20 hover:bg-navy/5 text-navy transition-all"
-            title="Switch Language / भाषा बदलें"
+            title={t('switchLanguage')}
           >
             <Globe className="w-3.5 h-3.5 text-gold-deep" />
             <span>{lang === 'en' ? 'EN | हिंदी' : 'हिंदी | EN'}</span>
@@ -67,20 +67,20 @@ export const Navbar = () => {
           {isAdmin && (
             <Link to="/admin" className="flex items-center gap-1 font-mono text-xs font-bold text-rust hover:underline bg-rust/10 border border-rust/30 px-2.5 py-1 rounded">
               <Shield className="w-3.5 h-3.5" />
-              <span>Admin</span>
+              <span>{t('adminDashboard')}</span>
             </Link>
           )}
 
           {user ? (
             <div className="flex items-center gap-2 font-mono text-xs">
               <Link to="/results" className="hover:text-navy text-ink-soft font-semibold px-2">
-                My Matches
+                {t('strongMatches')}
               </Link>
               <Link to="/passbook" className="btn-ghost py-1.5 px-3">
                 {t('myPassbook')}
               </Link>
               <Link to="/applications" className="hover:text-navy text-ink-soft font-semibold px-2">
-                Applications
+                {t('myApplications')}
               </Link>
 
               {/* User Pill */}
@@ -103,7 +103,7 @@ export const Navbar = () => {
                 {t('login')}
               </Link>
               <Link to="/eligibility" className="btn-primary text-xs py-2 px-4 flex items-center gap-1">
-                <span>Check Eligibility</span>
+                <span>{t('checkEligibility')}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -132,22 +132,22 @@ export const Navbar = () => {
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-card border-b border-navy/20 px-6 py-5 space-y-4 font-mono text-sm">
-          <a href="/#why" className="block text-navy font-semibold">Why SchemeSetu</a>
-          <a href="/#ritual" className="block text-navy font-semibold">How it works</a>
+          <a href="/#why" className="block text-navy font-semibold">{t('navWhy')}</a>
+          <a href="/#ritual" className="block text-navy font-semibold">{t('navRitual')}</a>
           <Link to="/explore" className="block text-navy font-semibold flex items-center gap-2">
             <Search className="w-4 h-4 text-gold-deep" />
-            <span>Explore Schemes</span>
+            <span>{t('navExplore')}</span>
           </Link>
-          <a href="/#faq" className="block text-navy font-semibold">FAQ</a>
+          <a href="/#faq" className="block text-navy font-semibold">{t('navFaq')}</a>
 
           {user ? (
             <div className="pt-3 border-t border-navy/15 space-y-3">
-              <div className="text-xs text-ink-soft">Signed in as <b>{user.name}</b></div>
-              <Link to="/results" className="block text-teal-deep font-bold">My Matches</Link>
-              <Link to="/passbook" className="block text-navy font-bold">My Passbook</Link>
-              <Link to="/applications" className="block text-navy font-bold">Applications</Link>
-              {isAdmin && <Link to="/admin" className="block text-rust font-bold">Admin Dashboard</Link>}
-              <button onClick={logout} className="block text-rust font-bold pt-2">Logout</button>
+              <div className="text-xs text-ink-soft">{t('welcomeUser')}, <b>{user.name}</b></div>
+              <Link to="/results" className="block text-teal-deep font-bold">{t('strongMatches')}</Link>
+              <Link to="/passbook" className="block text-navy font-bold">{t('myPassbook')}</Link>
+              <Link to="/applications" className="block text-navy font-bold">{t('myApplications')}</Link>
+              {isAdmin && <Link to="/admin" className="block text-rust font-bold">{t('adminDashboard')}</Link>}
+              <button onClick={logout} className="block text-rust font-bold pt-2">{t('logout')}</button>
             </div>
           ) : (
             <div className="pt-3 border-t border-navy/15 space-y-3">
@@ -155,7 +155,7 @@ export const Navbar = () => {
                 {t('login')}
               </Link>
               <Link to="/eligibility" className="btn-primary w-full justify-center text-xs py-2.5">
-                Check My Eligibility →
+                {t('checkEligibility')}
               </Link>
             </div>
           )}

@@ -1,30 +1,16 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 
 export const FAQPage = () => {
+  const { lang, t } = useLanguage();
   const [openFaq, setOpenFaq] = useState(null);
 
   const faqs = [
-    {
-      q: "Is my information shared with anyone?",
-      a: "No. Your profile is used only to check eligibility against the scheme database and is never sold or shared with third parties."
-    },
-    {
-      q: "Do I need documents to start?",
-      a: "No. The first check only needs a few facts about you — age, income, state, occupation. Documents are only needed once you're ready to apply."
-    },
-    {
-      q: "How current is the scheme database?",
-      a: "Schemes and deadlines are reviewed regularly against official portals. Always confirm the final details on the scheme's official application page."
-    },
-    {
-      q: "Is SchemeSetu free?",
-      a: "Yes, checking your eligibility and building your passbook is free, and always will be."
-    },
-    {
-      q: "Is this an official government service?",
-      a: "No. SchemeSetu is an independent tool that helps you find and understand schemes; applications happen on each scheme's official government portal."
-    }
+    { q: t('q1'), a: t('a1') },
+    { q: t('q2'), a: t('a2') },
+    { q: t('q3'), a: t('a3') },
+    { q: t('q4'), a: t('a4') }
   ];
 
   return (
@@ -32,8 +18,9 @@ export const FAQPage = () => {
       <DisclaimerBanner />
 
       <div className="my-8 text-center">
-        <div className="eyebrow justify-center mb-2">FAQ</div>
-        <h1 className="font-serif font-bold text-3xl text-navy">Frequently Asked Questions</h1>
+        <div className="eyebrow justify-center mb-2">{t('navFaq')}</div>
+        <h1 className="font-serif font-bold text-3xl text-navy">{t('faqTitle')}</h1>
+        <p className="text-xs text-ink-soft mt-1">{t('faqSubtitle')}</p>
       </div>
 
       <div className="bg-card border border-navy/20 rounded-lg p-6 sm:p-8 space-y-4">
