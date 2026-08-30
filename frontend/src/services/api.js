@@ -2,8 +2,14 @@ import axios from 'axios';
 
 const getBaseURL = () => {
   const envUrl = import.meta.env.VITE_API_URL;
-  if (!envUrl) return '/api';
-  return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/+$/, '')}/api`;
+  if (envUrl) {
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/+$/, '')}/api`;
+  }
+  // In production build, fall back to live Railway backend URL if VITE_API_URL is missing
+  if (import.meta.env.PROD) {
+    return 'https://secure-liberation-production.up.railway.app/api';
+  }
+  return '/api';
 };
 
 const API = axios.create({
