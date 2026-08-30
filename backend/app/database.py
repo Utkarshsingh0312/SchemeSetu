@@ -7,12 +7,18 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./schemesetu.db")
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# SQLite needs connect_args for multithreading in FastAPI
-connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
-
-engine = create_engine(
-    DATABASE_URL, connect_args=connect_args, echo=False
-)
+# Fallback mechanism if PostgreSQL is unavailable
+try:
+    connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+    engine = create_engine(DATABASE_URL, connect_args=connect_args, echo=False)
+    # Test connection
+    with engine.connect() as conn:
+        pass
+except Exception as e:
+    print(f"[WARN] Failed to connect to {DATABASE_URL}: {e}. Falling back to local SQLite.")
+    DATABASE_URL = "sqlite:///./schemesetu.db"
+    connect_args = {"check_same_thread": False}
+    engine = create_engine(DATABASE_URL, connect_args=connect_args, echo=False)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
