@@ -18,18 +18,18 @@ app = FastAPI(
 client_origin = os.getenv("CLIENT_ORIGIN")
 origins = [
     "https://scheme-setu-ashen.vercel.app",
+    "https://schemesetu.vercel.app",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
 ]
-if client_origin:
+if client_origin and client_origin not in origins:
     origins.append(client_origin)
-else:
-    origins.append("*")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
