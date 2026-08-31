@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useToast } from '../context/ToastContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { Shield, User, Lock, Mail, Phone, Eye, EyeOff, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
+import { Shield, User, Lock, Mail, Phone, Eye, EyeOff, CheckCircle2, ArrowRight, Sparkles, Check } from 'lucide-react';
 
 export const Auth = ({ isRegister = false }) => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ export const Auth = ({ isRegister = false }) => {
   const { addToast } = useToast();
 
   const [mode, setMode] = useState(isRegister ? 'register' : 'login');
-  const [loginMethod, setLoginMethod] = useState('password'); // 'password' or 'otp'
+  const [loginMethod, setLoginMethod] = useState('password');
   
   // Form State
   const [name, setName] = useState('');
@@ -32,9 +32,40 @@ export const Auth = ({ isRegister = false }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState('');
 
-  // Status State
+  // Status & Animation State
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [signedInSuccess, setSignedInSuccess] = useState(false);
+
+  // 3D Tilt Card Ref
+  const cardRef = useRef(null);
+
+  const handleCardMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    cardRef.current.style.transform = `perspective(1000px) rotateY(${x * 3}deg) rotateX(${-y * 3}deg)`;
+    cardRef.current.style.boxShadow = `${-x * 12}px ${-y * 12}px 40px rgba(22, 33, 60, 0.18)`;
+  };
+
+  const handleCardMouseLeave = () => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+    cardRef.current.style.boxShadow = '0 25px 50px -12px rgba(22, 33, 60, 0.15)';
+  };
+
+  // Password Strength Calculator
+  const getPasswordStrength = (pass) => {
+    if (!pass) return { label: '', color: '', pct: 0 };
+    if (pass.length < 6) return { label: lang === 'hi' ? 'कमजोर' : 'Weak', color: 'bg-rust', pct: 33 };
+    if (pass.length >= 6 && /[A-Z]/.test(pass) && /[0-9]/.test(pass)) {
+      return { label: lang === 'hi' ? 'मजबूत' : 'Strong', color: 'bg-teal', pct: 100 };
+    }
+    return { label: lang === 'hi' ? 'साधारण' : 'Fair', color: 'bg-marigold', pct: 66 };
+  };
+
+  const strength = getPasswordStrength(password);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -51,14 +82,16 @@ export const Auth = ({ isRegister = false }) => {
 
     setLoading(true);
     try {
-      // Use email if formatted as email, or append domain if mobile
       const targetEmail = emailOrMobile.includes('@') ? emailOrMobile : `${emailOrMobile.replace(/\D/g, '')}@citizen.schemesetu.in`;
       await login(targetEmail, password);
-      addToast(lang === 'hi' ? '✓ सफलतापूर्वक लॉगिन हुआ!' : '✓ Logged in successfully!', 'success');
-      const from = location.state?.from?.pathname || '/eligibility';
-      navigate(from, { replace: true });
+      setSignedInSuccess(true);
+      addToast(lang === 'hi' ? '✓ सफलतापूर्वक लॉगिन हुआ!' : '✓ Signed in successfully!', 'success');
+      setTimeout(() => {
+        const from = location.state?.from?.pathname || '/eligibility';
+        navigate(from, { replace: true });
+      }, 500);
     } catch (err) {
-      setError(err.response?.data?.detail || (lang === 'hi' ? 'अमान्य क्रेडेंशियल। कृपया अपनी जानकारी की जाँच करें और पुनः प्रयास करें।' : 'Invalid credentials. Please check your details and try again.'));
+      setError(err.response?.data?.detail || (lang === 'hi' ? 'अमान्य क्रेडेंशियल। कृपया अपनी जानकारी की जाँच करें।' : 'Invalid credentials. Please check your details and try again.'));
     } finally {
       setLoading(false);
     }
@@ -97,9 +130,12 @@ export const Auth = ({ isRegister = false }) => {
       } catch (err) {
         await register(`Citizen ${cleanNum.slice(-4)}`, otpEmail, fallbackPassword);
       }
+      setSignedInSuccess(true);
       addToast(lang === 'hi' ? '✓ ओटीपी सत्यापित! सफलतापूर्वक लॉगिन हुआ।' : '✓ OTP Verified! Logged in successfully.', 'success');
-      const from = location.state?.from?.pathname || '/eligibility';
-      navigate(from, { replace: true });
+      setTimeout(() => {
+        const from = location.state?.from?.pathname || '/eligibility';
+        navigate(from, { replace: true });
+      }, 500);
     } catch (err) {
       setError(lang === 'hi' ? 'ओटीपी सत्यापन विफल। कृपया पुन: प्रयास करें।' : 'OTP verification failed. Please try again.');
     } finally {
@@ -135,9 +171,12 @@ export const Auth = ({ isRegister = false }) => {
     setLoading(true);
     try {
       await register(name, email, password);
-      addToast(lang === 'hi' ? '✓ आपका खाता सफलतापूर्वक बन गया है!' : '✓ Your account has been created successfully.', 'success');
-      const from = location.state?.from?.pathname || '/eligibility';
-      navigate(from, { replace: true });
+      setSignedInSuccess(true);
+      addToast(lang === 'hi' ? '✓ आपका खाता सफलतापूर्वक बन गया है!' : '✓ Account created successfully!', 'success');
+      setTimeout(() => {
+        const from = location.state?.from?.pathname || '/eligibility';
+        navigate(from, { replace: true });
+      }, 500);
     } catch (err) {
       setError(err.response?.data?.detail || (lang === 'hi' ? 'पंजीकरण में त्रुटि। कृपया पुनः प्रयास करें।' : 'Registration failed. Please check details and try again.'));
     } finally {
@@ -146,10 +185,15 @@ export const Auth = ({ isRegister = false }) => {
   };
 
   return (
-    <div className="min-h-screen py-10 px-4 max-w-6xl mx-auto flex flex-col justify-center">
+    <div className="min-h-screen py-10 px-4 max-w-6xl mx-auto flex flex-col justify-center page-entrance">
       <DisclaimerBanner />
 
-      <div className="bg-card border border-navy/20 rounded-2xl shadow-2xl my-6 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
+      <div 
+        ref={cardRef}
+        onMouseMove={handleCardMouseMove}
+        onMouseLeave={handleCardMouseLeave}
+        className="bg-card border border-navy/20 rounded-2xl shadow-2xl my-6 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[580px] transition-all duration-300 transform-gpu"
+      >
         
         {/* LEFT COLUMN — BRANDING & TRUST ILLUSTRATION */}
         <div className="lg:col-span-5 bg-gradient-to-br from-navy via-navy-2 to-teal-deep text-cream p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden">
@@ -245,7 +289,7 @@ export const Auth = ({ isRegister = false }) => {
 
             {/* Error Banner */}
             {error && (
-              <div className="bg-rust/10 border border-rust/30 text-rust text-xs font-mono p-3.5 rounded-lg mb-6 flex items-start gap-2 animate-fade-in">
+              <div className="bg-rust/10 border border-rust/30 text-rust text-xs font-mono p-3.5 rounded-lg mb-6 flex items-start gap-2 shake-input">
                 <span className="font-bold flex-none">⚠️</span>
                 <span>{error}</span>
               </div>
@@ -255,7 +299,7 @@ export const Auth = ({ isRegister = false }) => {
             {mode === 'login' && (
               <div className="space-y-5 font-sans">
                 {/* Login Method Toggle */}
-                <div className="grid grid-cols-2 gap-2 font-mono text-xs mb-4">
+                <div className="grid grid-cols-2 gap-2 font-mono text-xs mb-4 animate-stagger-1">
                   <button
                     type="button"
                     onClick={() => { setLoginMethod('password'); setError(''); }}
@@ -275,7 +319,7 @@ export const Auth = ({ isRegister = false }) => {
                 {/* Password Login Option */}
                 {loginMethod === 'password' ? (
                   <form onSubmit={handleLoginSubmit} className="space-y-4">
-                    <div>
+                    <div className="animate-stagger-2">
                       <label className="block font-mono text-xs font-bold text-navy mb-1.5">
                         {lang === 'hi' ? 'ईमेल या मोबाइल नंबर*' : 'Email or Mobile Number*'}
                       </label>
@@ -287,12 +331,17 @@ export const Auth = ({ isRegister = false }) => {
                           placeholder="citizen@example.com / 9876543210"
                           value={emailOrMobile}
                           onChange={(e) => setEmailOrMobile(e.target.value)}
-                          className="w-full bg-cream/40 border border-navy/20 rounded-lg pl-10 pr-3 py-2.5 text-xs font-medium focus:outline-none focus:border-marigold focus:bg-paper transition-all"
+                          className="w-full bg-cream/40 border border-navy/20 rounded-lg pl-10 pr-10 py-2.5 text-xs font-medium focus:outline-none focus:border-marigold focus:bg-paper focus:ring-1 focus:ring-marigold transition-all"
                         />
+                        {emailOrMobile.length > 3 && (
+                          <span className="absolute right-3 top-3.5 text-teal scale-check-spring">
+                            <Check className="w-4 h-4" />
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    <div>
+                    <div className="animate-stagger-3">
                       <div className="flex justify-between items-center mb-1.5">
                         <label className="block font-mono text-xs font-bold text-navy">{t('passwordLabel')}*</label>
                         <button 
@@ -311,19 +360,19 @@ export const Auth = ({ isRegister = false }) => {
                           placeholder="••••••••"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="w-full bg-cream/40 border border-navy/20 rounded-lg pl-10 pr-10 py-2.5 text-xs font-medium focus:outline-none focus:border-marigold focus:bg-paper transition-all"
+                          className="w-full bg-cream/40 border border-navy/20 rounded-lg pl-10 pr-10 py-2.5 text-xs font-medium focus:outline-none focus:border-marigold focus:bg-paper focus:ring-1 focus:ring-marigold transition-all"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-3 text-navy/40 hover:text-navy"
+                          className="absolute right-3 top-3 text-navy/40 hover:text-navy transition-colors"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-1">
+                    <div className="flex items-center justify-between pt-1 animate-stagger-4">
                       <label className="flex items-center gap-2 cursor-pointer font-mono text-xs text-navy/80">
                         <input
                           type="checkbox"
@@ -337,11 +386,19 @@ export const Auth = ({ isRegister = false }) => {
 
                     <button
                       type="submit"
-                      disabled={loading}
-                      className="btn-primary w-full py-3.5 text-sm font-semibold mt-2"
+                      disabled={loading || signedInSuccess}
+                      className="btn-primary btn-shine w-full py-3.5 text-sm font-semibold mt-2 animate-stagger-5"
                     >
-                      {loading ? (
-                        <span>{t('loading')}...</span>
+                      {signedInSuccess ? (
+                        <span className="flex items-center gap-2 text-marigold font-bold">
+                          <Check className="w-4 h-4" />
+                          <span>{lang === 'hi' ? '✓ साइन इन हो गया' : '✓ Signed in'}</span>
+                        </span>
+                      ) : loading ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <span className="w-4 h-4 border-2 border-cream border-t-transparent rounded-full animate-spin" />
+                          <span>{t('loading')}...</span>
+                        </span>
                       ) : (
                         <>
                           <span>{t('login')}</span>
@@ -353,7 +410,7 @@ export const Auth = ({ isRegister = false }) => {
                 ) : (
                   /* Mobile OTP Option */
                   <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className="space-y-4">
-                    <div>
+                    <div className="animate-stagger-2">
                       <label className="block font-mono text-xs font-bold text-navy mb-1.5">
                         {lang === 'hi' ? 'मोबाइल नंबर*' : 'Mobile Number*'}
                       </label>
@@ -372,7 +429,7 @@ export const Auth = ({ isRegister = false }) => {
                     </div>
 
                     {otpSent && (
-                      <div className="space-y-2 animate-fade-in">
+                      <div className="space-y-2 animate-stagger-3">
                         <label className="block font-mono text-xs font-bold text-navy">
                           {lang === 'hi' ? '4-अंकीय ओटीपी दर्ज करें*' : 'Enter 4-Digit OTP Code*'}
                         </label>
@@ -390,11 +447,19 @@ export const Auth = ({ isRegister = false }) => {
 
                     <button
                       type="submit"
-                      disabled={loading}
-                      className="btn-primary w-full py-3.5 text-sm font-semibold mt-2"
+                      disabled={loading || signedInSuccess}
+                      className="btn-primary btn-shine w-full py-3.5 text-sm font-semibold mt-2 animate-stagger-4"
                     >
-                      {loading ? (
-                        <span>{t('loading')}...</span>
+                      {signedInSuccess ? (
+                        <span className="flex items-center gap-2 text-marigold font-bold">
+                          <Check className="w-4 h-4" />
+                          <span>{lang === 'hi' ? '✓ साइन इन हो गया' : '✓ Signed in'}</span>
+                        </span>
+                      ) : loading ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <span className="w-4 h-4 border-2 border-cream border-t-transparent rounded-full animate-spin" />
+                          <span>{t('loading')}...</span>
+                        </span>
                       ) : otpSent ? (
                         <span>{lang === 'hi' ? 'ओटीपी सत्यापित करें और लॉगिन करें →' : 'Verify OTP & Login →'}</span>
                       ) : (
@@ -409,7 +474,7 @@ export const Auth = ({ isRegister = false }) => {
             {/* REGISTER FORM */}
             {mode === 'register' && (
               <form onSubmit={handleRegisterSubmit} className="space-y-4 font-sans">
-                <div>
+                <div className="animate-stagger-1">
                   <label className="block font-mono text-xs font-bold text-navy mb-1">{t('nameLabel')}*</label>
                   <div className="relative">
                     <User className="w-4 h-4 text-navy/40 absolute left-3.5 top-3.5" />
@@ -419,12 +484,17 @@ export const Auth = ({ isRegister = false }) => {
                       placeholder="Ramesh Kumar"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full bg-cream/40 border border-navy/20 rounded-lg pl-10 pr-3 py-2.5 text-xs font-medium focus:outline-none focus:border-marigold focus:bg-paper transition-all"
+                      className="w-full bg-cream/40 border border-navy/20 rounded-lg pl-10 pr-10 py-2.5 text-xs font-medium focus:outline-none focus:border-marigold focus:bg-paper transition-all"
                     />
+                    {name.trim().length > 2 && (
+                      <span className="absolute right-3 top-3.5 text-teal scale-check-spring">
+                        <Check className="w-4 h-4" />
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-stagger-2">
                   <div>
                     <label className="block font-mono text-xs font-bold text-navy mb-1">{t('emailLabel')}*</label>
                     <div className="relative">
@@ -455,7 +525,7 @@ export const Auth = ({ isRegister = false }) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-stagger-3">
                   <div>
                     <label className="block font-mono text-xs font-bold text-navy mb-1">{t('passwordLabel')}*</label>
                     <div className="relative">
@@ -476,6 +546,19 @@ export const Auth = ({ isRegister = false }) => {
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
+
+                    {/* Animated Password Strength Indicator */}
+                    {password && (
+                      <div className="mt-2 space-y-1 animate-fade-in">
+                        <div className="flex justify-between items-center text-[10px] font-mono text-ink-soft">
+                          <span>{lang === 'hi' ? 'पासवर्ड शक्ति:' : 'Password Strength:'}</span>
+                          <span className="font-bold text-navy">{strength.label}</span>
+                        </div>
+                        <div className="w-full bg-cream border border-navy/10 h-1.5 rounded-full overflow-hidden">
+                          <div className={`h-full ${strength.color} transition-all duration-300`} style={{ width: `${strength.pct}%` }} />
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div>
@@ -501,7 +584,7 @@ export const Auth = ({ isRegister = false }) => {
                   </div>
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-2 animate-stagger-4">
                   <label className="flex items-start gap-2.5 cursor-pointer font-mono text-xs text-navy/80">
                     <input
                       type="checkbox"
@@ -515,11 +598,19 @@ export const Auth = ({ isRegister = false }) => {
 
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="btn-primary w-full py-3.5 text-sm font-semibold mt-2"
+                  disabled={loading || signedInSuccess}
+                  className="btn-primary btn-shine w-full py-3.5 text-sm font-semibold mt-2 animate-stagger-5"
                 >
-                  {loading ? (
-                    <span>{t('loading')}...</span>
+                  {signedInSuccess ? (
+                    <span className="flex items-center justify-center gap-2 text-marigold font-bold">
+                      <Check className="w-4 h-4" />
+                      <span>{lang === 'hi' ? '✓ खाता बन गया' : '✓ Account Created'}</span>
+                    </span>
+                  ) : loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-4 h-4 border-2 border-cream border-t-transparent rounded-full animate-spin" />
+                      <span>{t('loading')}...</span>
+                    </span>
                   ) : (
                     <>
                       <span>{lang === 'hi' ? 'खाता बनाएं →' : 'Create Account →'}</span>

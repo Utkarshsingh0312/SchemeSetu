@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, XCircle, Heart, ArrowRight, FileText, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { passbookAPI } from '../services/api';
@@ -16,6 +16,24 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
   
   const [isSaved, setIsSaved] = useState(false);
   const [showWhyDrawer, setShowWhyDrawer] = useState(false);
+  const [animatedScore, setAnimatedScore] = useState(0);
+
+  useEffect(() => {
+    let start = null;
+    const duration = 750;
+    const targetScore = score || 0;
+
+    const step = (timestamp) => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      setAnimatedScore(Math.floor(progress * targetScore));
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    };
+
+    requestAnimationFrame(step);
+  }, [score]);
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -43,7 +61,7 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
   const docCount = Array.isArray(scheme.documents) ? scheme.documents.length : 3;
 
   return (
-    <div className="bg-card border border-navy/20 p-6 rounded-md shadow-sm card-hover-effect flex flex-col justify-between relative group">
+    <div className="bg-card border border-navy/20 p-6 rounded-xl shadow-sm card-hover-effect flex flex-col justify-between relative group transition-all duration-300 transform-gpu">
       <div>
         {/* Category, Subcategory & Verification Metadata */}
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -69,8 +87,8 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
           <div className="flex items-center gap-1.5 font-mono text-xs font-bold">
             <span className="text-ink-soft">{t('profileMatch')}</span>
             <MatchScoreTooltip />
-            <span className={`px-2 py-0.5 rounded text-white ${eligible ? 'bg-teal-deep' : near_match ? 'bg-rust' : 'bg-gray-600'}`}>
-              {score}%
+            <span className={`px-2.5 py-0.5 rounded text-white font-mono transition-all duration-300 ${eligible ? 'bg-teal-deep' : near_match ? 'bg-rust' : 'bg-gray-600'}`}>
+              {animatedScore}%
             </span>
           </div>
         </div>
@@ -79,7 +97,7 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
         <div className="w-full bg-paper border border-navy/15 h-2 rounded-full overflow-hidden mb-4">
           <div 
             className={`h-full transition-all duration-700 ${eligible ? 'bg-teal' : near_match ? 'bg-rust' : 'bg-gray-400'}`}
-            style={{ width: `${score}%` }}
+            style={{ width: `${animatedScore}%` }}
           ></div>
         </div>
 
@@ -89,7 +107,7 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
         </h3>
 
         {/* Benefit Highlight Box */}
-        <div className="bg-paper p-3 rounded border border-navy/15 mb-4">
+        <div className="bg-paper p-3 rounded-lg border border-navy/15 mb-4 group-hover:border-navy/30 transition-colors">
           <div className="font-mono text-[10.5px] text-gold-deep font-bold uppercase">{t('benefit')}</div>
           <div className="font-serif italic text-sm text-navy font-semibold">{scheme.benefit}</div>
         </div>
@@ -100,15 +118,15 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
         </p>
 
         {/* Quick Criteria Highlights */}
-        <div className="space-y-1 font-mono text-[11px] mb-4">
+        <div className="space-y-1.5 font-mono text-[11px] mb-4">
           {matched_criteria && matched_criteria.slice(0, 3).map((item, i) => (
-            <div key={i} className="flex items-center gap-1.5 text-teal-deep">
+            <div key={i} className="flex items-center gap-1.5 text-teal-deep animate-fade-in">
               <CheckCircle2 className="w-3.5 h-3.5 text-teal flex-none" />
               <span className="truncate">{translateCriterion(item, t, lang)}</span>
             </div>
           ))}
           {failed_criteria && failed_criteria.slice(0, 1).map((item, i) => (
-            <div key={i} className="flex items-center gap-1.5 text-rust">
+            <div key={i} className="flex items-center gap-1.5 text-rust animate-fade-in">
               <XCircle className="w-3.5 h-3.5 text-rust flex-none" />
               <span className="truncate">{translateCriterion(item, t, lang)}</span>
             </div>
@@ -116,7 +134,7 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
         </div>
 
         {/* Document & Deadline Footer Pills */}
-        <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-ink-soft bg-paper/60 p-2 rounded border border-navy/10 mb-4">
+        <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-ink-soft bg-paper/60 p-2 rounded-lg border border-navy/10 mb-4">
           <span className="flex items-center gap-1">
             <FileText className="w-3.5 h-3.5 text-navy/60" /> {docCount} {t('documentsRequired')}
           </span>
@@ -130,14 +148,14 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
         {/* Expandable "Why Did I Match?" Drawer Toggle */}
         <button
           onClick={() => setShowWhyDrawer(!showWhyDrawer)}
-          className="w-full text-left font-mono text-[11px] font-bold text-navy hover:text-gold-deep py-1.5 flex items-center justify-between border-t border-navy/10"
+          className="w-full text-left font-mono text-[11px] font-bold text-navy hover:text-gold-deep py-2 flex items-center justify-between border-t border-navy/10 transition-colors"
         >
           <span>{t('whyDidIMatch')}</span>
-          {showWhyDrawer ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          {showWhyDrawer ? <ChevronUp className="w-3.5 h-3.5 text-gold-deep" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
 
         {showWhyDrawer && (
-          <div className="bg-paper p-3 rounded border border-navy/15 my-2 space-y-2 font-mono text-[11px]">
+          <div className="bg-paper p-3 rounded-lg border border-navy/15 my-2 space-y-2 font-mono text-[11px] animate-fade-in">
             <div className="text-[10px] text-navy font-bold uppercase tracking-wider">{t('detailedBreakdown')}</div>
             {matched_criteria?.map((item, idx) => (
               <div key={idx} className="flex items-start gap-1.5 text-teal-deep">
@@ -159,8 +177,8 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
       <div className="pt-4 border-t border-navy/10 flex items-center justify-between gap-3 mt-2">
         <button
           onClick={handleSave}
-          className={`btn-ghost text-xs py-2 px-3 flex items-center gap-1.5 transition-colors ${
-            isSaved ? 'bg-gold/15 text-gold-deep border-gold' : ''
+          className={`btn-ghost text-xs py-2 px-3 flex items-center gap-1.5 transition-all ${
+            isSaved ? 'bg-gold/15 text-gold-deep border-gold font-bold shadow-sm' : ''
           }`}
           title={t('saveToPassbook')}
         >
@@ -170,9 +188,10 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
 
         <Link
           to={`/scheme/${scheme.id}`}
-          className="btn-primary text-xs py-2 px-3.5 flex items-center gap-1"
+          className="btn-primary btn-shine text-xs py-2 px-4 flex items-center gap-1.5 group-hover:bg-navy-2 transition-all"
         >
           <span>{t('viewDetails')}</span>
+          <ArrowRight className="arrow w-3.5 h-3.5" />
         </Link>
       </div>
     </div>

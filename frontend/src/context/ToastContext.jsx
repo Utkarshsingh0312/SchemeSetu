@@ -22,11 +22,11 @@ export const ToastProvider = ({ children }) => {
     <ToastContext.Provider value={{ addToast }}>
       {children}
       {/* Floating Toast Container */}
-      <div className="fixed top-20 right-5 z-[100] space-y-3 max-w-sm w-full pointer-events-none">
+      <div className="fixed bottom-6 right-6 z-[100] space-y-3 max-w-sm w-full pointer-events-none">
         {toasts.map(toast => (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-md border shadow-xl transition-all duration-300 transform translate-y-0 font-mono text-xs ${
+            className={`pointer-events-auto toast-slide-in flex items-center justify-between gap-3 p-4 rounded-xl border shadow-2xl transition-all duration-300 font-mono text-xs ${
               toast.type === 'error'
                 ? 'bg-rust/95 text-white border-rust'
                 : toast.type === 'info'

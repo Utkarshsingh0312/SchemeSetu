@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEligibility } from '../context/EligibilityContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -13,8 +13,28 @@ export const EligibilityWizard = () => {
   const { addToast } = useToast();
 
   const [step, setStep] = useState(1);
+  const [slideDirection, setSlideDirection] = useState('next'); // 'next' or 'prev'
   const [error, setError] = useState('');
   const [isMatching, setIsMatching] = useState(false);
+  const [matchingStatusIndex, setMatchingStatusIndex] = useState(0);
+
+  const statusMessages = [
+    lang === 'hi' ? 'आपकी प्रोफ़ाइल पढ़ी जा रही है...' : 'Reading your profile...',
+    lang === 'hi' ? 'पात्रता मानदंडों की जाँच की जा रही है...' : 'Checking eligibility criteria...',
+    lang === 'hi' ? 'उपलब्ध 894+ योजनाओं का मिलान किया जा रहा है...' : 'Matching available schemes...',
+    lang === 'hi' ? 'आपके लिए सर्वोत्तम लाभों की खोज की जा रही है...' : 'Finding benefits for you...'
+  ];
+
+  useEffect(() => {
+    let timer;
+    if (isMatching) {
+      setMatchingStatusIndex(0);
+      timer = setInterval(() => {
+        setMatchingStatusIndex(prev => (prev + 1) % statusMessages.length);
+      }, 650);
+    }
+    return () => clearInterval(timer);
+  }, [isMatching, lang]);
 
   const indianStates = [
     "All India", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa", "Gujarat", 
@@ -65,11 +85,13 @@ export const EligibilityWizard = () => {
       }
     }
 
+    setSlideDirection('next');
     setStep(prev => prev + 1);
   };
 
   const handlePrev = () => {
     setError('');
+    setSlideDirection('prev');
     setStep(prev => prev - 1);
   };
 
@@ -84,7 +106,7 @@ export const EligibilityWizard = () => {
         setIsMatching(false);
         addToast(lang === 'hi' ? '✓ आपकी प्रोफ़ाइल से मेल खाती योजनाएं तैयार हैं!' : '✓ Your personalized scheme matches are ready!', 'success');
         navigate('/results');
-      }, 1400);
+      }, 2200);
     } catch (err) {
       setIsMatching(false);
       setError(lang === 'hi' ? 'पात्रता जांचने में त्रुटि। कृपया पुनः प्रयास करें।' : 'Failed to calculate scheme matches. Please try again.');
@@ -92,26 +114,35 @@ export const EligibilityWizard = () => {
   };
 
   return (
-    <div className="min-h-screen py-10 px-4 max-w-4xl mx-auto relative">
+    <div className="min-h-screen py-10 px-4 max-w-4xl mx-auto relative page-entrance">
       <DisclaimerBanner />
 
-      {/* FULL MATCHING OVERLAY */}
+      {/* FULL MATCHING / SCANNING OVERLAY */}
       {isMatching && (
-        <div className="fixed inset-0 z-50 bg-navy/90 backdrop-blur-md flex flex-col items-center justify-center text-paper p-6 animate-fade-in">
-          <div className="w-20 h-20 rounded-full border-4 border-marigold border-t-transparent animate-spin flex items-center justify-center mb-6 shadow-2xl">
-            <Sparkles className="w-8 h-8 text-marigold" />
+        <div className="fixed inset-0 z-50 bg-navy/92 backdrop-blur-md flex flex-col items-center justify-center text-paper p-6 animate-fade-in">
+          <div className="relative w-32 h-32 flex items-center justify-center mb-8">
+            <div className="absolute inset-0 rounded-full border-4 border-marigold/30 animate-ping" />
+            <div className="absolute inset-0 rounded-full border-4 border-marigold border-t-transparent animate-spin" />
+            <Sparkles className="w-12 h-12 text-marigold animate-pulse" />
           </div>
-          <h2 className="font-serif font-bold text-3xl text-center mb-2">
-            {lang === 'hi' ? 'आपकी प्रोफ़ाइल का मिलान किया जा रहा है...' : 'Matching your profile...'}
+
+          <div className="font-mono text-xs font-bold text-marigold tracking-widest uppercase mb-2">
+            DIGITAL PASSBOOK EVALUATION
+          </div>
+
+          <h2 className="font-serif font-bold text-3xl sm:text-4xl text-center mb-3 h-12 transition-all">
+            {statusMessages[matchingStatusIndex]}
           </h2>
-          <p className="text-sm font-mono text-cream-2/80 text-center max-w-md">
+
+          <p className="text-xs font-mono text-cream-2/80 text-center max-w-md">
             {lang === 'hi' 
               ? 'उपलब्ध 894+ केंद्रीय और राज्य योजनाओं के नियमों से आपकी पात्रता जांची जा रही है...' 
               : 'Checking eligibility across 894+ available central and state welfare schemes...'}
           </p>
-          <div className="mt-8 flex items-center gap-2 text-xs font-mono text-marigold bg-navy/80 px-4 py-2 rounded-full border border-marigold/30">
-            <CheckCircle2 className="w-4 h-4 text-marigold" />
-            <span>{lang === 'hi' ? 'नियम-आधारित मूल्यांकन जारी' : 'Evaluating precise eligibility criteria'}</span>
+
+          <div className="mt-8 flex items-center gap-2 text-xs font-mono text-marigold bg-navy/80 px-5 py-2.5 rounded-full border border-marigold/30 shadow-lg">
+            <CheckCircle2 className="w-4 h-4 text-marigold animate-bounce" />
+            <span>✓ {lang === 'hi' ? 'प्रोफ़ाइल विश्लेषित की जा रही है' : 'Profile criteria analyzed'}</span>
           </div>
         </div>
       )}
@@ -136,7 +167,7 @@ export const EligibilityWizard = () => {
         </div>
 
         {/* Stepper Progress Bar */}
-        <div className="mb-8 space-y-3">
+        <div className="mb-8 space-y-4">
           <div className="flex justify-between items-center text-xs font-mono font-bold text-navy">
             <span>{lang === 'hi' ? `चरण ${step} / 6` : `STEP ${step} OF 6`}</span>
             <span className="text-terracotta">
@@ -149,372 +180,406 @@ export const EligibilityWizard = () => {
             </span>
           </div>
 
-          <div className="w-full bg-cream border border-navy/15 h-3 rounded-full overflow-hidden p-0.5">
+          {/* Stepper Nodes */}
+          <div className="flex items-center justify-between relative px-2">
+            <div className="absolute top-1/2 left-0 right-0 h-1 bg-cream border-t border-navy/15 -translate-y-1/2 z-0" />
+            {[1, 2, 3, 4, 5, 6].map((s) => (
+              <div 
+                key={s} 
+                className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center font-mono text-xs font-bold transition-all duration-300 ${
+                  s < step 
+                    ? 'bg-teal text-paper shadow' 
+                    : s === step 
+                    ? 'bg-marigold text-navy ring-4 ring-marigold/30 shadow-md scale-110' 
+                    : 'bg-paper text-navy/40 border border-navy/20'
+                }`}
+              >
+                {s < step ? <Check className="w-4 h-4" /> : s}
+              </div>
+            ))}
+          </div>
+
+          <div className="w-full bg-cream border border-navy/15 h-2.5 rounded-full overflow-hidden p-0.5">
             <div 
-              className="bg-gradient-to-r from-marigold to-teal-deep h-full rounded-full transition-all duration-500" 
+              className="bg-gradient-to-r from-marigold via-terracotta to-teal-deep h-full rounded-full transition-all duration-500" 
               style={{ width: `${(step / 6) * 100}%` }}
             />
           </div>
         </div>
 
         {error && (
-          <div className="bg-rust/10 border border-rust/30 text-rust text-xs font-mono p-3.5 rounded-lg mb-6 flex items-center gap-2 animate-fade-in">
+          <div className="bg-rust/10 border border-rust/30 text-rust text-xs font-mono p-3.5 rounded-lg mb-6 flex items-center gap-2 shake-input">
             <span>⚠️</span>
             <span>{error}</span>
           </div>
         )}
 
-        {/* STEP 1: BASIC DETAILS */}
-        {step === 1 && (
-          <div className="space-y-6 font-sans">
-            <div>
-              <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
-                <User className="w-5 h-5 text-teal" />
-                <span>{lang === 'hi' ? 'चरण 1: बुनियादी विवरण' : 'Step 1: Basic Details'}</span>
-              </h3>
-              <p className="text-xs text-ink-soft">{lang === 'hi' ? 'आपकी आयु और लिंग योजना की पात्रता निर्धारित करते हैं।' : 'Your age and gender help determine age-restricted welfare schemes.'}</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* MULTI-STEP SLIDE CONTENT CONTAINER */}
+        <div key={step} className={slideDirection === 'next' ? 'step-enter-next' : 'step-enter-prev'}>
+          {/* STEP 1: BASIC DETAILS */}
+          {step === 1 && (
+            <div className="space-y-6 font-sans">
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">
-                  {lang === 'hi' ? 'आपकी आयु कितनी है?*' : 'What is your age?*'}
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="120"
-                  placeholder="e.g. 25"
-                  value={profile.age || ''}
-                  onChange={(e) => updateProfileField('age', parseInt(e.target.value) || '')}
-                  className="w-full bg-paper border border-navy/20 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:border-marigold focus:ring-1 focus:ring-marigold"
-                />
+                <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
+                  <User className="w-5 h-5 text-teal" />
+                  <span>{lang === 'hi' ? 'चरण 1: बुनियादी विवरण' : 'Step 1: Basic Details'}</span>
+                </h3>
+                <p className="text-xs text-ink-soft">{lang === 'hi' ? 'आपकी आयु और लिंग योजना की पात्रता निर्धारित करते हैं।' : 'Your age and gender help determine age-restricted welfare schemes.'}</p>
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-mono font-bold text-navy mb-2">
+                    {lang === 'hi' ? 'आपकी आयु कितनी है?*' : 'What is your age?*'}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min="1"
+                      max="120"
+                      placeholder="e.g. 25"
+                      value={profile.age || ''}
+                      onChange={(e) => updateProfileField('age', parseInt(e.target.value) || '')}
+                      className="w-full bg-paper border border-navy/20 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:border-marigold focus:ring-1 focus:ring-marigold transition-all"
+                    />
+                    {profile.age > 0 && (
+                      <span className="absolute right-3.5 top-3.5 text-teal scale-check-spring">
+                        <Check className="w-4 h-4" />
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono font-bold text-navy mb-2">
+                    {lang === 'hi' ? 'आपका लिंग क्या है?*' : 'What is your gender?*'}
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 font-mono text-xs">
+                    {['Male', 'Female', 'Other', 'Prefer not to say'].map((gen) => (
+                      <button
+                        key={gen}
+                        type="button"
+                        onClick={() => updateProfileField('gender', gen)}
+                        className={`p-3.5 rounded-xl border text-center font-bold transition-all card-hover-effect flex items-center justify-center gap-2 ${
+                          profile.gender === gen
+                            ? 'bg-navy text-paper border-navy shadow-md scale-[1.02]'
+                            : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
+                        }`}
+                      >
+                        <span>
+                          {gen === 'Male' && (lang === 'hi' ? 'पुरुष' : 'Male')}
+                          {gen === 'Female' && (lang === 'hi' ? 'महिला' : 'Female')}
+                          {gen === 'Other' && (lang === 'hi' ? 'अन्य' : 'Other')}
+                          {gen === 'Prefer not to say' && (lang === 'hi' ? 'नहीं बताना चाहते' : 'Prefer not to say')}
+                        </span>
+                        {profile.gender === gen && (
+                          <span className="scale-check-spring text-marigold">
+                            <Check className="w-4 h-4" />
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: LOCATION */}
+          {step === 2 && (
+            <div className="space-y-6 font-sans">
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">
-                  {lang === 'hi' ? 'आपका लिंग क्या है?*' : 'What is your gender?*'}
-                </label>
-                <div className="grid grid-cols-2 gap-2 font-mono text-xs">
-                  {['Male', 'Female', 'Other', 'Prefer not to say'].map((gen) => (
+                <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
+                  <MapPin className="w-5 h-5 text-teal" />
+                  <span>{lang === 'hi' ? 'चरण 2: स्थान' : 'Step 2: Location'}</span>
+                </h3>
+                <p className="text-xs text-ink-soft">{lang === 'hi' ? 'कई योजनाएं विशेष राज्यों या ग्रामीण/शहरी निवासियों के लिए होती हैं।' : 'State and area residency determine regional benefit eligibility.'}</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-mono font-bold text-navy mb-2">
+                    {lang === 'hi' ? 'आप वर्तमान में किस राज्य में रहते हैं?*' : 'Where do you currently live? (State)*'}
+                  </label>
+                  <select
+                    value={profile.state}
+                    onChange={(e) => updateProfileField('state', e.target.value)}
+                    className="w-full bg-paper border border-navy/20 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:border-marigold"
+                  >
+                    {indianStates.map((st) => (
+                      <option key={st} value={st}>{st === 'All India' ? t('allStates') : st}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono font-bold text-navy mb-2">
+                    {lang === 'hi' ? 'जिला (District)' : 'District'}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Lucknow / Varanasi"
+                    value={profile.district || ''}
+                    onChange={(e) => updateProfileField('district', e.target.value)}
+                    className="w-full bg-paper border border-navy/20 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:border-marigold"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-mono font-bold text-navy mb-2">
+                    {lang === 'hi' ? 'शहरी या ग्रामीण? (Urban or Rural)' : 'Urban or Rural residency?'}
+                  </label>
+                  <div className="grid grid-cols-2 gap-4 font-mono text-xs">
                     <button
-                      key={gen}
                       type="button"
-                      onClick={() => updateProfileField('gender', gen)}
-                      className={`p-3 rounded-xl border text-center font-bold transition-all ${
-                        profile.gender === gen
-                          ? 'bg-navy text-paper border-navy shadow-md'
+                      onClick={() => updateProfileField('rural_resident', false)}
+                      className={`p-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all card-hover-effect ${
+                        !profile.rural_resident
+                          ? 'bg-navy text-paper border-navy shadow-md scale-[1.02]'
                           : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
                       }`}
                     >
-                      {gen === 'Male' && (lang === 'hi' ? 'पुरुष' : 'Male')}
-                      {gen === 'Female' && (lang === 'hi' ? 'महिला' : 'Female')}
-                      {gen === 'Other' && (lang === 'hi' ? 'अन्य' : 'Other')}
-                      {gen === 'Prefer not to say' && (lang === 'hi' ? 'नहीं बताना चाहते' : 'Prefer not to say')}
+                      <span>🏢 {lang === 'hi' ? 'शहरी (Urban)' : 'Urban Resident'}</span>
+                      {!profile.rural_resident && <Check className="w-4 h-4 text-marigold scale-check-spring" />}
                     </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 2: LOCATION */}
-        {step === 2 && (
-          <div className="space-y-6 font-sans">
-            <div>
-              <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
-                <MapPin className="w-5 h-5 text-teal" />
-                <span>{lang === 'hi' ? 'चरण 2: स्थान' : 'Step 2: Location'}</span>
-              </h3>
-              <p className="text-xs text-ink-soft">{lang === 'hi' ? 'कई योजनाएं विशेष राज्यों या ग्रामीण/शहरी निवासियों के लिए होती हैं।' : 'State and area residency determine regional benefit eligibility.'}</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">
-                  {lang === 'hi' ? 'आप वर्तमान में किस राज्य में रहते हैं?*' : 'Where do you currently live? (State)*'}
-                </label>
-                <select
-                  value={profile.state}
-                  onChange={(e) => updateProfileField('state', e.target.value)}
-                  className="w-full bg-paper border border-navy/20 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:border-marigold"
-                >
-                  {indianStates.map((st) => (
-                    <option key={st} value={st}>{st === 'All India' ? t('allStates') : st}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">
-                  {lang === 'hi' ? 'जिला (District)' : 'District'}
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Lucknow / Varanasi"
-                  value={profile.district || ''}
-                  onChange={(e) => updateProfileField('district', e.target.value)}
-                  className="w-full bg-paper border border-navy/20 rounded-xl p-3.5 text-sm font-medium focus:outline-none focus:border-marigold"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-mono font-bold text-navy mb-2">
-                  {lang === 'hi' ? 'शहरी या ग्रामीण? (Urban or Rural)' : 'Urban or Rural residency?'}
-                </label>
-                <div className="grid grid-cols-2 gap-4 font-mono text-xs">
-                  <button
-                    type="button"
-                    onClick={() => updateProfileField('rural_resident', false)}
-                    className={`p-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all ${
-                      !profile.rural_resident
-                        ? 'bg-navy text-paper border-navy shadow-md'
-                        : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
-                    }`}
-                  >
-                    🏢 {lang === 'hi' ? 'शहरी (Urban)' : 'Urban Resident'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => updateProfileField('rural_resident', true)}
-                    className={`p-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all ${
-                      profile.rural_resident
-                        ? 'bg-navy text-paper border-navy shadow-md'
-                        : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
-                    }`}
-                  >
-                    🌾 {lang === 'hi' ? 'ग्रामीण (Rural)' : 'Rural Resident'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 3: OCCUPATION */}
-        {step === 3 && (
-          <div className="space-y-6 font-sans">
-            <div>
-              <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
-                <Briefcase className="w-5 h-5 text-teal" />
-                <span>{lang === 'hi' ? 'चरण 3: व्यवसाय' : 'Step 3: Occupation'}</span>
-              </h3>
-              <p className="text-xs text-ink-soft">{lang === 'hi' ? 'आपकी आजीविका का प्रकार संबंधित योजनाओं का सही मिलान करता है।' : 'Select the card that best describes your primary occupation.'}</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {occupationsList.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => {
-                    updateProfileField('occupation', item.id);
-                    if (item.id === 'Student') updateProfileField('student', true);
-                    if (item.id === 'Farmer') updateProfileField('farmer', true);
-                  }}
-                  className={`p-4 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${
-                    profile.occupation === item.id
-                      ? 'bg-navy text-paper border-navy shadow-lg scale-[1.02]'
-                      : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
-                  }`}
-                >
-                  <div className="flex justify-between items-start">
-                    <span className="text-2xl">{item.icon}</span>
-                    {profile.occupation === item.id && <Check className="w-4 h-4 text-marigold" />}
+                    <button
+                      type="button"
+                      onClick={() => updateProfileField('rural_resident', true)}
+                      className={`p-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all card-hover-effect ${
+                        profile.rural_resident
+                          ? 'bg-navy text-paper border-navy shadow-md scale-[1.02]'
+                          : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
+                      }`}
+                    >
+                      <span>🌾 {lang === 'hi' ? 'ग्रामीण (Rural)' : 'Rural Resident'}</span>
+                      {profile.rural_resident && <Check className="w-4 h-4 text-marigold scale-check-spring" />}
+                    </button>
                   </div>
-                  <div className="mt-3">
-                    <div className="font-serif font-bold text-sm">{item.label}</div>
-                    <div className={`text-[11px] mt-0.5 leading-tight ${profile.occupation === item.id ? 'text-cream-2/80' : 'text-ink-soft'}`}>
-                      {item.desc}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: OCCUPATION */}
+          {step === 3 && (
+            <div className="space-y-6 font-sans">
+              <div>
+                <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
+                  <Briefcase className="w-5 h-5 text-teal" />
+                  <span>{lang === 'hi' ? 'चरण 3: व्यवसाय' : 'Step 3: Occupation'}</span>
+                </h3>
+                <p className="text-xs text-ink-soft">{lang === 'hi' ? 'आपकी आजीविका का प्रकार संबंधित योजनाओं का सही मिलान करता है।' : 'Select the card that best describes your primary occupation.'}</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {occupationsList.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      updateProfileField('occupation', item.id);
+                      if (item.id === 'Student') updateProfileField('student', true);
+                      if (item.id === 'Farmer') updateProfileField('farmer', true);
+                    }}
+                    className={`p-4 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer card-hover-effect ${
+                      profile.occupation === item.id
+                        ? 'bg-navy text-paper border-navy shadow-lg scale-[1.02]'
+                        : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <span className="text-2xl">{item.icon}</span>
+                      {profile.occupation === item.id && <Check className="w-4 h-4 text-marigold scale-check-spring" />}
+                    </div>
+                    <div className="mt-3">
+                      <div className="font-serif font-bold text-sm">{item.label}</div>
+                      <div className={`text-[11px] mt-0.5 leading-tight ${profile.occupation === item.id ? 'text-cream-2/80' : 'text-ink-soft'}`}>
+                        {item.desc}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 4: INCOME */}
+          {step === 4 && (
+            <div className="space-y-6 font-sans">
+              <div>
+                <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
+                  <IndianRupee className="w-5 h-5 text-teal" />
+                  <span>{lang === 'hi' ? 'चरण 4: वार्षिक परिवार आय' : 'Step 4: Household Income'}</span>
+                </h3>
+                <p className="text-xs text-ink-soft">{lang === 'hi' ? 'सरकारी योजनाएं आय सीमा के आधार पर वित्तीय सहायता प्रदान करती हैं।' : 'Select your approximate annual household income tier.'}</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {incomeTiers.map((tier) => (
+                  <button
+                    key={tier.id}
+                    type="button"
+                    onClick={() => updateProfileField('annual_income', tier.value)}
+                    className={`p-5 rounded-xl border text-left transition-all cursor-pointer card-hover-effect ${
+                      profile.annual_income === tier.value
+                        ? 'bg-navy text-paper border-navy shadow-lg scale-[1.02]'
+                        : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-serif font-bold text-base">{tier.label}</span>
+                      {profile.annual_income === tier.value && <Check className="w-4 h-4 text-marigold scale-check-spring" />}
+                    </div>
+                    <div className={`font-mono text-xs ${profile.annual_income === tier.value ? 'text-marigold' : 'text-terracotta'}`}>
+                      {tier.text}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 5: SOCIAL CATEGORY & ELIGIBILITY */}
+          {step === 5 && (
+            <div className="space-y-6 font-sans">
+              <div>
+                <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
+                  <Users className="w-5 h-5 text-teal" />
+                  <span>{lang === 'hi' ? 'चरण 5: सामाजिक वर्ग एवं श्रेणी' : 'Step 5: Category & Social Details'}</span>
+                </h3>
+                <p className="text-xs text-ink-soft">{lang === 'hi' ? 'ये प्रश्न लक्षित आरक्षण व छात्रवृत्ति योजनाओं की खोज में मदद करते हैं।' : 'Social categories help match targeted welfare scholarships and subsidies.'}</p>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-xs font-mono font-bold text-navy mb-2">
+                    {lang === 'hi' ? 'आपकी सामाजिक श्रेणी क्या है?*' : 'Social Category*'}
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 font-mono text-xs">
+                    {categories.map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => updateProfileField('category', cat)}
+                        className={`p-3 rounded-xl border text-center font-bold transition-all card-hover-effect flex items-center justify-center gap-1.5 ${
+                          profile.category === cat
+                            ? 'bg-navy text-paper border-navy shadow-md scale-[1.02]'
+                            : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
+                        }`}
+                      >
+                        <span>{cat}</span>
+                        {profile.category === cat && <Check className="w-3.5 h-3.5 text-marigold scale-check-spring" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
+                  <div className="p-4 bg-paper border border-navy/15 rounded-xl space-y-2">
+                    <span className="font-bold text-navy block">{lang === 'hi' ? 'दिव्यांगता (Disability)?' : 'Differently Abled (PwD)?'}</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => updateProfileField('disability_status', true)}
+                        className={`py-2 rounded-lg border font-bold transition-all ${profile.disability_status ? 'bg-teal text-paper border-teal shadow' : 'bg-cream/50 text-navy border-navy/15'}`}
+                      >
+                        {lang === 'hi' ? 'हाँ (Yes)' : 'Yes'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateProfileField('disability_status', false)}
+                        className={`py-2 rounded-lg border font-bold transition-all ${!profile.disability_status ? 'bg-navy text-paper border-navy shadow' : 'bg-cream/50 text-navy border-navy/15'}`}
+                      >
+                        {lang === 'hi' ? 'नहीं (No)' : 'No'}
+                      </button>
                     </div>
                   </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {/* STEP 4: INCOME */}
-        {step === 4 && (
-          <div className="space-y-6 font-sans">
-            <div>
-              <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
-                <IndianRupee className="w-5 h-5 text-teal" />
-                <span>{lang === 'hi' ? 'चरण 4: वार्षिक परिवार आय' : 'Step 4: Household Income'}</span>
-              </h3>
-              <p className="text-xs text-ink-soft">{lang === 'hi' ? 'सरकारी योजनाएं आय सीमा के आधार पर वित्तीय सहायता प्रदान करती हैं।' : 'Select your approximate annual household income tier.'}</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {incomeTiers.map((tier) => (
-                <button
-                  key={tier.id}
-                  type="button"
-                  onClick={() => updateProfileField('annual_income', tier.value)}
-                  className={`p-5 rounded-xl border text-left transition-all cursor-pointer ${
-                    profile.annual_income === tier.value
-                      ? 'bg-navy text-paper border-navy shadow-lg scale-[1.02]'
-                      : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
-                  }`}
-                >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-serif font-bold text-base">{tier.label}</span>
-                    {profile.annual_income === tier.value && <Check className="w-4 h-4 text-marigold" />}
+                  <div className="p-4 bg-paper border border-navy/15 rounded-xl space-y-2">
+                    <span className="font-bold text-navy block">{lang === 'hi' ? 'गरीबी रेखा (BPL)?' : 'BPL Card Holder?'}</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => updateProfileField('bpl', true)}
+                        className={`py-2 rounded-lg border font-bold transition-all ${profile.bpl ? 'bg-teal text-paper border-teal shadow' : 'bg-cream/50 text-navy border-navy/15'}`}
+                      >
+                        {lang === 'hi' ? 'हाँ (Yes)' : 'Yes'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateProfileField('bpl', false)}
+                        className={`py-2 rounded-lg border font-bold transition-all ${!profile.bpl ? 'bg-navy text-paper border-navy shadow' : 'bg-cream/50 text-navy border-navy/15'}`}
+                      >
+                        {lang === 'hi' ? 'नहीं (No)' : 'No'}
+                      </button>
+                    </div>
                   </div>
-                  <div className={`font-mono text-xs ${profile.annual_income === tier.value ? 'text-marigold' : 'text-terracotta'}`}>
-                    {tier.text}
+
+                  <div className="p-4 bg-paper border border-navy/15 rounded-xl space-y-2">
+                    <span className="font-bold text-navy block">{lang === 'hi' ? 'वरिष्ठ नागरिक (Senior)?' : 'Senior Citizen (60+)?'}</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => updateProfileField('senior_citizen', true)}
+                        className={`py-2 rounded-lg border font-bold transition-all ${profile.senior_citizen ? 'bg-teal text-paper border-teal shadow' : 'bg-cream/50 text-navy border-navy/15'}`}
+                      >
+                        {lang === 'hi' ? 'हाँ (Yes)' : 'Yes'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateProfileField('senior_citizen', false)}
+                        className={`py-2 rounded-lg border font-bold transition-all ${!profile.senior_citizen ? 'bg-navy text-paper border-navy shadow' : 'bg-cream/50 text-navy border-navy/15'}`}
+                      >
+                        {lang === 'hi' ? 'नहीं (No)' : 'No'}
+                      </button>
+                    </div>
                   </div>
-                </button>
-              ))}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* STEP 5: SOCIAL CATEGORY & ELIGIBILITY */}
-        {step === 5 && (
-          <div className="space-y-6 font-sans">
-            <div>
-              <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
-                <Users className="w-5 h-5 text-teal" />
-                <span>{lang === 'hi' ? 'चरण 5: सामाजिक वर्ग एवं श्रेणी' : 'Step 5: Category & Social Details'}</span>
-              </h3>
-              <p className="text-xs text-ink-soft">{lang === 'hi' ? 'ये प्रश्न लक्षित आरक्षण व छात्रवृत्ति योजनाओं की खोज में मदद करते हैं।' : 'Social categories help match targeted welfare scholarships and subsidies.'}</p>
-            </div>
-
-            <div className="space-y-6">
-              {/* Category */}
+          {/* STEP 6: ADDITIONAL CONDITIONS */}
+          {step === 6 && (
+            <div className="space-y-6 font-sans">
               <div>
-                <label className="block text-xs font-mono font-bold text-navy mb-2">
-                  {lang === 'hi' ? 'आपकी सामाजिक श्रेणी क्या है?*' : 'Social Category*'}
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 font-mono text-xs">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => updateProfileField('category', cat)}
-                      className={`p-3 rounded-xl border text-center font-bold transition-all ${
-                        profile.category === cat
-                          ? 'bg-navy text-paper border-navy shadow-md'
-                          : 'bg-paper text-navy border-navy/15 hover:border-navy/40'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
+                <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
+                  <Sparkles className="w-5 h-5 text-teal" />
+                  <span>{lang === 'hi' ? 'चरण 6: अतिरिक्त स्थितियां' : 'Step 6: Additional Conditions'}</span>
+                </h3>
+                <p className="text-xs text-ink-soft">{lang === 'hi' ? 'अपनी स्थिति से मेल खाने वाली विशेष शर्तें चुनें:' : 'Select all conditions that apply to you or your household:'}</p>
               </div>
 
-              {/* Disability & BPL Options */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
-                {/* Disability */}
-                <div className="p-4 bg-paper border border-navy/15 rounded-xl space-y-2">
-                  <span className="font-bold text-navy block">{lang === 'hi' ? 'दिव्यांगता (Disability)?' : 'Differently Abled (PwD)?'}</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => updateProfileField('disability_status', true)}
-                      className={`py-2 rounded-lg border font-bold ${profile.disability_status ? 'bg-teal text-paper border-teal' : 'bg-cream/50 text-navy border-navy/15'}`}
-                    >
-                      {lang === 'hi' ? 'हाँ (Yes)' : 'Yes'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => updateProfileField('disability_status', false)}
-                      className={`py-2 rounded-lg border font-bold ${!profile.disability_status ? 'bg-navy text-paper border-navy' : 'bg-cream/50 text-navy border-navy/15'}`}
-                    >
-                      {lang === 'hi' ? 'नहीं (No)' : 'No'}
-                    </button>
-                  </div>
-                </div>
-
-                {/* BPL */}
-                <div className="p-4 bg-paper border border-navy/15 rounded-xl space-y-2">
-                  <span className="font-bold text-navy block">{lang === 'hi' ? 'गरीबी रेखा (BPL)?' : 'BPL Card Holder?'}</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => updateProfileField('bpl', true)}
-                      className={`py-2 rounded-lg border font-bold ${profile.bpl ? 'bg-teal text-paper border-teal' : 'bg-cream/50 text-navy border-navy/15'}`}
-                    >
-                      {lang === 'hi' ? 'हाँ (Yes)' : 'Yes'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => updateProfileField('bpl', false)}
-                      className={`py-2 rounded-lg border font-bold ${!profile.bpl ? 'bg-navy text-paper border-navy' : 'bg-cream/50 text-navy border-navy/15'}`}
-                    >
-                      {lang === 'hi' ? 'नहीं (No)' : 'No'}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Senior Citizen */}
-                <div className="p-4 bg-paper border border-navy/15 rounded-xl space-y-2">
-                  <span className="font-bold text-navy block">{lang === 'hi' ? 'वरिष्ठ नागरिक (Senior)?' : 'Senior Citizen (60+)?'}</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => updateProfileField('senior_citizen', true)}
-                      className={`py-2 rounded-lg border font-bold ${profile.senior_citizen ? 'bg-teal text-paper border-teal' : 'bg-cream/50 text-navy border-navy/15'}`}
-                    >
-                      {lang === 'hi' ? 'हाँ (Yes)' : 'Yes'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => updateProfileField('senior_citizen', false)}
-                      className={`py-2 rounded-lg border font-bold ${!profile.senior_citizen ? 'bg-navy text-paper border-navy' : 'bg-cream/50 text-navy border-navy/15'}`}
-                    >
-                      {lang === 'hi' ? 'नहीं (No)' : 'No'}
-                    </button>
-                  </div>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
+                {[
+                  { key: 'student', label: lang === 'hi' ? 'क्या आप छात्र हैं? (Student)' : 'Are you currently a student?' },
+                  { key: 'farmer', label: lang === 'hi' ? 'क्या आप किसान हैं? (Farmer)' : 'Are you a farmer or landowner?' },
+                  { key: 'entrepreneur', label: lang === 'hi' ? 'क्या आप छोटा व्यवसाय चलाते हैं?' : 'Do you own or plan a business?' },
+                  { key: 'widow', label: lang === 'hi' ? 'विधवा पेंशन योजना श्रेणी?' : 'Widow pension criteria applicable?' },
+                  { key: 'pregnant', label: lang === 'hi' ? 'गर्भवती / धात्री महिला?' : 'Maternity benefits applicable?' },
+                  { key: 'rural_resident', label: lang === 'hi' ? 'ग्रामीण क्षेत्र का निवास प्रमाणपत्र?' : 'Rural domicile documentation?' },
+                ].map(({ key, label }) => (
+                  <label 
+                    key={key} 
+                    className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all card-hover-effect ${
+                      profile[key] 
+                        ? 'bg-teal/15 border-teal text-teal-deep font-bold shadow-sm scale-[1.01]' 
+                        : 'bg-paper border-navy/15 text-navy hover:border-navy/30'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={!!profile[key]}
+                      onChange={(e) => updateProfileField(key, e.target.checked)}
+                      className="w-4 h-4 accent-teal"
+                    />
+                    <span>{label}</span>
+                  </label>
+                ))}
               </div>
             </div>
-          </div>
-        )}
-
-        {/* STEP 6: ADDITIONAL CONDITIONS */}
-        {step === 6 && (
-          <div className="space-y-6 font-sans">
-            <div>
-              <h3 className="font-serif font-bold text-xl text-navy flex items-center gap-2 mb-1">
-                <Sparkles className="w-5 h-5 text-teal" />
-                <span>{lang === 'hi' ? 'चरण 6: अतिरिक्त स्थितियां' : 'Step 6: Additional Conditions'}</span>
-              </h3>
-              <p className="text-xs text-ink-soft">{lang === 'hi' ? 'अपनी स्थिति से मेल खाने वाली विशेष शर्तें चुनें:' : 'Select all conditions that apply to you or your household:'}</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
-              {[
-                { key: 'student', label: lang === 'hi' ? 'क्या आप छात्र हैं? (Student)' : 'Are you currently a student?' },
-                { key: 'farmer', label: lang === 'hi' ? 'क्या आप किसान हैं? (Farmer)' : 'Are you a farmer or landowner?' },
-                { key: 'entrepreneur', label: lang === 'hi' ? 'क्या आप छोटा व्यवसाय चलाते हैं?' : 'Do you own or plan a business?' },
-                { key: 'widow', label: lang === 'hi' ? 'विधवा पेंशन योजना श्रेणी?' : 'Widow pension criteria applicable?' },
-                { key: 'pregnant', label: lang === 'hi' ? 'गर्भवती / धात्री महिला?' : 'Maternity benefits applicable?' },
-                { key: 'rural_resident', label: lang === 'hi' ? 'ग्रामीण क्षेत्र का निवास प्रमाणपत्र?' : 'Rural domicile documentation?' },
-              ].map(({ key, label }) => (
-                <label 
-                  key={key} 
-                  className={`flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all ${
-                    profile[key] 
-                      ? 'bg-teal/15 border-teal text-teal-deep font-bold shadow-sm' 
-                      : 'bg-paper border-navy/15 text-navy hover:border-navy/30'
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={!!profile[key]}
-                    onChange={(e) => updateProfileField(key, e.target.checked)}
-                    className="w-4 h-4 accent-teal"
-                  />
-                  <span>{label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Form Actions Footer */}
         <div className="mt-10 pt-6 border-t border-navy/15 flex items-center justify-between">
@@ -528,7 +593,7 @@ export const EligibilityWizard = () => {
           )}
 
           {step < 6 ? (
-            <button type="button" onClick={handleNext} className="btn-primary text-xs py-3 px-6 flex items-center gap-2">
+            <button type="button" onClick={handleNext} className="btn-primary btn-shine text-xs py-3 px-6 flex items-center gap-2">
               <span>{t('btnNext')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -537,14 +602,14 @@ export const EligibilityWizard = () => {
               type="button" 
               onClick={handleSubmit} 
               disabled={loading || isMatching} 
-              className="btn-primary big text-sm font-semibold flex items-center gap-2 py-3.5 px-8"
+              className="btn-primary btn-shine big text-sm font-semibold flex items-center gap-2 py-3.5 px-8"
             >
               {loading || isMatching ? (
                 <span>{lang === 'hi' ? 'मूल्यांकन जारी...' : 'Evaluating Matches...'}</span>
               ) : (
                 <>
                   <span>{lang === 'hi' ? 'मेरी योजनाएं खोजें →' : 'Find My Schemes →'}</span>
-                  <CheckCircle2 className="w-4 h-4 text-marigold" />
+                  <CheckCircle2 className="w-4 h-4 text-marigold animate-pulse" />
                 </>
               )}
             </button>

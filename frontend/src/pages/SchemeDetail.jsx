@@ -4,7 +4,7 @@ import { schemesAPI, passbookAPI, applicationsAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { ArrowLeft, ExternalLink, Bookmark, CheckSquare, Square, ShieldCheck, AlertTriangle, X } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Bookmark, CheckSquare, Square, ShieldCheck, AlertTriangle, X, ChevronDown, ChevronUp } from 'lucide-react';
 
 export const SchemeDetail = () => {
   const { id } = useParams();
@@ -18,12 +18,15 @@ export const SchemeDetail = () => {
   const [showPortalModal, setShowPortalModal] = useState(false);
   const [checkedDocs, setCheckedDocs] = useState({});
 
+  // Accordion Expand States
+  const [openSection, setOpenSection] = useState('all'); // 'all', 'docs', 'steps', 'criteria'
+
   useEffect(() => {
     schemesAPI.getSchemeById(id)
       .then((res) => {
         setScheme(res.data);
       })
-      .catch((err) => {
+      .catch(() => {
         setError(lang === 'hi' ? 'योजना नहीं मिली।' : 'Scheme not found.');
       })
       .finally(() => setLoading(false));
@@ -68,7 +71,7 @@ export const SchemeDetail = () => {
 
   if (error || !scheme) {
     return (
-      <div className="min-h-screen py-20 text-center space-y-4">
+      <div className="min-h-screen py-20 text-center space-y-4 page-entrance">
         <h2 className="font-serif font-bold text-2xl text-navy">{lang === 'hi' ? 'योजना नहीं मिली' : 'Scheme Not Found'}</h2>
         <Link to="/results" className="btn-primary text-xs py-2 px-4 inline-flex">{t('btnBack')}</Link>
       </div>
@@ -79,7 +82,7 @@ export const SchemeDetail = () => {
   const totalDocs = scheme.documents?.length || 0;
 
   return (
-    <div className="min-h-screen py-10 max-w-5xl mx-auto px-4 sm:px-7">
+    <div className="min-h-screen py-10 max-w-5xl mx-auto px-4 sm:px-7 page-entrance">
       <DisclaimerBanner />
 
       <div className="my-6">
@@ -89,7 +92,7 @@ export const SchemeDetail = () => {
         </Link>
       </div>
 
-      <div className="bg-card border border-navy/20 rounded-lg p-6 sm:p-10 shadow-xl space-y-8">
+      <div className="bg-card border border-navy/20 rounded-2xl p-6 sm:p-10 shadow-xl space-y-8">
         {/* Header */}
         <div className="border-b border-navy/15 pb-6">
           <div className="flex flex-wrap items-center gap-2 mb-3 font-mono text-xs">
@@ -106,40 +109,47 @@ export const SchemeDetail = () => {
             </span>
           </div>
 
-          <h1 className="font-serif font-bold text-3xl text-navy mb-4 leading-tight">{scheme.name}</h1>
+          <h1 className="font-serif font-bold text-3xl sm:text-4xl text-navy mb-4 leading-tight">{scheme.name}</h1>
           <p className="text-sm font-sans text-ink-soft leading-relaxed max-w-3xl">{scheme.full_description}</p>
         </div>
 
-        {/* Benefit Highlight Box */}
-        <div className="bg-paper border border-navy/20 p-6 rounded-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        {/* Benefit Highlight Box with Scale-In Animation */}
+        <div className="bg-paper border border-navy/20 p-6 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm hover:border-navy/30 transition-all">
           <div>
             <div className="font-mono text-xs font-bold text-gold-deep uppercase">{t('benefit')}</div>
-            <div className="font-serif font-semibold text-xl text-navy mt-1">{scheme.benefit}</div>
+            <div className="font-serif font-bold text-2xl text-navy mt-1 animate-fade-in">{scheme.benefit}</div>
           </div>
           {scheme.deadline && (
-            <div className="font-mono text-xs text-rust bg-rust/10 border border-rust/30 px-3 py-1.5 rounded">
+            <div className="font-mono text-xs text-rust bg-rust/10 border border-rust/30 px-3.5 py-2 rounded-lg">
               ⏰ {t('deadline')}: <b>{scheme.deadline}</b>
             </div>
           )}
         </div>
 
-        {/* Requirements Grid */}
+        {/* Accordion Sections Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Document Checklist */}
-          <div className="bg-paper border border-navy/15 p-6 rounded">
-            <div className="flex justify-between items-center mb-4">
+          {/* Document Checklist Accordion */}
+          <div className="bg-paper border border-navy/15 p-6 rounded-xl shadow-sm space-y-4">
+            <button 
+              onClick={() => setOpenSection(openSection === 'docs' ? 'all' : 'docs')}
+              className="w-full flex justify-between items-center text-left"
+            >
               <h3 className="font-serif font-semibold text-lg text-navy">{t('documentsRequired')}</h3>
-              <span className="font-mono text-xs text-teal font-bold">{checkedCount} / {totalDocs} {lang === 'hi' ? 'तैयार' : 'ready'}</span>
-            </div>
-            <ul className="space-y-3 font-sans text-xs">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs text-teal font-bold">{checkedCount} / {totalDocs} {lang === 'hi' ? 'तैयार' : 'ready'}</span>
+                <ChevronDown className={`w-4 h-4 text-navy transition-transform duration-300 ${openSection === 'docs' ? 'rotate-180' : ''}`} />
+              </div>
+            </button>
+
+            <ul className="space-y-3 font-sans text-xs transition-all duration-300">
               {scheme.documents?.map((doc, idx) => (
                 <li 
                   key={idx} 
                   onClick={() => toggleDoc(doc)}
-                  className="flex items-start gap-3 p-2.5 bg-card rounded border border-navy/10 cursor-pointer hover:border-gold-deep transition-colors"
+                  className="flex items-start gap-3 p-3 bg-card rounded-lg border border-navy/10 cursor-pointer hover:border-gold-deep transition-all"
                 >
                   {checkedDocs[doc] ? (
-                    <CheckSquare className="w-4 h-4 text-teal flex-none mt-0.5" />
+                    <CheckSquare className="w-4 h-4 text-teal flex-none mt-0.5 scale-check-spring" />
                   ) : (
                     <Square className="w-4 h-4 text-navy/40 flex-none mt-0.5" />
                   )}
@@ -151,12 +161,19 @@ export const SchemeDetail = () => {
             </ul>
           </div>
 
-          {/* Application Steps */}
-          <div className="bg-paper border border-navy/15 p-6 rounded">
-            <h3 className="font-serif font-semibold text-lg text-navy mb-4">{t('applicationSteps')}</h3>
-            <ol className="space-y-4 font-sans text-xs">
+          {/* Application Steps Accordion */}
+          <div className="bg-paper border border-navy/15 p-6 rounded-xl shadow-sm space-y-4">
+            <button 
+              onClick={() => setOpenSection(openSection === 'steps' ? 'all' : 'steps')}
+              className="w-full flex justify-between items-center text-left"
+            >
+              <h3 className="font-serif font-semibold text-lg text-navy">{t('applicationSteps')}</h3>
+              <ChevronDown className={`w-4 h-4 text-navy transition-transform duration-300 ${openSection === 'steps' ? 'rotate-180' : ''}`} />
+            </button>
+
+            <ol className="space-y-4 font-sans text-xs transition-all duration-300">
               {scheme.application_steps?.map((stepStr, idx) => (
-                <li key={idx} className="flex gap-3">
+                <li key={idx} className="flex gap-3 items-start">
                   <span className="w-5 h-5 rounded-full bg-navy text-paper font-mono font-bold text-[10px] flex items-center justify-center flex-none mt-0.5">
                     {idx + 1}
                   </span>
@@ -188,7 +205,7 @@ export const SchemeDetail = () => {
 
           <button 
             onClick={() => setShowPortalModal(true)} 
-            className="btn-primary big text-sm font-semibold flex items-center gap-2"
+            className="btn-primary btn-shine big text-sm font-semibold flex items-center gap-2"
           >
             <span>{t('applyNow')}</span>
             <ExternalLink className="w-4 h-4" />
@@ -198,8 +215,8 @@ export const SchemeDetail = () => {
 
       {/* External Redirection Warning Modal */}
       {showPortalModal && (
-        <div className="fixed inset-0 bg-navy/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-card border border-navy/30 max-w-lg w-full rounded-lg p-6 shadow-2xl space-y-5">
+        <div className="fixed inset-0 bg-navy/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-card border border-navy/30 max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-5">
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-2 font-serif font-bold text-lg text-rust">
                 <AlertTriangle className="w-5 h-5 text-rust" />
@@ -216,7 +233,7 @@ export const SchemeDetail = () => {
               <b className="font-mono text-teal-deep block mt-2 break-all">{scheme.official_application_url}</b>
             </p>
 
-            <div className="bg-amber-50 border border-amber-200 p-3 rounded text-[11.5px] font-mono text-amber-900">
+            <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-[11.5px] font-mono text-amber-900">
               {t('civicDisclaimer')}
             </div>
 
@@ -229,7 +246,7 @@ export const SchemeDetail = () => {
                 target="_blank" 
                 rel="noopener noreferrer"
                 onClick={() => setShowPortalModal(false)}
-                className="btn-primary py-2 px-4 inline-flex items-center gap-1.5"
+                className="btn-primary btn-shine py-2 px-4 inline-flex items-center gap-1.5"
               >
                 <span>{t('proceedToPortal')}</span>
               </a>

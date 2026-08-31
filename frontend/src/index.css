@@ -88,6 +88,108 @@ body {
   mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, black 20%, transparent 75%);
 }
 
+/* GLOBAL PAGE TRANSITIONS */
+.page-entrance {
+  animation: pageEntrance 550ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pageEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* STAGGERED FORM ENTRANCE */
+.animate-stagger-1 { animation: staggerIn 450ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both; }
+.animate-stagger-2 { animation: staggerIn 450ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both; }
+.animate-stagger-3 { animation: staggerIn 450ms cubic-bezier(0.16, 1, 0.3, 1) 260ms both; }
+.animate-stagger-4 { animation: staggerIn 450ms cubic-bezier(0.16, 1, 0.3, 1) 340ms both; }
+.animate-stagger-5 { animation: staggerIn 450ms cubic-bezier(0.16, 1, 0.3, 1) 420ms both; }
+
+@keyframes staggerIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* INPUT SHAKE FOR INVALID DATA */
+.shake-input {
+  animation: shakeInput 400ms ease-in-out;
+}
+
+@keyframes shakeInput {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* MULTI-STEP SLIDE TRANSITIONS */
+.step-enter-next {
+  animation: stepSlideNextEnter 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.step-enter-prev {
+  animation: stepSlidePrevEnter 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes stepSlideNextEnter {
+  from { opacity: 0; transform: translateX(25px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes stepSlidePrevEnter {
+  from { opacity: 0; transform: translateX(-25px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* SPRING CHECK SCALE */
+.scale-check-spring {
+  animation: checkSpring 350ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes checkSpring {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* BUTTON SHINE OVERLAY */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  transform: rotate(30deg);
+  transition: transform 0.8s ease;
+}
+.btn-shine:hover::after {
+  transform: translate(300%, 0) rotate(30deg);
+}
+
+/* TOAST NOTIFICATION SLIDE */
+.toast-slide-in {
+  animation: toastSlide 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toastSlide {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 /* HERO SECTION LAYOUT */
 .hero {
   position: relative;
@@ -519,5 +621,5 @@ body {
     scroll-behavior: auto !important;
   }
   .field { opacity: 0.3; }
-  .blob, .stamp, .ledger-track { animation: none !important; }
+  .blob, .stamp, .ledger-track, .page-entrance, .animate-stagger-1, .animate-stagger-2, .animate-stagger-3, .animate-stagger-4, .animate-stagger-5 { animation: none !important; }
 }
