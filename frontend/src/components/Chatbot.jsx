@@ -70,17 +70,18 @@ export const Chatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[90]">
       {!isOpen ? (
         <button
           onClick={() => setIsOpen(true)}
-          className="btn-primary rounded-full px-5 py-3.5 shadow-2xl flex items-center gap-2.5 text-xs font-mono font-bold tracking-wider"
+          className="btn-primary btn-shine rounded-full p-3.5 sm:px-5 sm:py-3.5 shadow-2xl flex items-center justify-center gap-2.5 text-xs font-sans font-bold tracking-wider"
+          aria-label="Open SchemeSetu Assistant Chatbot"
         >
-          <Bot className="w-5 h-5 text-gold" />
-          <span>{t('askChatbotHeader')}</span>
+          <Bot className="w-5 h-5 text-gold flex-none" />
+          <span className="hidden sm:inline">{t('askChatbotHeader')}</span>
         </button>
       ) : (
-        <div className="bg-card border border-navy/30 rounded-2xl shadow-2xl w-80 sm:w-96 flex flex-col h-[520px] overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="bg-card border border-navy/30 rounded-2xl shadow-2xl w-[90vw] sm:w-96 flex flex-col h-[500px] sm:h-[520px] overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
           {/* Header */}
           <div className="bg-navy text-paper p-4 flex items-center justify-between">
             <div className="flex items-center gap-2 font-serif font-semibold text-sm">
@@ -106,7 +107,7 @@ export const Chatbot = () => {
 
                 {msg.related && msg.related.length > 0 && (
                   <div className="mt-2 space-y-1.5 w-full">
-                    <span className="text-[10px] font-mono text-ink-soft uppercase font-bold">
+                    <span className="text-[10px] font-sans text-ink-soft uppercase font-bold">
                       {lang === 'hi' ? 'संबंधित योजनाएं:' : 'Related Scheme Matches:'}
                     </span>
                     {msg.related.map(s => (
@@ -124,14 +125,14 @@ export const Chatbot = () => {
                 )}
 
                 {msg.disclaimer && (
-                  <span className="text-[9.5px] font-mono text-rust/80 mt-1 italic max-w-[85%]">
+                  <span className="text-[9.5px] font-sans text-rust/80 mt-1 italic max-w-[85%]">
                     * {msg.disclaimer}
                   </span>
                 )}
               </div>
             ))}
             {loading && (
-              <div className="text-xs text-ink-soft italic font-mono flex items-center gap-1.5">
+              <div className="text-xs text-ink-soft italic font-sans flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-gold-deep animate-spin" />
                 <span>{lang === 'hi' ? 'योजना डेटाबेस में खोज की जा रही है...' : 'Searching scheme database...'}</span>
               </div>
@@ -139,12 +140,12 @@ export const Chatbot = () => {
           </div>
 
           {/* Suggested Quick Question Pills */}
-          <div className="px-3 py-2 bg-paper/60 border-t border-navy/10 flex items-center gap-1.5 overflow-x-auto text-[10px] font-mono">
+          <div className="px-3 py-2 bg-paper/60 border-t border-navy/10 flex items-center gap-1.5 overflow-x-auto text-[10px] font-sans">
             {suggestedQuestions.map((qText, i) => (
               <button
                 key={i}
                 onClick={(e) => handleSend(e, qText)}
-                className="bg-card hover:bg-navy/10 border border-navy/15 text-navy px-2.5 py-1 rounded whitespace-nowrap"
+                className="bg-card hover:bg-navy/10 border border-navy/15 text-navy px-2.5 py-1 rounded-full whitespace-nowrap"
               >
                 {qText}
               </button>
@@ -158,7 +159,7 @@ export const Chatbot = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('chatbotPlaceholder')}
-              className="flex-1 bg-card border border-navy/20 rounded px-3 py-2 text-xs focus:outline-none focus:border-gold-deep font-sans"
+              className="flex-1 bg-card border border-navy/20 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-gold-deep font-sans"
             />
             <button type="submit" disabled={loading} className="btn-primary text-xs p-2.5">
               <Send className="w-3.5 h-3.5" />
