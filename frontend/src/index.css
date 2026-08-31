@@ -28,12 +28,17 @@
 
 html {
   scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
   background: var(--cream);
   color: var(--ink);
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
   font-family: 'IBM Plex Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -564,20 +569,171 @@ body {
   to { transform: translateX(-50%); }
 }
 
-@media (max-width: 980px) {
+/* RESPONSIVE MOBILE BREAKPOINT (@media (max-width: 768px)) */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
+  }
+
+  *, ::before, ::after {
+    box-sizing: border-box;
+  }
+
+  img, svg, video, button, input {
+    max-width: 100%;
+  }
+
   .hero {
     grid-template-columns: 1fr;
-    padding: 50px 22px 70px;
+    padding: 24px 16px 44px;
+    gap: 28px;
   }
+
+  .hero-h1 {
+    font-size: clamp(30px, 8.5vw, 40px);
+    line-height: 1.1;
+    margin-top: 14px;
+  }
+
+  .lede {
+    font-size: 15px;
+    line-height: 1.55;
+    margin-top: 16px;
+    max-width: 100%;
+  }
+
+  .cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .cta-row .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .stage {
-    height: 440px;
-    order: -1;
-    margin-bottom: 20px;
+    height: auto;
+    min-height: auto;
+    padding: 14px 0;
+    margin-bottom: 8px;
+    perspective: none;
   }
-  .passbook {
-    width: 88vw;
-    max-width: 380px;
+
+  .blob {
+    width: 280px;
+    height: 280px;
+    filter: blur(70px);
   }
+
+  .passbook,
+  .passbook-card,
+  .digital-passbook {
+    width: calc(100% - 16px);
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 22px 18px;
+    box-sizing: border-box;
+    border-radius: 24px;
+    transform: none !important;
+  }
+
+  .row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .secure-label {
+    font-size: 11px;
+  }
+
+  .greet-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .hello {
+    font-size: 14px;
+  }
+
+  .headline {
+    font-size: clamp(22px, 6.5vw, 28px);
+  }
+
+  .ring-wrap {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+  }
+
+  .match-card {
+    margin-top: 16px;
+    padding: 16px 14px 6px;
+    border-radius: 18px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .scheme-name {
+    font-size: 18px;
+    overflow-wrap: break-word;
+    word-break: normal;
+    margin: 8px 0 2px;
+  }
+
+  .scheme-price {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .checklist {
+    gap: 10px;
+    padding-bottom: 12px;
+  }
+
+  .check-item {
+    font-size: 13px;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .check-item .tick {
+    margin-top: 1px;
+  }
+
+  .stamp-btn {
+    width: 100%;
+    min-height: 54px;
+    font-size: 14px;
+    padding: 14px 12px;
+    border-radius: 14px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .stamp,
+  .verification-stamp,
+  .profile-stamp {
+    width: 86px;
+    height: 86px;
+    top: -18px;
+    right: 8px;
+    font-size: 10px;
+    z-index: 10;
+    line-height: 1.4;
+  }
+
   .ledger-item {
     padding: 0 18px;
     font-size: 13px;
@@ -586,29 +742,13 @@ body {
 
 @media (max-width: 520px) {
   .hero {
-    padding: 35px 16px 55px;
+    padding: 20px 14px 38px;
   }
   .hero-h1 {
-    font-size: 42px;
+    font-size: 32px;
   }
   .lede {
-    font-size: 16px;
-  }
-  .cta-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .cta-row .btn {
-    justify-content: center;
-  }
-  .stage {
-    height: 430px;
-  }
-  .passbook {
-    transform: scale(.91);
-  }
-  .stamp {
-    right: -12px;
+    font-size: 14.5px;
   }
 }
 
