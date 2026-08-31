@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, X, Send, ExternalLink, Sparkles, ArrowRight, CheckCircle2, ShieldCheck, Zap } from 'lucide-react';
+import { MessageSquare, X, Send, ExternalLink, Sparkles, ArrowRight } from 'lucide-react';
 import { chatbotAPI } from '../services/api';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
@@ -104,7 +104,7 @@ export const Chatbot = () => {
       setShowAuthModal(false);
       setNavigatingLogin(false);
       navigate('/login');
-    }, 250);
+    }, 200);
   };
 
   return (
@@ -214,86 +214,85 @@ export const Chatbot = () => {
         )}
       </div>
 
-      {/* REDESIGNED PREMIUM SCHEMESETU AUTHENTICATION REQUIRED MODAL */}
+      {/* REWORKED MINIMAL & ELEGANT AUTHENTICATION REQUIRED MODAL */}
       {showAuthModal && (
         <div 
-          className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-[#0A1223]/58 backdrop-blur-md animate-in fade-in duration-300"
+          className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 bg-[#16213C]/48 backdrop-blur-[12px] animate-in fade-in duration-250"
           role="dialog"
           aria-modal="true"
           aria-labelledby="auth-modal-title"
           aria-describedby="auth-modal-desc"
         >
-          <div className="bg-[#FBF8F1] border border-navy/12 rounded-[26px] p-6 sm:p-8 max-w-[560px] w-[calc(100%-32px)] shadow-[0_30px_80px_rgba(22,33,60,0.25)] relative overflow-hidden font-sans transform transition-all animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+          <div className="bg-[#FBF8F1] border border-navy/12 rounded-[20px] sm:rounded-[24px] p-6 sm:p-[32px_34px] max-w-[520px] w-[calc(100%-28px)] sm:w-[calc(100%-32px)] shadow-[0_24px_70px_rgba(22,33,60,0.22)] relative overflow-hidden font-sans transform transition-all animate-in zoom-in-98 slide-in-from-bottom-3 duration-350">
             
-            {/* Decorative Top Accent Bar */}
-            <div className="w-full h-[3px] bg-gradient-to-r from-marigold via-amber-400 to-transparent absolute top-0 left-0 rounded-t-[26px]" />
+            {/* Subtle Ambient Radial Glow */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-marigold/10 rounded-full blur-2xl pointer-events-none" />
 
-            {/* Ambient Background Radial Glows */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-marigold/15 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal/15 rounded-full blur-3xl pointer-events-none" />
-
-            {/* Circular Close X Button */}
+            {/* Close Button */}
             <button 
               onClick={() => setShowAuthModal(false)}
-              className="absolute top-4 right-4 sm:top-5 sm:right-5 w-9 h-9 rounded-full flex items-center justify-center text-navy/60 hover:text-navy hover:bg-navy/10 hover:rotate-90 hover:scale-105 transition-all duration-200 cursor-pointer"
+              className="absolute top-[18px] right-[18px] w-8 h-8 rounded-full flex items-center justify-center text-navy/60 hover:text-navy hover:bg-navy/[0.06] hover:scale-[1.05] transition-all duration-200 cursor-pointer"
               aria-label="Close modal"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
 
-            {/* HEADER: EXACT SCHEMESETU LANDING PAGE LOGO MARK + TITLES */}
-            <div className="flex items-center gap-4 relative z-10">
-              {/* Landing Page SchemeSetu Logo Container (52px Mobile / 58px Desktop) */}
-              <div className="w-[52px] h-[52px] sm:w-[58px] sm:h-[58px] rounded-full border-2 border-navy bg-[#FBF8F1] ring-2 ring-marigold/60 flex items-center justify-center font-serif font-bold text-2xl sm:text-3xl text-navy shadow-md hover:rotate-6 hover:scale-105 transition-transform flex-none cursor-pointer">
+            {/* CLEAN HORIZONTAL HEADER */}
+            <div className="flex items-center gap-3.5 relative z-10">
+              {/* 48px Desktop / 44px Mobile Landing Page SchemeSetu Logo */}
+              <div className="w-[44px] h-[44px] sm:w-[48px] sm:h-[48px] rounded-full border border-navy bg-[#FBF8F1] ring-1 ring-marigold/60 flex items-center justify-center font-serif font-bold text-xl sm:text-2xl text-navy shadow-sm flex-none">
                 S
               </div>
               
               <div>
-                <h3 id="auth-modal-title" className="font-serif font-bold text-[21px] sm:text-[24px] text-navy leading-tight">
+                <h3 id="auth-modal-title" className="font-serif font-bold text-[20px] sm:text-[22px] text-navy leading-tight">
                   Scheme<span className="text-marigold italic font-normal">Setu</span> Assistant
                 </h3>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="w-2 h-2 rounded-full bg-marigold animate-pulse flex-none" />
-                  <span className="text-[10px] sm:text-[11px] font-bold text-marigold uppercase tracking-[0.12em] font-sans">
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-none" />
+                  <span className="text-[10px] font-bold text-marigold uppercase tracking-[0.12em] font-sans">
                     AUTHENTICATION REQUIRED
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* MAIN MESSAGE & ACCENT */}
-            <div className="relative z-10 pt-2 space-y-1.5">
-              <span className="font-serif italic text-xs font-semibold text-marigold tracking-wide block">
-                ✦ Personalized assistance awaits
+            {/* MAIN MESSAGE WITH SMALL EYEBROW */}
+            <div className="text-center mt-4 sm:mt-5 relative z-10">
+              <span className="text-[10px] font-bold text-marigold uppercase tracking-[0.12em] block font-sans mb-1">
+                PERSONALIZED ASSISTANCE
               </span>
-              <p id="auth-modal-desc" className="text-[15px] sm:text-[16px] text-[#5C5643] leading-relaxed font-sans">
+              <p id="auth-modal-desc" className="text-[15px] sm:text-[17px] text-[#5C5643] leading-[1.55] max-w-[400px] mx-auto font-sans font-medium">
                 Please log in to access your personalized SchemeSetu Assistant.
               </p>
             </div>
 
-            {/* COMPACT BENEFIT INDICATOR PILLS */}
-            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-              <div className="bg-[#1F4B3E]/[0.06] border border-[#1F4B3E]/12 rounded-xl p-2.5 flex items-center gap-2 text-xs font-medium text-navy font-sans hover:-translate-y-0.5 transition-transform">
-                <CheckCircle2 className="w-4 h-4 text-teal flex-none" />
+            {/* COMPACT HORIZONTAL FEATURE ROW */}
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-4 text-[12px] font-sans text-[#3F493F] relative z-10">
+              <div className="flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded-full bg-emerald-500/15 text-emerald-700 flex items-center justify-center text-[10px] font-bold">✓</span>
                 <span>Personalized guidance</span>
               </div>
-              <div className="bg-[#1F4B3E]/[0.06] border border-[#1F4B3E]/12 rounded-xl p-2.5 flex items-center gap-2 text-xs font-medium text-navy font-sans hover:-translate-y-0.5 transition-transform">
-                <ShieldCheck className="w-4 h-4 text-teal flex-none" />
-                <span>Eligibility awareness</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded-full bg-emerald-500/15 text-emerald-700 flex items-center justify-center text-[10px] font-bold">✓</span>
+                <span>Eligibility matching</span>
               </div>
-              <div className="bg-[#1F4B3E]/[0.06] border border-[#1F4B3E]/12 rounded-xl p-2.5 flex items-center gap-2 text-xs font-medium text-navy font-sans hover:-translate-y-0.5 transition-transform">
-                <Zap className="w-4 h-4 text-teal flex-none" />
+              <div className="flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded-full bg-emerald-500/15 text-emerald-700 flex items-center justify-center text-[10px] font-bold">✓</span>
                 <span>Application help</span>
               </div>
             </div>
 
-            {/* ACTION BUTTONS */}
-            <div className="relative z-10 flex flex-col sm:flex-row items-center gap-3 pt-3">
+            {/* SUBTLE DIVIDER */}
+            <div className="my-[22px] border-t border-navy/10 relative z-10" />
+
+            {/* BUTTONS COMPOSITION */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10">
               <button
                 type="button"
                 onClick={handleLoginRedirect}
                 disabled={navigatingLogin}
-                className="w-full sm:flex-1 h-[52px] bg-[#16213C] text-[#FBF8F1] rounded-[13px] font-bold text-sm hover:bg-[#202F52] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 btn-shine shadow-md flex items-center justify-center gap-2 cursor-pointer group"
+                className="w-full sm:w-[45%] h-[50px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-bold text-sm shadow-[0_8px_20px_rgba(22,33,60,0.14)] hover:bg-[#202F52] hover:-translate-y-[1px] active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer group"
               >
                 {navigatingLogin ? (
                   <span className="flex items-center gap-2">
@@ -303,7 +302,7 @@ export const Chatbot = () => {
                 ) : (
                   <>
                     <span>Login</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-[3px] transition-transform" />
                   </>
                 )}
               </button>
@@ -311,10 +310,15 @@ export const Chatbot = () => {
               <button
                 type="button"
                 onClick={() => setShowAuthModal(false)}
-                className="w-full sm:flex-1 h-[52px] bg-transparent border border-navy/18 text-navy rounded-[13px] font-semibold text-sm hover:bg-navy/5 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center cursor-pointer"
+                className="w-full sm:w-[55%] h-[50px] bg-transparent border border-navy/18 text-navy rounded-[12px] font-semibold text-sm hover:bg-navy/[0.04] hover:-translate-y-[1px] active:translate-y-0 transition-all flex items-center justify-center cursor-pointer"
               >
                 Continue Browsing
               </button>
+            </div>
+
+            {/* TRUST FOOTER */}
+            <div className="mt-3.5 text-center text-[10.5px] sm:text-[11px] text-[#7A7568] flex items-center justify-center gap-1.5 font-sans relative z-10">
+              <span>🔒 Your profile remains protected and private.</span>
             </div>
 
           </div>
