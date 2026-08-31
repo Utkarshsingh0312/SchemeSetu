@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -32,13 +32,63 @@ export const Auth = ({ isRegister = false }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState('');
 
+  // Animated Match Percentage Counter
+  const [matchPct, setMatchPct] = useState(0);
+  const [matchDeg, setMatchDeg] = useState(0);
+
   // Status & Animation State
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [signedInSuccess, setSignedInSuccess] = useState(false);
-
-  // Focus States for Icons
   const [focusedField, setFocusedField] = useState('');
+
+  // 3D Parallax Refs
+  const leftPanelRef = useRef(null);
+  const passbookRef = useRef(null);
+
+  useEffect(() => {
+    // Count-up animation for match percentage (0 -> 82%)
+    let startTime = null;
+    const targetPct = 82;
+    const duration = 900;
+
+    const animFrame = (now) => {
+      if (!startTime) startTime = now;
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const currentPct = Math.round(eased * targetPct);
+      const deg = eased * 295;
+
+      setMatchPct(currentPct);
+      setMatchDeg(deg);
+
+      if (progress < 1) {
+        requestAnimationFrame(animFrame);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      requestAnimationFrame(animFrame);
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Desktop Mouse Parallax Effect (Max 2-3 deg tilt)
+  const handleMouseMove = (e) => {
+    if (!leftPanelRef.current || !passbookRef.current || window.innerWidth < 1024) return;
+    const r = leftPanelRef.current.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    passbookRef.current.style.transform = `rotateY(${x * 3}deg) rotateX(${-y * 2}deg) translateY(-4px)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (passbookRef.current) {
+      passbookRef.current.style.transform = 'rotateY(0deg) rotateX(0deg) translateY(0px)';
+    }
+  };
 
   // Password Strength Calculator
   const getPasswordStrength = (pass) => {
@@ -174,23 +224,35 @@ export const Auth = ({ isRegister = false }) => {
       <DisclaimerBanner />
 
       {/* CENTERED AUTHENTICATION CONTAINER (1180px Max Width, 42% Left / 58% Right Desktop Split) */}
-      <div className="w-full max-w-[1180px] min-h-[680px] rounded-[26px] overflow-hidden bg-paper border border-navy/15 shadow-2xl my-6 flex flex-col lg:flex-row">
+      <div className="w-full max-w-[1180px] min-h-[680px] rounded-[26px] overflow-hidden bg-paper border border-navy/15 shadow-2xl my-6 flex flex-col lg:flex-row login-container-entrance">
         
         {/* LEFT SIDE (42% WIDTH) — DARK GRADIENT BRAND & PASSBOOK PANEL */}
         <div 
-          className="w-full lg:w-[42%] p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden text-[#FBF8F1]"
+          ref={leftPanelRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          className="w-full lg:w-[42%] p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden text-[#FBF8F1] perspective-1000"
           style={{
             background: 'linear-gradient(135deg, #16213C 0%, #1D3450 50%, #1F4B3E 100%)'
           }}
         >
-          {/* Subtle Background Animated Glows */}
-          <div className="absolute -top-20 -right-20 w-80 h-80 bg-marigold/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
-          <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-teal/25 rounded-full blur-3xl pointer-events-none animate-pulse" />
+          {/* Subtle Background Animated Glows & Data Particles */}
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-marigold/15 rounded-full blur-3xl pointer-events-none ambient-glow-1" />
+          <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-teal/25 rounded-full blur-3xl pointer-events-none ambient-glow-2" />
+
+          {/* Floating Data Particles */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
+            <div className="particle particle-1" />
+            <div className="particle particle-2" />
+            <div className="particle particle-3" />
+            <div className="particle particle-4" />
+            <div className="particle particle-5" />
+          </div>
 
           {/* Top Logo (High Contrast White / Cream on Dark Background) */}
           <div className="relative z-10 space-y-8">
             <Link to="/" className="inline-flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-full border-2 border-marigold bg-[#16213C] flex items-center justify-center font-serif font-bold text-xl text-[#FBF8F1] group-hover:scale-105 transition-transform shadow-md">
+              <div className="w-10 h-10 rounded-full border-2 border-marigold bg-[#16213C] flex items-center justify-center font-serif font-bold text-xl text-[#FBF8F1] logo-mark shadow-md">
                 S
               </div>
               <div className="font-serif font-bold text-2xl tracking-tight text-[#FBF8F1]">
@@ -198,22 +260,22 @@ export const Auth = ({ isRegister = false }) => {
               </div>
             </Link>
 
-            {/* Left Side Headline */}
+            {/* Left Side Headline (Staggered Entrance) */}
             <div className="space-y-3 pt-2">
               <h1 className="font-serif font-semibold text-[44px] sm:text-[48px] text-[#FBF8F1] leading-[1.05] tracking-tight">
                 {mode === 'login' ? (
                   <>
-                    Welcome back to<br />
-                    <span className="italic text-marigold">SchemeSetu</span>
+                    <span className="block animate-stagger-1">Welcome back to</span>
+                    <span className="italic text-marigold block animate-stagger-2">SchemeSetu</span>
                   </>
                 ) : (
                   <>
-                    Create your<br />
-                    <span className="italic text-marigold">SchemeSetu</span> profile
+                    <span className="block animate-stagger-1">Create your</span>
+                    <span className="italic text-marigold block animate-stagger-2">SchemeSetu profile</span>
                   </>
                 )}
               </h1>
-              <p className="text-[16px] leading-[1.6] text-[#FBF8F1]/80 font-sans max-w-[400px]">
+              <p className="text-[16px] leading-[1.6] text-[#FBF8F1]/80 font-sans max-w-[400px] animate-stagger-3">
                 {mode === 'login'
                   ? 'Sign in to discover government schemes matched to your profile.'
                   : 'Tell us a little about yourself. We\'ll use your profile to find schemes you may be eligible for.'}
@@ -221,21 +283,29 @@ export const Auth = ({ isRegister = false }) => {
             </div>
           </div>
 
-          {/* DIGITAL PASSBOOK CARD (Visual Illustration) */}
-          <div className="relative z-10 my-8 bg-[#FBF8F1]/[0.08] backdrop-blur-[10px] border border-[#FBF8F1]/35 rounded-[18px] p-6 shadow-xl space-y-4 font-sans hover:translate-y-[-4px] transition-all duration-500 group">
+          {/* DIGITAL PASSBOOK CARD (Visual Illustration with Scan Line & Floating Animation) */}
+          <div 
+            ref={passbookRef}
+            className="relative z-10 my-8 bg-[#FBF8F1]/[0.08] backdrop-blur-[10px] border border-[#FBF8F1]/35 rounded-[18px] p-6 shadow-xl space-y-4 font-sans passbook-card transition-transform duration-300 animate-stagger-4"
+          >
             {/* Scan Line Overlay */}
             <div className="absolute inset-0 rounded-[18px] overflow-hidden pointer-events-none">
-              <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-marigold to-transparent opacity-60 animate-pulse" />
+              <div className="passbook-scan-line" />
             </div>
 
             <div className="flex justify-between items-center text-xs font-sans font-bold">
               <span className="flex items-center gap-2 text-marigold">
-                <span className="w-2 h-2 rounded-full bg-marigold animate-ping" />
+                <span className="w-2.5 h-2.5 rounded-full bg-marigold animate-ping" />
                 DIGITAL PASSBOOK
               </span>
-              <span className="text-[#FBF8F1] font-extrabold bg-[#FBF8F1]/20 px-2.5 py-0.5 rounded-full">
-                82% MATCHED
-              </span>
+              <div 
+                className="text-[#FBF8F1] font-extrabold bg-[#FBF8F1]/20 px-3 py-1 rounded-full flex items-center gap-1.5 font-mono"
+                style={{
+                  background: `conic-gradient(var(--gold) 0deg, var(--green-2) ${matchDeg}deg, rgba(251,248,241,0.2) ${matchDeg}deg)`
+                }}
+              >
+                <span>{matchPct}% MATCHED</span>
+              </div>
             </div>
 
             <div className="space-y-1">
@@ -248,19 +318,20 @@ export const Auth = ({ isRegister = false }) => {
             </div>
 
             <div className="pt-3 border-t border-[#FBF8F1]/15 flex items-center gap-2 text-xs text-[#FBF8F1]/90">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-none" />
               <CheckCircle2 className="w-4 h-4 text-marigold flex-none" />
               <span>✓ Matched securely against your profile criteria</span>
             </div>
           </div>
 
-          {/* LEFT BOTTOM TRUST INFORMATION */}
-          <div className="relative z-10 pt-4 border-t border-[#FBF8F1]/15 flex flex-col sm:flex-row justify-between gap-3 text-xs font-sans text-[#FBF8F1]/75">
+          {/* LEFT BOTTOM TRUST INFORMATION (Staggered Entrance) */}
+          <div className="relative z-10 pt-4 border-t border-[#FBF8F1]/15 flex flex-col sm:flex-row justify-between gap-3 text-xs font-sans text-[#FBF8F1]/75 animate-stagger-5">
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-marigold flex-none" />
+              <Shield className="w-4 h-4 text-marigold flex-none scale-check-spring" />
               <span>✓ Profile privacy protected</span>
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-marigold flex-none" />
+              <Sparkles className="w-4 h-4 text-marigold flex-none scale-check-spring" />
               <span>✓ Central &amp; state scheme matching</span>
             </div>
           </div>
@@ -271,19 +342,19 @@ export const Auth = ({ isRegister = false }) => {
           <div className="max-w-[560px] mx-auto w-full">
             
             {/* TOP SEGMENTED CONTROL ([ Login ] [ Register ]) */}
-            <div className="flex justify-end mb-8">
+            <div className="flex justify-end mb-8 animate-stagger-1">
               <div className="inline-flex bg-[#FBF8F1] p-1 border border-[#16213C]/15 rounded-full font-sans text-xs font-semibold shadow-sm">
                 <button
                   type="button"
                   onClick={() => { setMode('login'); setError(''); }}
-                  className={`px-5 py-2 rounded-full font-bold transition-all ${mode === 'login' ? 'bg-[#16213C] text-[#FBF8F1] shadow' : 'text-[#16213C] hover:text-[#1F4B3E]'}`}
+                  className={`px-5 py-2 rounded-full font-bold transition-all duration-300 ${mode === 'login' ? 'bg-[#16213C] text-[#FBF8F1] shadow-md' : 'text-[#16213C] hover:text-[#1F4B3E]'}`}
                 >
                   {t('login')}
                 </button>
                 <button
                   type="button"
                   onClick={() => { setMode('register'); setError(''); }}
-                  className={`px-5 py-2 rounded-full font-bold transition-all ${mode === 'register' ? 'bg-[#16213C] text-[#FBF8F1] shadow' : 'text-[#16213C] hover:text-[#1F4B3E]'}`}
+                  className={`px-5 py-2 rounded-full font-bold transition-all duration-300 ${mode === 'register' ? 'bg-[#16213C] text-[#FBF8F1] shadow-md' : 'text-[#16213C] hover:text-[#1F4B3E]'}`}
                 >
                   {t('register')}
                 </button>
@@ -291,7 +362,7 @@ export const Auth = ({ isRegister = false }) => {
             </div>
 
             {/* LOGIN HEADER */}
-            <div className="mb-6 space-y-1.5">
+            <div className="mb-6 space-y-1.5 animate-stagger-2">
               <h2 className="font-serif font-semibold text-[38px] text-[#16213C] leading-tight">
                 {mode === 'login' ? (lang === 'hi' ? 'साइन इन करें 👋' : 'Welcome back 👋') : (lang === 'hi' ? 'प्रोफ़ाइल बनाएं 👋' : 'Create account 👋')}
               </h2>
@@ -314,11 +385,11 @@ export const Auth = ({ isRegister = false }) => {
             {mode === 'login' && (
               <div className="space-y-6">
                 {/* LOGIN METHOD TAB SWITCH */}
-                <div className="grid grid-cols-2 gap-3 font-sans text-xs mb-2">
+                <div className="grid grid-cols-2 gap-3 font-sans text-xs mb-2 animate-stagger-3">
                   <button
                     type="button"
                     onClick={() => { setLoginMethod('password'); setError(''); }}
-                    className={`py-2.5 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all ${
+                    className={`py-2.5 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all duration-300 hover:translate-y-[-1px] ${
                       loginMethod === 'password' 
                         ? 'bg-[#2C6350]/[0.08] border-[#2C6350] text-[#1F4B3E] shadow-sm' 
                         : 'bg-white border-[#16213C]/18 text-[#16213C]/70 hover:border-[#16213C]/40'
@@ -330,7 +401,7 @@ export const Auth = ({ isRegister = false }) => {
                   <button
                     type="button"
                     onClick={() => { setLoginMethod('otp'); setError(''); }}
-                    className={`py-2.5 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all ${
+                    className={`py-2.5 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all duration-300 hover:translate-y-[-1px] ${
                       loginMethod === 'otp' 
                         ? 'bg-[#2C6350]/[0.08] border-[#2C6350] text-[#1F4B3E] shadow-sm' 
                         : 'bg-white border-[#16213C]/18 text-[#16213C]/70 hover:border-[#16213C]/40'
@@ -343,13 +414,13 @@ export const Auth = ({ isRegister = false }) => {
 
                 {/* PASSWORD LOGIN FORM */}
                 {loginMethod === 'password' ? (
-                  <form onSubmit={handleLoginSubmit} className="space-y-4 font-sans">
+                  <form onSubmit={handleLoginSubmit} className="space-y-4 font-sans animate-stagger-4">
                     <div>
                       <label className="block text-[14px] font-semibold text-[#16213C] mb-2 font-sans">
                         Email or Mobile Number
                       </label>
                       <div className="relative">
-                        <Mail className={`w-4 h-4 absolute left-4 top-4 transition-colors ${focusedField === 'email' ? 'text-[#2C6350]' : 'text-[#16213C]/40'}`} />
+                        <Mail className={`w-4 h-4 absolute left-4 top-4 transition-colors duration-200 ${focusedField === 'email' ? 'text-[#2C6350]' : 'text-[#16213C]/40'}`} />
                         <input
                           type="text"
                           required
@@ -358,7 +429,7 @@ export const Auth = ({ isRegister = false }) => {
                           placeholder="citizen@example.com / 9876543210"
                           value={emailOrMobile}
                           onChange={(e) => setEmailOrMobile(e.target.value)}
-                          className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] pl-11 pr-4 text-sm font-sans font-medium text-[#16213C] focus:outline-none focus:border-[#2C6350] focus:ring-4 focus:ring-[#2C6350]/[0.08] transition-all"
+                          className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] pl-11 pr-4 text-sm font-sans font-medium text-[#16213C] focus:outline-none focus:border-[#2C6350] focus:ring-4 focus:ring-[#2C6350]/[0.08] transition-all duration-200"
                         />
                       </div>
                     </div>
@@ -368,7 +439,7 @@ export const Auth = ({ isRegister = false }) => {
                         Password
                       </label>
                       <div className="relative">
-                        <Lock className={`w-4 h-4 absolute left-4 top-4 transition-colors ${focusedField === 'password' ? 'text-[#2C6350]' : 'text-[#16213C]/40'}`} />
+                        <Lock className={`w-4 h-4 absolute left-4 top-4 transition-colors duration-200 ${focusedField === 'password' ? 'text-[#2C6350]' : 'text-[#16213C]/40'}`} />
                         <input
                           type={showPassword ? "text" : "password"}
                           required
@@ -377,12 +448,12 @@ export const Auth = ({ isRegister = false }) => {
                           placeholder="••••••••"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] pl-11 pr-11 text-sm font-sans font-medium text-[#16213C] focus:outline-none focus:border-[#2C6350] focus:ring-4 focus:ring-[#2C6350]/[0.08] transition-all"
+                          className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] pl-11 pr-11 text-sm font-sans font-medium text-[#16213C] focus:outline-none focus:border-[#2C6350] focus:ring-4 focus:ring-[#2C6350]/[0.08] transition-all duration-200"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-4 text-[#16213C]/40 hover:text-[#16213C] transition-colors"
+                          className="absolute right-4 top-4 text-[#16213C]/40 hover:text-[#16213C] hover:scale-110 transition-all duration-200"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -410,15 +481,15 @@ export const Auth = ({ isRegister = false }) => {
                       </button>
                     </div>
 
-                    {/* LOGIN BUTTON */}
+                    {/* LOGIN BUTTON (HERO INTERACTION WITH SHINE AND HOVER ARROW) */}
                     <button
                       type="submit"
                       disabled={loading || signedInSuccess}
-                      className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all btn-shine flex items-center justify-center gap-2 mt-4"
+                      className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all duration-200 btn-shine flex items-center justify-center gap-2 mt-4 group"
                     >
                       {signedInSuccess ? (
-                        <span className="flex items-center gap-2 text-marigold font-bold">
-                          <Check className="w-5 h-5" />
+                        <span className="flex items-center gap-2 text-marigold font-bold animate-fade-in">
+                          <Check className="w-5 h-5 scale-check-spring" />
                           <span>✓ Signed in</span>
                         </span>
                       ) : loading ? (
@@ -429,14 +500,14 @@ export const Auth = ({ isRegister = false }) => {
                       ) : (
                         <>
                           <span>Login</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-200" />
                         </>
                       )}
                     </button>
                   </form>
                 ) : (
                   /* MOBILE OTP FORM */
-                  <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className="space-y-4 font-sans">
+                  <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className="space-y-4 font-sans animate-stagger-4">
                     <div>
                       <label className="block text-[14px] font-semibold text-[#16213C] mb-2">
                         Mobile Number
@@ -456,7 +527,7 @@ export const Auth = ({ isRegister = false }) => {
                     </div>
 
                     {otpSent && (
-                      <div className="space-y-2">
+                      <div className="space-y-2 animate-fade-in">
                         <label className="block text-[14px] font-semibold text-[#16213C]">
                           Enter 4-Digit OTP Code
                         </label>
@@ -475,11 +546,11 @@ export const Auth = ({ isRegister = false }) => {
                     <button
                       type="submit"
                       disabled={loading || signedInSuccess}
-                      className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all btn-shine flex items-center justify-center gap-2 mt-4"
+                      className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all duration-200 btn-shine flex items-center justify-center gap-2 mt-4 group"
                     >
                       {signedInSuccess ? (
-                        <span className="flex items-center gap-2 text-marigold font-bold">
-                          <Check className="w-5 h-5" />
+                        <span className="flex items-center gap-2 text-marigold font-bold animate-fade-in">
+                          <Check className="w-5 h-5 scale-check-spring" />
                           <span>✓ Signed in</span>
                         </span>
                       ) : loading ? (
@@ -500,7 +571,7 @@ export const Auth = ({ isRegister = false }) => {
 
             {/* REGISTER FORM (2-column layout on desktop) */}
             {mode === 'register' && (
-              <form onSubmit={handleRegisterSubmit} className="space-y-4 font-sans">
+              <form onSubmit={handleRegisterSubmit} className="space-y-4 font-sans animate-stagger-3">
                 <div>
                   <label className="block text-[14px] font-semibold text-[#16213C] mb-1.5 font-sans">
                     Full Name*
@@ -631,11 +702,11 @@ export const Auth = ({ isRegister = false }) => {
                 <button
                   type="submit"
                   disabled={loading || signedInSuccess}
-                  className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all btn-shine flex items-center justify-center gap-2 mt-4"
+                  className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all duration-200 btn-shine flex items-center justify-center gap-2 mt-4 group"
                 >
                   {signedInSuccess ? (
-                    <span className="flex items-center justify-center gap-2 text-marigold font-bold">
-                      <Check className="w-5 h-5" />
+                    <span className="flex items-center justify-center gap-2 text-marigold font-bold animate-fade-in">
+                      <Check className="w-5 h-5 scale-check-spring" />
                       <span>✓ Account Created</span>
                     </span>
                   ) : loading ? (
@@ -651,13 +722,13 @@ export const Auth = ({ isRegister = false }) => {
             )}
 
             {/* CREATE ACCOUNT SWITCHER LINK */}
-            <div className="text-center text-xs font-sans text-[#6B6658] pt-6 mt-6 border-t border-[#16213C]/15">
+            <div className="text-center text-xs font-sans text-[#6B6658] pt-6 mt-6 border-t border-[#16213C]/15 animate-stagger-5">
               {mode === 'login' ? (
                 <span>
                   Don't have an account?{' '}
                   <button 
                     onClick={() => { setMode('register'); setError(''); }} 
-                    className="text-[#16213C] font-bold hover:underline"
+                    className="text-[#16213C] font-bold hover:underline hover:text-[#1F4B3E] transition-colors duration-200"
                   >
                     Create Account →
                   </button>
@@ -667,7 +738,7 @@ export const Auth = ({ isRegister = false }) => {
                   Already have an account?{' '}
                   <button 
                     onClick={() => { setMode('login'); setError(''); }} 
-                    className="text-[#16213C] font-bold hover:underline"
+                    className="text-[#16213C] font-bold hover:underline hover:text-[#1F4B3E] transition-colors duration-200"
                   >
                     Login →
                   </button>
