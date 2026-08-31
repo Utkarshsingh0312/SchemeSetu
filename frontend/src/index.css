@@ -88,6 +88,107 @@ body {
   mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, black 20%, transparent 75%);
 }
 
+/* HERO SECTION LAYOUT */
+.hero {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 40px;
+  padding: 80px 56px 110px;
+}
+
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(31,75,62,0.35);
+  background: rgba(31,75,62,0.06);
+  color: var(--green);
+  padding: 8px 16px 8px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  width: fit-content;
+}
+.eyebrow .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--marigold-2);
+  box-shadow: 0 0 0 3px rgba(217,138,43,0.25);
+}
+
+.hero-h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: clamp(40px, 4.6vw, 62px);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  color: var(--navy);
+  margin: 22px 0 0;
+}
+.hero-h1 .line {
+  display: block;
+  overflow: hidden;
+}
+.hero-h1 .accent {
+  font-style: italic;
+  font-weight: 500;
+  background: linear-gradient(100deg, var(--terracotta), var(--marigold-2) 60%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lede {
+  font-size: 17.5px;
+  line-height: 1.6;
+  color: #3C3628;
+  max-width: 44ch;
+  margin: 26px 0 0;
+}
+
+.cta-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.trust-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  font-size: 13px;
+  color: #5C5643;
+}
+.trust-row .avatars {
+  display: flex;
+}
+.trust-row .avatars span {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--cream);
+  background: linear-gradient(135deg, var(--marigold-2), var(--terracotta));
+  margin-left: -8px;
+  display: inline-block;
+}
+.trust-row .avatars span:first-child {
+  margin-left: 0;
+}
+
 /* Glassmorphism & Elevation */
 .glass-panel {
   background: rgba(251, 248, 241, 0.88);
@@ -105,6 +206,22 @@ body {
 }
 
 /* Buttons */
+.btn {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 600;
+  font-size: 14.5px;
+  letter-spacing: 0.005em;
+  border-radius: 10px;
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  position: relative;
+  overflow: hidden;
+}
+
 .btn-primary {
   background: var(--navy);
   color: var(--cream);
@@ -193,6 +310,7 @@ body {
   border-color: var(--marigold-2);
   transform: translateY(-1px);
 }
+.btn-secondary.big { padding: 15px 26px; font-size: 15px; min-height: 52px; }
 
 /* Eyebrow Badge */
 .eyebrow-badge {
@@ -209,38 +327,27 @@ body {
   box-shadow: 0 0 0 3px rgba(217,138,43,0.25);
 }
 
-/* Hero Typography */
-.hero-h1 {
-  font-family: 'Fraunces', serif;
-  font-weight: 600;
-  font-size: clamp(38px, 4.6vw, 62px);
-  line-height: 1.04;
-  letter-spacing: -0.015em;
-  color: var(--navy);
-  margin: 22px 0 0;
-}
-.hero-h1 .accent {
-  font-style: italic; font-weight: 500;
-  background: linear-gradient(100deg, var(--terracotta), var(--marigold-2) 60%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-
 /* Passbook 3D Stage Card */
 .stage {
-  position: relative; height: 560px;
-  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  z-index: 2;
+  height: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   perspective: 1400px;
 }
 
 .blob {
   position: absolute; width: 480px; height: 480px;
   background: conic-gradient(from 120deg, var(--marigold-2), var(--terracotta) 30%, var(--green-2) 62%, var(--marigold-2) 100%);
-  filter: blur(90px); opacity: 0.28; border-radius: 50%;
+  filter: blur(90px); opacity: 0.25; border-radius: 50%;
   animation: driftBlob 14s ease-in-out infinite;
 }
 
 .passbook {
-  position: relative; width: 380px;
+  position: relative;
+  width: 380px;
   background: var(--paper);
   border-radius: 26px;
   padding: 26px 24px 24px;
@@ -356,9 +463,51 @@ body {
 }
 
 @media (max-width: 980px) {
-  .stage { height: 440px; order: -1; margin-bottom: 20px; }
-  .passbook { width: 88vw; max-width: 380px; }
-  .ledger-item { padding: 0 18px; font-size: 13px; }
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 50px 22px 70px;
+  }
+  .stage {
+    height: 440px;
+    order: -1;
+    margin-bottom: 20px;
+  }
+  .passbook {
+    width: 88vw;
+    max-width: 380px;
+  }
+  .ledger-item {
+    padding: 0 18px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero {
+    padding: 35px 16px 55px;
+  }
+  .hero-h1 {
+    font-size: 42px;
+  }
+  .lede {
+    font-size: 16px;
+  }
+  .cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cta-row .btn {
+    justify-content: center;
+  }
+  .stage {
+    height: 430px;
+  }
+  .passbook {
+    transform: scale(.91);
+  }
+  .stamp {
+    right: -12px;
+  }
 }
 
 /* Prefers Reduced Motion Overrides */
