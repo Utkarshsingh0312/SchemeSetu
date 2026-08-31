@@ -1,21 +1,19 @@
 import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useEligibility } from '../context/EligibilityContext';
 import { useLanguage } from '../context/LanguageContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import ScrollReveal from '../components/ScrollReveal';
-import { ArrowRight, CheckCircle2, Search, Award, Shield, FileText, Check } from 'lucide-react';
+import { ArrowRight, Lock, Shield, Check, CheckCircle2, FileText, ChevronDown } from 'lucide-react';
 
 export const Landing = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { matchResults, profile } = useEligibility();
   const { lang, t } = useLanguage();
 
   const [openFaq, setOpenFaq] = useState(null);
 
-  // 3D tilt ref for Hero Passbook card
+  // 3D Tilt Ref for Hero Card
   const stageRef = useRef(null);
   const cardRef = useRef(null);
 
@@ -24,7 +22,7 @@ export const Landing = () => {
     const r = stageRef.current.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    cardRef.current.style.transform = `rotateY(${x * 10}deg) rotateX(${-y * 10}deg) translateZ(0)`;
+    cardRef.current.style.transform = `rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
   };
 
   const handleMouseLeave = () => {
@@ -33,11 +31,21 @@ export const Landing = () => {
     }
   };
 
-  const handleStartEligibility = () => {
-    if (!user) {
-      navigate('/login', { state: { from: { pathname: '/eligibility' } } });
-    } else {
+  // 1. Check My Eligibility Button Action
+  const handleCheckEligibility = () => {
+    if (user) {
       navigate('/eligibility');
+    } else {
+      navigate('/login', { state: { from: { pathname: '/eligibility' } } });
+    }
+  };
+
+  // 2. Login Button Action
+  const handleLogin = () => {
+    if (user) {
+      navigate('/eligibility');
+    } else {
+      navigate('/login');
     }
   };
 
@@ -48,12 +56,20 @@ export const Landing = () => {
     { q: t('q4'), a: t('a4') }
   ];
 
-  const matchedCount = matchResults && matchResults.length > 0 ? matchResults.filter(r => r.eligible).length : 7;
-  const topMatchScheme = matchResults && matchResults.length > 0 ? matchResults[0].scheme : null;
+  const genericSchemes = [
+    { name: "PM-KISAN", category: lang === 'hi' ? "किसान सहायता" : "Farmer support" },
+    { name: "Ayushman Bharat", category: lang === 'hi' ? "स्वास्थ्य बीमा" : "Health coverage" },
+    { name: "PMAY", category: lang === 'hi' ? "आवास सहायता" : "Housing support" },
+    { name: "National Scholarship", category: lang === 'hi' ? "छात्र प्रोत्साहन" : "Student support" },
+    { name: "Ujjwala Yojana", category: lang === 'hi' ? "एलपीजी कनेक्शन" : "LPG support" },
+    { name: "Skill India", category: lang === 'hi' ? "कौशल विकास" : "Skill development" },
+    { name: "Atal Pension Yojana", category: lang === 'hi' ? "पेंशन सुरक्षा" : "Pension support" },
+    { name: "Stand-Up India", category: lang === 'hi' ? "उद्यमिता ऋण" : "Business support" }
+  ];
 
   return (
     <div className="relative overflow-hidden min-h-screen">
-      {/* Background field radial texture */}
+      {/* Background Field Texture */}
       <div className="field" />
 
       <DisclaimerBanner />
@@ -85,35 +101,44 @@ export const Landing = () => {
 
             <p className="text-base sm:text-lg text-ink-soft max-w-xl font-sans leading-relaxed">
               {lang === 'hi'
-                ? 'अपने बारे में कुछ प्रश्नों के उत्तर दें और उन सरकारी योजनाओं की खोज करें जिनके आप पात्र हैं — तुरंत मिलान, सरल स्पष्टीकरण।'
-                : 'Answer a few questions about yourself and discover the government schemes you are actually eligible for — matched instantly, explained simply.'}
+                ? 'अपने बारे में कुछ प्रश्नों के उत्तर दें और उन सरकारी योजनाओं की खोज करें जिनके आप पात्र हैं — आपकी प्रोफ़ाइल से मेल खाती और सरल स्पष्टीकरण।'
+                : 'Answer a few questions about yourself and discover the government schemes you are actually eligible for — matched to your profile and explained simply.'}
             </p>
 
-            {/* CTA Button */}
+            {/* Hero CTAs */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <button 
-                onClick={handleStartEligibility} 
+                onClick={handleCheckEligibility} 
                 className="btn-primary big text-base font-semibold"
+                type="button"
               >
                 <span>{t('checkEligibility')}</span>
                 <svg className="arrow w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
                   <path d="M5 12h14M13 5l7 7-7 7"/>
                 </svg>
               </button>
+
+              <button 
+                onClick={handleLogin} 
+                className="btn-secondary big text-base font-semibold"
+                type="button"
+              >
+                <span>{user ? (lang === 'hi' ? 'मेरी पासबुक' : 'My Passbook') : (lang === 'hi' ? 'लॉगिन करें' : 'Login to Continue')}</span>
+              </button>
             </div>
 
-            {/* Neutral Trust Row */}
+            {/* Trust Assurance Row */}
             <div className="pt-4 flex items-center gap-3 text-xs font-sans text-ink-soft">
               <div className="flex -space-x-2">
                 <span className="w-6 h-6 rounded-full bg-marigold border-2 border-paper inline-block" />
                 <span className="w-6 h-6 rounded-full bg-terracotta border-2 border-paper inline-block" />
                 <span className="w-6 h-6 rounded-full bg-teal border-2 border-paper inline-block" />
               </div>
-              <span>{lang === 'hi' ? 'पूरे भारत में नागरिकों को उनकी पात्र योजनाओं से जोड़ने हेतु निर्मित' : 'Built to make government benefits easier to discover across India'}</span>
+              <span>{lang === 'hi' ? 'अपनी निजी पात्रता प्रोफ़ाइल के आधार पर सुरक्षित रूप से योजनाओं की खोज करें' : 'Securely discover schemes based on your own eligibility profile'}</span>
             </div>
           </div>
 
-          {/* Hero Right 3D Interactive Passbook Card */}
+          {/* Hero Right Secure Product Discovery Card */}
           <div className="lg:col-span-5 flex justify-center">
             <div 
               ref={stageRef}
@@ -124,85 +149,90 @@ export const Landing = () => {
               <div className="blob" />
               
               <div ref={cardRef} className="card-stage relative">
-                {/* Card Top Header */}
+                {/* Card Header */}
                 <div className="card-top">
                   <span className="live">
                     <span className="pulse"></span>
-                    <span>DIGITAL PASSBOOK</span>
+                    <span>PERSONALIZED DISCOVERY</span>
                   </span>
-                  <span className="demo-tag">{lang === 'hi' ? 'पात्रता पासबुक' : 'ELIGIBILITY LEDGER'}</span>
+                  <span className="demo-tag">SECURE ACCESS</span>
                 </div>
 
-                {/* Greeting & Score Ring */}
-                <div className="greet">
-                  <div>
-                    <div className="greet-text">{lang === 'hi' ? 'नमस्ते 👋' : 'Hello 👋'}</div>
-                    <div className="match-count">
-                      <b>{matchedCount}</b> {lang === 'hi' ? 'संभावित पात्र योजनाएं' : 'possible matches'}
+                {/* Card Title & Description */}
+                <div className="mt-5">
+                  <div className="font-serif font-semibold text-2xl text-navy leading-snug">
+                    {lang === 'hi' ? (
+                      <>आपकी योजनाएं, <span className="italic text-terracotta">आपकी प्रोफ़ाइल।</span></>
+                    ) : (
+                      <>Your benefits, <span className="italic text-terracotta">your profile.</span></>
+                    )}
+                  </div>
+                  <p className="text-xs text-ink-soft mt-2 leading-relaxed font-sans">
+                    {lang === 'hi' 
+                      ? 'स्कीमसेतु आपकी जानकारी की तुलना सरकारी कल्याणकारी योजनाओं से सुरक्षित रूप से करता है ताकि आप उन लाभों की खोज कर सकें जिनके आप पात्र हैं।' 
+                      : 'SchemeSetu securely matches your information with government welfare schemes so you can discover the benefits you may be eligible for.'}
+                  </p>
+                </div>
+
+                {/* Login Gate Box */}
+                <div className="match-panel my-5 bg-gradient-to-b from-white to-[#FBF7EE] border border-navy/15 rounded-xl p-4">
+                  <div className="w-10 h-10 rounded-lg bg-teal/10 text-teal flex items-center justify-center mb-3">
+                    <Lock className="w-5 h-5 text-teal" />
+                  </div>
+                  <div className="font-sans font-bold text-sm text-navy">
+                    {lang === 'hi' ? 'अपनी योजनाओं की खोज के लिए लॉगिन करें' : 'Login to discover your schemes'}
+                  </div>
+                  <p className="text-[12px] text-ink-soft mt-1 leading-relaxed">
+                    {lang === 'hi'
+                      ? 'आपके पात्रता परिणाम आपकी प्रोफ़ाइल के अनुसार व्यक्तिगत हैं। अपनी जानकारी और सिफारिशों को सुरक्षित रखने के लिए पहले साइन इन करें।'
+                      : 'Your eligibility results are personalized to your profile. Sign in first to keep your information and recommendations secure.'}
+                  </p>
+
+                  {/* 3 Step Overview */}
+                  <div className="criteria mt-4 pt-3 border-t border-dashed border-navy/15 space-y-2">
+                    <div className="flex items-center gap-2.5 text-xs text-navy font-sans">
+                      <span className="w-5 h-5 rounded-full bg-teal text-paper text-[10px] font-extrabold flex items-center justify-center flex-none">1</span>
+                      <span>{lang === 'hi' ? <>अपनी <strong>नागरिक प्रोफ़ाइल</strong> बनाएं</> : <>Create your <strong>citizen profile</strong></>}</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-xs text-navy font-sans">
+                      <span className="w-5 h-5 rounded-full bg-teal text-paper text-[10px] font-extrabold flex items-center justify-center flex-none">2</span>
+                      <span>{lang === 'hi' ? <>व्यक्तिगत <strong>पात्रता मिलान</strong> प्राप्त करें</> : <>Get <strong>personalized matches</strong></>}</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-xs text-navy font-sans">
+                      <span className="w-5 h-5 rounded-full bg-teal text-paper text-[10px] font-extrabold flex items-center justify-center flex-none">3</span>
+                      <span>{lang === 'hi' ? <>लाभ और <strong>आवेदन मार्गदर्शिका</strong> समझें</> : <>Understand <strong>benefits & application</strong></>}</span>
                     </div>
                   </div>
-                  <div className="ring-wrap">
-                    <svg width="52" height="52" viewBox="0 0 52 52">
-                      <defs>
-                        <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-                          <stop offset="0%" stopColor="#EFA845"/>
-                          <stop offset="100%" stopColor="#1F4B3E"/>
-                        </linearGradient>
-                      </defs>
-                      <circle className="ring-bg" cx="26" cy="26" r="22"/>
-                      <circle className="ring-fg" cx="26" cy="26" r="22"/>
-                    </svg>
-                    <div className="ring-label">82%</div>
-                  </div>
                 </div>
 
-                {/* Match Details Panel */}
-                <div className="match-panel">
-                  <div className="match-panel-top">
-                    <span className="top-match-label">TOP MATCH</span>
-                    <span className="match-pill">96% {lang === 'hi' ? 'मैच' : 'match'}</span>
-                  </div>
-                  <div className="scheme-name">
-                    {topMatchScheme ? topMatchScheme.name : (lang === 'hi' ? 'उत्तर-मैट्रिक छात्रवृत्ति योजना' : 'Post-Matric Scholarship')}
-                  </div>
-                  <div className="scheme-amt">
-                    {topMatchScheme ? topMatchScheme.benefit : (lang === 'hi' ? '₹12,000 / वर्ष · प्रत्यक्ष अंतरण' : '₹12,000 / year · direct transfer')}
-                  </div>
-
-                  <ul className="criteria">
-                    <li>
-                      <span className="tick">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#EAF3EE" strokeWidth="3.4"><path d="M5 13l4 4L19 7"/></svg>
-                      </span>
-                      <span>{lang === 'hi' ? 'राज्य मेल (उत्तर प्रदेश)' : 'State matched (Uttar Pradesh)'}</span>
-                    </li>
-                    <li>
-                      <span className="tick">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#EAF3EE" strokeWidth="3.4"><path d="M5 13l4 4L19 7"/></svg>
-                      </span>
-                      <span>{lang === 'hi' ? 'व्यवसाय (छात्र)' : 'Occupation (Student)'}</span>
-                    </li>
-                    <li>
-                      <span className="tick">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#EAF3EE" strokeWidth="3.4"><path d="M5 13l4 4L19 7"/></svg>
-                      </span>
-                      <span>{lang === 'hi' ? 'आय सीमा मानदंड पूर्ण' : 'Income criteria met'}</span>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Stamp Action Button */}
-                <button onClick={handleStartEligibility} className="stamp-btn hover:opacity-95 transition-opacity cursor-pointer">
-                  <Check className="w-4 h-4 text-paper" />
-                  <span>{t('checkEligibility')}</span>
+                {/* Card Login Button */}
+                <button 
+                  onClick={handleLogin} 
+                  className="stamp-btn hover:opacity-95 transition-all cursor-pointer w-full py-3.5"
+                  type="button"
+                >
+                  <span>{user ? (lang === 'hi' ? 'पात्रता जांचें →' : 'Check Eligibility →') : (lang === 'hi' ? 'लॉगिन / खाता बनाएं →' : 'Login / Create Account →')}</span>
                 </button>
 
-                {/* Verification Stamp Overlay */}
+                {/* Security Badges */}
+                <div className="flex items-center justify-center gap-4 mt-3.5 text-[11px] text-ink-soft font-sans">
+                  <span className="flex items-center gap-1">
+                    <Shield className="w-3 h-3 text-teal" /> {lang === 'hi' ? 'सुरक्षित प्रोफ़ाइल' : 'Secure profile'}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-teal" /> {lang === 'hi' ? 'व्यक्तिगत' : 'Personalized'}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <FileText className="w-3 h-3 text-teal" /> {lang === 'hi' ? 'द्विभाषी' : 'Multilingual'}
+                  </span>
+                </div>
+
+                {/* Product Trust Stamp Overlay */}
                 <div className="stamp">
                   <div className="stamp-text">
-                    MATCHED
-                    <span className="big">{matchedCount}</span>
-                    SCHEMES
+                    READY TO
+                    <span className="big">DISCOVER</span>
+                    BENEFITS
                   </div>
                 </div>
 
@@ -213,8 +243,20 @@ export const Landing = () => {
         </div>
       </section>
 
+      {/* Scheme Information Ticker Ledger */}
+      <div className="ledger py-3.5 border-y border-navy/15 bg-gradient-to-r from-cream-2/50 via-cream/70 to-cream-2/50 relative z-10 overflow-hidden">
+        <div className="ledger-track flex gap-8 animate-marquee whitespace-nowrap">
+          {genericSchemes.concat(genericSchemes).map((sch, idx) => (
+            <div key={idx} className="ledger-item flex items-baseline gap-2 text-sm text-navy px-6 border-r border-dashed border-navy/20">
+              <span className="font-serif font-semibold italic">{sch.name}</span>
+              <span className="text-terracotta font-semibold text-xs">{sch.category}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Why SchemeSetu Section */}
-      <section className="py-16 bg-card/70 border-y border-navy/15 relative z-10" id="why">
+      <section className="py-16 bg-card/70 border-b border-navy/15 relative z-10" id="why">
         <div className="max-w-6xl mx-auto px-4 sm:px-7">
           <ScrollReveal>
             <div className="text-center max-w-2xl mx-auto mb-12">
@@ -272,8 +314,8 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* How It Works Process Timeline Section */}
-      <section className="py-16 relative z-10" id="how-it-works">
+      {/* How It Works Process Section */}
+      <section className="py-16 relative z-10" id="how">
         <div className="max-w-6xl mx-auto px-4 sm:px-7">
           <ScrollReveal>
             <div className="text-center max-w-2xl mx-auto mb-14">
@@ -349,6 +391,7 @@ export const Landing = () => {
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                     className="w-full text-left font-serif font-semibold text-base text-navy flex justify-between items-center hover:text-terracotta transition-colors"
+                    type="button"
                   >
                     <span>{faq.q}</span>
                     <span className="font-mono text-xl text-marigold ml-2">{openFaq === i ? '−' : '+'}</span>
@@ -365,7 +408,7 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* Final CTA Section */}
       <section className="py-20 text-center bg-paper border-t border-navy/15 relative z-10">
         <ScrollReveal>
           <div className="max-w-xl mx-auto px-7 space-y-6">
@@ -376,11 +419,14 @@ export const Landing = () => {
               {lang === 'hi' ? 'उन नागरिकों से जुड़ें जो अपनी पात्रता पासबुक का निर्माण कर रहे हैं।' : 'Build your digital eligibility passbook — checked once, valid for every scheme that opens next.'}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button onClick={handleStartEligibility} className="btn-primary big text-base font-semibold">
+              <button onClick={handleCheckEligibility} className="btn-primary big text-base font-semibold" type="button">
                 <span>{t('checkEligibility')}</span>
                 <svg className="arrow w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
                   <path d="M5 12h14M13 5l7 7-7 7"/>
                 </svg>
+              </button>
+              <button onClick={handleLogin} className="btn-secondary big text-base font-semibold" type="button">
+                <span>{user ? (lang === 'hi' ? 'मेरी पासबुक' : 'My Passbook') : (lang === 'hi' ? 'लॉगिन करें' : 'Login to Continue')}</span>
               </button>
             </div>
           </div>
