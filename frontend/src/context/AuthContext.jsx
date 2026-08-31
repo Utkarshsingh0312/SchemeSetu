@@ -43,6 +43,21 @@ export const AuthProvider = ({ children }) => {
     return userData;
   };
 
+  const requestOtp = async (identifier, purpose = 'login') => {
+    const res = await authAPI.requestOtp(identifier, purpose);
+    return res.data;
+  };
+
+  const verifyOtp = async (identifier, otpCode) => {
+    const res = await authAPI.verifyOtp(identifier, otpCode);
+    const accessToken = res.data.access_token;
+    const userData = res.data.user;
+    localStorage.setItem('schemesetu_token', accessToken);
+    setToken(accessToken);
+    setUser(userData);
+    return userData;
+  };
+
   const logout = () => {
     localStorage.removeItem('schemesetu_token');
     setToken(null);
@@ -50,7 +65,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, isAdmin: user?.is_admin || false }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, requestOtp, verifyOtp, logout, isAdmin: user?.is_admin || false }}>
       {children}
     </AuthContext.Provider>
   );

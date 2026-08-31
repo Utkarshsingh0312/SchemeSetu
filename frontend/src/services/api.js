@@ -33,6 +33,8 @@ API.interceptors.request.use((config) => {
 export const authAPI = {
   login: (credentials) => API.post('/auth/login', credentials),
   register: (userData) => API.post('/auth/register', userData),
+  requestOtp: (identifier, purpose = 'login') => API.post('/auth/request-otp', { identifier, purpose }),
+  verifyOtp: (identifier, otpCode) => API.post('/auth/verify-otp', { identifier, otp_code: otpCode }),
   getMe: () => API.get('/auth/me')
 };
 

@@ -9,7 +9,7 @@ import { Shield, User, Lock, Mail, Phone, Eye, EyeOff, CheckCircle2, ArrowRight,
 export const Auth = ({ isRegister = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, register } = useAuth();
+  const { login, register, requestOtp, verifyOtp } = useAuth();
   const { lang, t } = useLanguage();
   const { addToast } = useToast();
 
@@ -132,39 +132,38 @@ export const Auth = ({ isRegister = false }) => {
     }
   };
 
-  const handleSendOtp = (e) => {
+  const handleSendOtp = async (e) => {
     e.preventDefault();
     setError('');
-    const cleanNum = mobileNumber.replace(/\D/g, '');
-    if (cleanNum.length < 10) {
-      setError(lang === 'hi' ? 'कृपया एक वैध 10-अंकीय मोबाइल नंबर दर्ज करें।' : 'Please enter a valid 10-digit mobile number.');
+    const target = mobileNumber || emailOrMobile;
+    if (!target || target.trim().length < 4) {
+      setError(lang === 'hi' ? 'कृपया एक वैध मोबाइल नंबर या ईमेल दर्ज करें।' : 'Please enter a valid mobile number or email.');
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const res = await requestOtp(target.trim(), 'login');
       setOtpSent(true);
-      addToast(lang === 'hi' ? '✓ आपके मोबाइल पर ओटीपी भेज दिया गया है (1234)' : '✓ OTP sent to your mobile number (Code: 1234)', 'info');
-    }, 600);
+      const codeMsg = res.otp_code ? ` (Code: ${res.otp_code})` : '';
+      addToast(lang === 'hi' ? `✓ ओटीपी सफलतापूर्वक भेजा गया${codeMsg}` : `✓ OTP sent successfully!${codeMsg}`, 'info');
+    } catch (err) {
+      setError(err.response?.data?.detail || (lang === 'hi' ? 'ओटीपी भेजने में विफल। कृपया पुन: प्रयास करें।' : 'Failed to send OTP. Please check details and try again.'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setError('');
     if (!otpCode || otpCode.trim().length < 4) {
-      setError(lang === 'hi' ? 'कृपया 4-अंकीय ओटीपी दर्ज करें।' : 'Please enter the 4-digit OTP code.');
+      setError(lang === 'hi' ? 'कृपया 4 या 6 अंकीय ओटीपी दर्ज करें।' : 'Please enter your OTP code.');
       return;
     }
     setLoading(true);
     try {
-      const cleanNum = mobileNumber.replace(/\D/g, '');
-      const otpEmail = `${cleanNum}@citizen.schemesetu.in`;
-      const fallbackPassword = `Pass@${cleanNum.slice(-4)}`;
-      try {
-        await login(otpEmail, fallbackPassword);
-      } catch (err) {
-        await register(`Citizen ${cleanNum.slice(-4)}`, otpEmail, fallbackPassword);
-      }
+      const target = mobileNumber || emailOrMobile;
+      await verifyOtp(target.trim(), otpCode.trim());
       setSignedInSuccess(true);
       addToast(lang === 'hi' ? '✓ ओटीपी सत्यापित! सफलतापूर्वक लॉगिन हुआ।' : '✓ OTP Verified! Logged in successfully.', 'success');
       setTimeout(() => {
@@ -172,7 +171,7 @@ export const Auth = ({ isRegister = false }) => {
         navigate(from, { replace: true });
       }, 600);
     } catch (err) {
-      setError(lang === 'hi' ? 'ओटीपी सत्यापन विफल। कृपया पुन: प्रयास करें।' : 'OTP verification failed. Please try again.');
+      setError(err.response?.data?.detail || (lang === 'hi' ? 'ओटीपी सत्यापन विफल। कृपया पुन: प्रयास करें।' : 'OTP verification failed. Please check your code and try again.'));
     } finally {
       setLoading(false);
     }
