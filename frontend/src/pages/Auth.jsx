@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { Shield, Sparkles, User, Lock, Mail } from 'lucide-react';
+import { Shield, User, Lock, Mail } from 'lucide-react';
 
 export const Auth = ({ isRegister = false }) => {
   const navigate = useNavigate();
@@ -29,24 +29,13 @@ export const Auth = ({ isRegister = false }) => {
       } else {
         await register(name, email, password);
       }
-      navigate('/passbook');
+      const from = location.state?.from?.pathname || '/eligibility';
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.response?.data?.detail || (lang === 'hi' ? 'प्रमाणीकरण विफल रहा। कृपया क्रेडेंशियल्स की जांच करें।' : 'Authentication failed. Please check credentials.'));
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleQuickDemoAdmin = () => {
-    setEmail('admin@schemesetu.gov.in');
-    setPassword('admin123');
-    setMode('login');
-  };
-
-  const handleQuickDemoCitizen = () => {
-    setEmail('demo@schemesetu.gov.in');
-    setPassword('demo123');
-    setMode('login');
   };
 
   return (
@@ -122,26 +111,7 @@ export const Auth = ({ isRegister = false }) => {
           </button>
         </form>
 
-        {/* Quick Demo Fill Credentials */}
-        <div className="border-t border-navy/15 pt-4 space-y-2 font-mono text-xs">
-          <div className="text-ink-soft text-[11px] font-bold uppercase tracking-wider text-center">{t('tryDemo')}</div>
-          <div className="grid grid-cols-2 gap-2">
-            <button 
-              onClick={handleQuickDemoCitizen} 
-              className="p-2 bg-paper hover:bg-teal/15 border border-navy/15 rounded text-[11px] font-bold text-teal-deep text-center"
-            >
-              {lang === 'hi' ? 'डेमो नागरिक' : 'Demo Citizen'}
-            </button>
-            <button 
-              onClick={handleQuickDemoAdmin} 
-              className="p-2 bg-paper hover:bg-rust/15 border border-navy/15 rounded text-[11px] font-bold text-rust text-center"
-            >
-              {lang === 'hi' ? 'डेमो एडमिन' : 'Demo Admin'}
-            </button>
-          </div>
-        </div>
-
-        <div className="text-center text-xs font-mono text-ink-soft">
+        <div className="text-center text-xs font-mono text-ink-soft pt-2 border-t border-navy/15">
           {mode === 'login' ? (
             <span>{t('dontHaveAccount')} <button onClick={() => setMode('register')} className="text-navy font-bold underline">{t('register')}</button></span>
           ) : (

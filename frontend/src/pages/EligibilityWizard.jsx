@@ -4,11 +4,11 @@ import { useEligibility } from '../context/EligibilityContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useToast } from '../context/ToastContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { ArrowLeft, ArrowRight, Sparkles, CheckCircle2, UserCheck, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, UserCheck, ShieldCheck } from 'lucide-react';
 
 export const EligibilityWizard = () => {
   const navigate = useNavigate();
-  const { profile, updateProfileField, loadDemoProfile, runEligibilityCheck, loading } = useEligibility();
+  const { profile, updateProfileField, runEligibilityCheck, loading } = useEligibility();
   const { lang, t } = useLanguage();
   const { addToast } = useToast();
 
@@ -47,13 +47,6 @@ export const EligibilityWizard = () => {
     setStep(prev => prev - 1);
   };
 
-  const handleDemoClick = () => {
-    loadDemoProfile();
-    setStep(1);
-    setError('');
-    addToast(lang === 'hi' ? "✓ डेमो प्रोफ़ाइल लोड की गई: रमेश कुमार (22 वर्ष, यूपी, छात्र)" : "✓ Demo Profile loaded: Ramesh Kumar (Age 22, UP, Student)", "success");
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -77,15 +70,6 @@ export const EligibilityWizard = () => {
             <h1 className="font-serif font-bold text-3xl text-navy">{t('wizardTitle')}</h1>
             <p className="text-xs font-mono text-ink-soft mt-1">{t('wizardSubtext')}</p>
           </div>
-
-          <button 
-            type="button"
-            onClick={handleDemoClick}
-            className="btn-ghost text-xs py-2.5 px-4 border-teal/40 text-teal-deep flex items-center gap-1.5 font-mono font-bold hover:bg-teal/10"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-gold-deep" />
-            <span>{t('tryDemo')}</span>
-          </button>
         </div>
 
         {/* Progress Bar & Stepper */}

@@ -25,7 +25,7 @@ export const DevicePassbookMockup = ({ isDemoActive = false }) => {
               <span className="w-2 h-2 rounded-full bg-teal animate-pulse"></span>
               DIGITAL PASSBOOK
             </span>
-            <span>{isProfilePopulated ? 'PROFILES MATCHED' : 'DEMO MODE'}</span>
+            <span>{isProfilePopulated ? 'PROFILES MATCHED' : 'PASSBOOK PREVIEW'}</span>
           </div>
           
           {/* Header */}

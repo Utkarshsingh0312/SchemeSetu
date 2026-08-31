@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { EligibilityProvider } from './context/EligibilityContext';
 import { ToastProvider } from './context/ToastContext';
@@ -20,6 +20,36 @@ import ProfilePage from './pages/ProfilePage';
 import AdminDashboard from './pages/AdminDashboard';
 import Auth from './pages/Auth';
 import FAQPage from './pages/FAQPage';
+
+function ProtectedRoute({ children }) {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center font-mono text-xs text-ink-soft">Authenticating...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
+}
+
+function AdminRoute({ children }) {
+  const { user, loading, isAdmin } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center font-mono text-xs text-ink-soft">Authenticating...</div>;
+  }
+
+  if (!user || !isAdmin) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
+}
 
 function AppContent() {
   useEffect(() => {
@@ -44,18 +74,50 @@ function AppContent() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/eligibility" element={<EligibilityWizard />} />
-          <Route path="/results" element={<Results />} />
-          <Route path="/scheme/:id" element={<SchemeDetail />} />
-          <Route path="/passbook" element={<Passbook />} />
-          <Route path="/applications" element={<ApplicationsTracker />} />
           <Route path="/explore" element={<ExploreSchemes />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/scheme/:id" element={<SchemeDetail />} />
           <Route path="/login" element={<Auth isRegister={false} />} />
           <Route path="/register" element={<Auth isRegister={true} />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/schemes" element={<AdminDashboard />} />
           <Route path="/faq" element={<FAQPage />} />
+
+          {/* Protected Citizen Routes */}
+          <Route path="/eligibility" element={
+            <ProtectedRoute>
+              <EligibilityWizard />
+            </ProtectedRoute>
+          } />
+          <Route path="/results" element={
+            <ProtectedRoute>
+              <Results />
+            </ProtectedRoute>
+          } />
+          <Route path="/passbook" element={
+            <ProtectedRoute>
+              <Passbook />
+            </ProtectedRoute>
+          } />
+          <Route path="/applications" element={
+            <ProtectedRoute>
+              <ApplicationsTracker />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
+
+          {/* Protected Admin Routes */}
+          <Route path="/admin" element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          } />
+          <Route path="/admin/schemes" element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          } />
         </Routes>
       </main>
       <Chatbot />

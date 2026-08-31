@@ -1,20 +1,19 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { useEligibility } from '../context/EligibilityContext';
 import { useLanguage } from '../context/LanguageContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import ScrollReveal from '../components/ScrollReveal';
-import { useToast } from '../context/ToastContext';
-import { ArrowRight, Sparkles, CheckCircle2, Search, Award, Shield, FileText, Check } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Search, Award, Shield, FileText, Check } from 'lucide-react';
 
 export const Landing = () => {
   const navigate = useNavigate();
-  const { loadDemoProfile, runEligibilityCheck, matchResults, profile } = useEligibility();
+  const { user } = useAuth();
+  const { matchResults, profile } = useEligibility();
   const { lang, t } = useLanguage();
-  const { addToast } = useToast();
 
   const [openFaq, setOpenFaq] = useState(null);
-  const [isDemoActive, setIsDemoActive] = useState(false);
 
   // 3D tilt ref for Hero Passbook card
   const stageRef = useRef(null);
@@ -35,17 +34,11 @@ export const Landing = () => {
   };
 
   const handleStartEligibility = () => {
-    navigate('/eligibility');
-  };
-
-  const handleTryDemo = async () => {
-    setIsDemoActive(true);
-    loadDemoProfile();
-    await runEligibilityCheck();
-    addToast(lang === 'hi' ? "✓ डेमो प्रोफ़ाइल लोड की गई: रमेश कुमार (22 वर्ष, यूपी, छात्र)" : "✓ Demo profile loaded: Ramesh Kumar (Age 22, UP, Student)", "success");
-    setTimeout(() => {
-      navigate('/results');
-    }, 600);
+    if (!user) {
+      navigate('/login', { state: { from: { pathname: '/eligibility' } } });
+    } else {
+      navigate('/eligibility');
+    }
   };
 
   const faqs = [
@@ -96,7 +89,7 @@ export const Landing = () => {
                 : 'Answer a few questions about yourself and discover the government schemes you are actually eligible for — matched instantly, explained simply.'}
             </p>
 
-            {/* CTA Buttons */}
+            {/* CTA Button */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <button 
                 onClick={handleStartEligibility} 
@@ -106,14 +99,6 @@ export const Landing = () => {
                 <svg className="arrow w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
                   <path d="M5 12h14M13 5l7 7-7 7"/>
                 </svg>
-              </button>
-
-              <button 
-                onClick={handleTryDemo} 
-                className="btn-secondary big text-base font-semibold"
-              >
-                <Sparkles className="w-4 h-4 text-marigold" />
-                <span>{t('tryDemo')}</span>
               </button>
             </div>
 
@@ -145,7 +130,7 @@ export const Landing = () => {
                     <span className="pulse"></span>
                     <span>DIGITAL PASSBOOK</span>
                   </span>
-                  <span className="demo-tag">DEMO MODE</span>
+                  <span className="demo-tag">{lang === 'hi' ? 'पात्रता पासबुक' : 'ELIGIBILITY LEDGER'}</span>
                 </div>
 
                 {/* Greeting & Score Ring */}
@@ -207,9 +192,9 @@ export const Landing = () => {
                 </div>
 
                 {/* Stamp Action Button */}
-                <button onClick={handleTryDemo} className="stamp-btn hover:opacity-95 transition-opacity">
+                <button onClick={handleStartEligibility} className="stamp-btn hover:opacity-95 transition-opacity cursor-pointer">
                   <Check className="w-4 h-4 text-paper" />
-                  <span>{lang === 'hi' ? 'प्रोफ़ाइल सत्यापित व मुद्रित' : 'Profile checked & stamped'}</span>
+                  <span>{t('checkEligibility')}</span>
                 </button>
 
                 {/* Verification Stamp Overlay */}
@@ -396,10 +381,6 @@ export const Landing = () => {
                 <svg className="arrow w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
                   <path d="M5 12h14M13 5l7 7-7 7"/>
                 </svg>
-              </button>
-              <button onClick={handleTryDemo} className="btn-secondary big text-base font-semibold">
-                <Sparkles className="w-4 h-4 text-marigold" />
-                <span>{t('tryDemo')}</span>
               </button>
             </div>
           </div>
