@@ -17,6 +17,7 @@ export const EligibilityWizard = () => {
   const [error, setError] = useState('');
   const [isMatching, setIsMatching] = useState(false);
   const [matchingStatusIndex, setMatchingStatusIndex] = useState(0);
+  const [progressPercent, setProgressPercent] = useState(0);
 
   const statusMessages = [
     lang === 'hi' ? 'आपकी प्रोफ़ाइल पढ़ी जा रही है...' : 'Reading your profile...',
@@ -27,13 +28,28 @@ export const EligibilityWizard = () => {
 
   useEffect(() => {
     let timer;
+    let progressInterval;
     if (isMatching) {
       setMatchingStatusIndex(0);
+      setProgressPercent(15);
+
       timer = setInterval(() => {
         setMatchingStatusIndex(prev => (prev + 1) % statusMessages.length);
-      }, 650);
+      }, 550);
+
+      progressInterval = setInterval(() => {
+        setProgressPercent(prev => {
+          if (prev >= 95) return 95;
+          return prev + 5;
+        });
+      }, 100);
+    } else {
+      setProgressPercent(0);
     }
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      clearInterval(progressInterval);
+    };
   }, [isMatching, lang]);
 
   const indianStates = [
@@ -117,32 +133,59 @@ export const EligibilityWizard = () => {
     <div className="min-h-screen py-10 px-4 max-w-4xl mx-auto relative page-entrance">
       <DisclaimerBanner />
 
-      {/* FULL MATCHING / SCANNING OVERLAY */}
+      {/* DIGITAL PASSBOOK ELIGIBILITY EVALUATION OVERLAY */}
       {isMatching && (
-        <div className="fixed inset-0 z-50 bg-navy/92 backdrop-blur-md flex flex-col items-center justify-center text-paper p-6 animate-fade-in">
-          <div className="relative w-32 h-32 flex items-center justify-center mb-8">
-            <div className="absolute inset-0 rounded-full border-4 border-marigold/30 animate-ping" />
-            <div className="absolute inset-0 rounded-full border-4 border-marigold border-t-transparent animate-spin" />
-            <Sparkles className="w-12 h-12 text-marigold animate-pulse" />
-          </div>
+        <div 
+          className="fixed inset-0 z-50 bg-[#FBF8F1]/82 backdrop-blur-[5px] flex items-center justify-center p-4 animate-in fade-in duration-300 font-sans"
+          role="dialog"
+          aria-busy="true"
+          aria-live="polite"
+        >
+          {/* CENTERED LOADING PANEL */}
+          <div className="bg-[#FBF8F1]/96 border border-navy/10 rounded-[20px] sm:rounded-[24px] p-6 sm:p-[34px_32px] w-[calc(100vw-28px)] sm:w-[min(520px,calc(100vw-32px))] shadow-[0_20px_60px_rgba(22,33,60,0.16)] flex flex-col items-center text-center relative overflow-hidden font-sans transform transition-all animate-in zoom-in-98 slide-in-from-bottom-3 duration-400">
+            
+            {/* 72px Desktop / 64px Mobile Loading Icon */}
+            <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] flex items-center justify-center mb-5 animate-in fade-in duration-300 delay-200">
+              {/* Ring Progress */}
+              <div className="absolute inset-0 rounded-full border-[3px] border-[#2C6350]/20" />
+              <div className="absolute inset-0 rounded-full border-[3px] border-[#2C6350] border-t-marigold animate-spin duration-[1500ms]" />
+              {/* Inner Logo Mark "S" */}
+              <div className="w-8 h-8 rounded-full border border-navy bg-[#FBF8F1] ring-1 ring-marigold/60 flex items-center justify-center font-serif font-bold text-sm text-navy shadow-xs">
+                S
+              </div>
+            </div>
 
-          <div className="font-mono text-xs font-bold text-marigold tracking-widest uppercase mb-2">
-            DIGITAL PASSBOOK EVALUATION
-          </div>
+            {/* EYEBROW */}
+            <div className="text-[10px] sm:text-[11px] font-bold text-marigold uppercase tracking-[0.14em] font-sans mb-2 animate-in fade-in slide-in-from-bottom-1 duration-300 delay-350">
+              DIGITAL PASSBOOK EVALUATION
+            </div>
 
-          <h2 className="font-serif font-bold text-3xl sm:text-4xl text-center mb-3 h-12 transition-all">
-            {statusMessages[matchingStatusIndex]}
-          </h2>
+            {/* MAIN HEADING */}
+            <h2 className="font-serif font-bold text-[23px] sm:text-[30px] text-navy leading-[1.2] mb-2.5 min-h-[36px] sm:min-h-[44px] flex items-center justify-center animate-in fade-in slide-in-from-bottom-1 duration-300 delay-450">
+              {statusMessages[matchingStatusIndex]}
+            </h2>
 
-          <p className="text-xs font-mono text-cream-2/80 text-center max-w-md">
-            {lang === 'hi' 
-              ? 'उपलब्ध 894+ केंद्रीय और राज्य योजनाओं के नियमों से आपकी पात्रता जांची जा रही है...' 
-              : 'Checking eligibility across 894+ available central and state welfare schemes...'}
-          </p>
+            {/* DESCRIPTION */}
+            <p className="text-[13px] sm:text-[14px] text-[#5C5643] leading-[1.5] max-w-[390px] mx-auto font-sans mb-5 animate-in fade-in slide-in-from-bottom-1 duration-300 delay-550">
+              {lang === 'hi' 
+                ? 'उपलब्ध 894+ केंद्रीय और राज्य योजनाओं के नियमों से आपकी पात्रता जांची जा रही है...' 
+                : 'Checking your eligibility across available central and state welfare schemes.'}
+            </p>
 
-          <div className="mt-8 flex items-center gap-2 text-xs font-mono text-marigold bg-navy/80 px-5 py-2.5 rounded-full border border-marigold/30 shadow-lg">
-            <CheckCircle2 className="w-4 h-4 text-marigold animate-bounce" />
-            <span>✓ {lang === 'hi' ? 'प्रोफ़ाइल विश्लेषित की जा रही है' : 'Profile criteria analyzed'}</span>
+            {/* PROGRESS STATUS ROW */}
+            <div className="inline-flex items-center gap-2 bg-[#2C6350]/10 border border-[#2C6350]/18 text-[#2C6350] text-[12px] font-semibold rounded-full px-4 py-2 mb-4 animate-in fade-in slide-in-from-bottom-1 duration-300 delay-700">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#2C6350] flex-none" />
+              <span>{lang === 'hi' ? 'प्रोफ़ाइल मानदंड विश्लेषित किए गए' : 'Profile criteria analyzed'}</span>
+            </div>
+
+            {/* SUBTLE PROGRESS BAR */}
+            <div className="w-[min(240px,80%)] sm:w-[260px] h-1 rounded-full bg-navy/10 overflow-hidden animate-in fade-in duration-300 delay-800">
+              <div 
+                className="h-full bg-[#2C6350] rounded-full transition-all duration-200 ease-out"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+
           </div>
         </div>
       )}
