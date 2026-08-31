@@ -44,7 +44,7 @@ export const Navbar = () => {
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-7 font-mono text-xs text-ink-soft">
           <a href="/#why" className="hover:text-navy transition-colors">{t('navWhy')}</a>
-          <a href="/#ritual" className="hover:text-navy transition-colors">{t('navRitual')}</a>
+          <a href="/#how-it-works" className="hover:text-navy transition-colors">{t('navRitual')}</a>
           <Link to="/explore" className="hover:text-navy transition-colors flex items-center gap-1">
             <Search className="w-3 h-3 text-gold-deep" />
             <span>{t('navExplore')}</span>
