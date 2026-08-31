@@ -43,7 +43,7 @@ export const SchemeCard = ({ matchResult, onSaveSuccess }) => {
   const docCount = Array.isArray(scheme.documents) ? scheme.documents.length : 3;
 
   return (
-    <div className="bg-card border border-navy/20 p-6 rounded-md shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between relative group">
+    <div className="bg-card border border-navy/20 p-6 rounded-md shadow-sm card-hover-effect flex flex-col justify-between relative group">
       <div>
         {/* Category, Subcategory & Verification Metadata */}
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">

@@ -28,6 +28,7 @@ body {
     repeating-linear-gradient(0deg, rgba(33,29,22,0.025) 0px, rgba(33,29,22,0.025) 1px, transparent 1px, transparent 38px),
     var(--paper);
   color: var(--ink);
+  overflow-x: hidden;
 }
 
 ::selection {
@@ -35,7 +36,7 @@ body {
   color: var(--navy);
 }
 
-/* Accessibility Focus States (Requirement 15) */
+/* Accessibility Focus States */
 :focus-visible {
   outline: 2px solid var(--gold-deep);
   outline-offset: 2px;
@@ -50,7 +51,7 @@ body {
   scrollbar-width: none;
 }
 
-/* Custom Scroll Progress Bar */
+/* Scroll Progress Bar */
 #scroll-progress {
   position: fixed;
   top: 0;
@@ -91,25 +92,73 @@ body {
   75% { transform:translate(12px,20px); }
 }
 
+/* Glassmorphism & Elevation */
+.glass-panel {
+  background: rgba(247, 243, 233, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(33, 29, 22, 0.15);
+}
+
+.card-hover-effect {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+.card-hover-effect:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -6px rgba(22, 35, 63, 0.12), 0 4px 8px -2px rgba(22, 35, 63, 0.06);
+  border-color: rgba(32, 78, 69, 0.4);
+}
+
+/* Entrance Animations */
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger Delays */
+.stagger-1 { animation-delay: 60ms; }
+.stagger-2 { animation-delay: 120ms; }
+.stagger-3 { animation-delay: 180ms; }
+.stagger-4 { animation-delay: 240ms; }
+
 /* Buttons */
 .btn-primary {
   background: var(--navy);
   color: var(--paper);
   border: none;
   padding: 12px 22px;
-  border-radius: 2px;
+  border-radius: 4px;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 13.5px;
   cursor: pointer;
   box-shadow: 3px 3px 0 var(--gold);
-  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, background-color .2s ease;
   position: relative;
   overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-height: 42px;
 }
 .btn-primary::before {
   content: '';
@@ -125,26 +174,28 @@ body {
 .btn-primary:hover::before { left: 130%; }
 .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--gold); }
 .btn-primary:active { transform: translate(0,0) scale(.97); box-shadow: 2px 2px 0 var(--gold); }
-.btn-primary.big { padding: 16px 30px; font-size: 15px; }
+.btn-primary.big { padding: 16px 30px; font-size: 15px; min-height: 48px; }
 
 .btn-ghost {
   background: none;
   border: 1px solid var(--line-strong);
   color: var(--navy);
   padding: 11px 18px;
-  border-radius: 2px;
+  border-radius: 4px;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition: background .3s ease, border-color .3s ease, transform .2s ease;
+  transition: background .25s ease, border-color .25s ease, transform .2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-height: 42px;
 }
-.btn-ghost:hover { background: rgba(33,29,22,0.04); border-color: var(--navy); transform: translateY(-1px); }
-.btn-ghost.big { padding: 15px 26px; font-size: 14.5px; }
+.btn-ghost:hover { background: rgba(33,29,22,0.05); border-color: var(--navy); transform: translateY(-1px); }
+.btn-ghost:active { transform: translateY(0) scale(.98); }
+.btn-ghost.big { padding: 15px 26px; font-size: 14.5px; min-height: 48px; }
 
 /* Passbook Device Component Styles */
 .device {
@@ -232,7 +283,7 @@ body {
   display: inline-block;
 }
 
-/* Prefers Reduced Motion (Requirement 7 & 15) */
+/* Prefers Reduced Motion Overrides */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
@@ -241,4 +292,6 @@ body {
     scroll-behavior: auto !important;
   }
   .ambient { display: none; }
+  .device { animation: none !important; }
+  .animate-fade-in, .animate-fade-in-up { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
