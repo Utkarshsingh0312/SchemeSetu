@@ -129,13 +129,13 @@ export const SchemeCard = ({ matchResult, onSaveSuccess, index = 0 }) => {
         {/* Quick Criteria Highlights */}
         <div className="space-y-1.5 text-xs mb-4 font-sans">
           {matched_criteria && matched_criteria.slice(0, 3).map((item, i) => (
-            <div key={i} className="flex items-center gap-2 text-[#2C6350] font-medium">
+            <div key={i} className="flex items-center gap-2 text-[#2C6350] font-medium hover:translate-x-[3px] transition-transform duration-200">
               <span className="w-4 h-4 rounded-full bg-[#2C6350]/15 text-[#2C6350] flex items-center justify-center font-bold text-[10px] flex-none">✓</span>
               <span className="truncate">{translateCriterion(item, t, lang)}</span>
             </div>
           ))}
           {failed_criteria && failed_criteria.slice(0, 1).map((item, i) => (
-            <div key={i} className="flex items-center gap-2 text-[#B24B2C] font-medium">
+            <div key={i} className="flex items-center gap-2 text-[#B24B2C] font-medium hover:translate-x-[3px] transition-transform duration-200">
               <XCircle className="w-4 h-4 text-[#B24B2C] flex-none" />
               <span className="truncate">{translateCriterion(item, t, lang)}</span>
             </div>
@@ -143,9 +143,9 @@ export const SchemeCard = ({ matchResult, onSaveSuccess, index = 0 }) => {
         </div>
 
         {/* Document & Deadline Footer Pills */}
-        <div className="flex flex-wrap items-center justify-between text-xs text-[#5C5643] bg-navy/[0.04] px-3 py-2 rounded-xl border border-navy/10 mb-4 font-sans">
-          <span className="flex items-center gap-1.5 font-medium">
-            <FileText className="w-3.5 h-3.5 text-navy/60" /> {docCount} {t('documentsRequired')}
+        <div className="flex flex-wrap items-center justify-between text-xs text-[#5C5643] bg-navy/[0.04] hover:bg-navy/[0.07] px-3 py-2 rounded-xl border border-navy/10 mb-4 font-sans transition-colors cursor-pointer group/pill">
+          <span className="flex items-center gap-1.5 font-medium group-hover/pill:text-navy">
+            <FileText className="w-3.5 h-3.5 text-navy/60 group-hover/pill:scale-110 transition-transform" /> {docCount} {t('documentsRequired')}
           </span>
           {scheme.deadline ? (
             <span className="flex items-center gap-1 text-[#B24B2C] font-semibold">
@@ -175,13 +175,13 @@ export const SchemeCard = ({ matchResult, onSaveSuccess, index = 0 }) => {
           <div className="bg-[#FBF8F1] p-3.5 rounded-xl border border-navy/12 my-2 space-y-2 text-xs font-sans animate-in fade-in duration-200">
             <div className="text-[10px] font-bold text-navy uppercase tracking-wider">{t('detailedBreakdown')}</div>
             {matched_criteria?.map((item, idx) => (
-              <div key={idx} className="flex items-start gap-2 text-[#2C6350] font-medium">
+              <div key={idx} className="flex items-start gap-2 text-[#2C6350] font-medium hover:translate-x-[2px] transition-transform">
                 <span className="text-[#2C6350] font-bold">✓</span>
                 <span>{translateCriterion(item, t, lang)}</span>
               </div>
             ))}
             {failed_criteria?.map((item, idx) => (
-              <div key={idx} className="flex items-start gap-2 text-[#B24B2C] font-medium">
+              <div key={idx} className="flex items-start gap-2 text-[#B24B2C] font-medium hover:translate-x-[2px] transition-transform">
                 <span className="text-[#B24B2C] font-bold">✕</span>
                 <span>{translateCriterion(item, t, lang)}</span>
               </div>
@@ -194,20 +194,20 @@ export const SchemeCard = ({ matchResult, onSaveSuccess, index = 0 }) => {
       <div className="pt-4 border-t border-navy/10 flex items-center justify-between gap-3 mt-2 font-sans">
         <button
           onClick={handleSave}
-          className={`h-[52px] px-4 rounded-xl border border-navy/16 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+          className={`h-[52px] px-4 rounded-xl border border-navy/16 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
             isSaved 
               ? 'bg-marigold/15 text-marigold border-marigold shadow-xs scale-105' 
               : 'bg-transparent text-navy hover:bg-navy/[0.04]'
           }`}
           title={t('saveToPassbook')}
         >
-          <Heart className={`w-4 h-4 transition-transform duration-200 ${isSaved ? 'fill-marigold text-marigold scale-110' : 'text-navy'}`} />
+          <Heart className={`w-4 h-4 transition-transform duration-200 ${isSaved ? 'fill-marigold text-marigold scale-125' : 'text-navy'}`} />
           <span>{isSaved ? (lang === 'hi' ? 'सहेजा गया' : 'Saved') : (lang === 'hi' ? 'सहेजें' : 'Save')}</span>
         </button>
 
         <Link
           to={`/scheme/${scheme.id}`}
-          className="flex-1 h-[52px] bg-[#16213C] text-[#FBF8F1] rounded-xl font-bold text-xs hover:bg-[#202F52] hover:-translate-y-[1px] active:translate-y-0 shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5 group cursor-pointer"
+          className="flex-1 h-[52px] bg-[#16213C] text-[#FBF8F1] rounded-xl font-bold text-xs hover:bg-[#202F52] hover:-translate-y-[1px] active:scale-[0.98] shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5 group cursor-pointer"
         >
           <span>{t('viewDetails')}</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
