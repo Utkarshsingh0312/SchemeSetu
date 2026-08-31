@@ -214,85 +214,67 @@ export const Chatbot = () => {
         )}
       </div>
 
-      {/* REFINED PREMIUM SCHEMESETU AUTHENTICATION REQUIRED MODAL */}
+      {/* MINIMAL, SPACIOUS SCHEMESETU AUTHENTICATION REQUIRED MODAL */}
       {showAuthModal && (
         <div 
-          className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 bg-[#16213C]/48 backdrop-blur-[10px] animate-in fade-in duration-250"
+          className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4 bg-[#16213C]/42 backdrop-blur-[10px] animate-in fade-in duration-250"
           role="dialog"
           aria-modal="true"
           aria-labelledby="auth-modal-title"
           aria-describedby="auth-modal-desc"
         >
-          <div className="bg-[#FBF8F1] border border-navy/12 rounded-[20px] sm:rounded-[22px] p-5 sm:p-[32px_34px] max-w-[500px] w-[calc(100vw-28px)] sm:w-[calc(100vw-32px)] shadow-[0_25px_80px_rgba(22,33,60,0.24)] relative overflow-hidden font-sans transform transition-all animate-in zoom-in-98 slide-in-from-bottom-3 duration-400">
+          <div className="bg-[#FBF8F1] border border-navy/10 rounded-[20px] sm:rounded-[24px] p-6 sm:p-[34px_36px_30px] max-w-[480px] w-[calc(100vw-28px)] sm:w-[calc(100vw-40px)] shadow-[0_30px_90px_rgba(22,33,60,0.24)] relative overflow-hidden font-sans transform transition-all animate-in zoom-in-98 slide-in-from-bottom-3 duration-400">
             
-            {/* Subtle Ambient Glow */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-marigold/10 rounded-full blur-2xl pointer-events-none" />
+            {/* Single Subtle Background Ambient Glow */}
+            <div className="absolute top-0 right-0 w-44 h-44 bg-marigold/10 rounded-full blur-2xl pointer-events-none" />
 
-            {/* Close Button (32px x 32px, No Rotation) */}
+            {/* Close Button (32px x 32px, Minimal, No Spin) */}
             <button 
               onClick={() => setShowAuthModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-[#6E756F] hover:text-navy hover:bg-navy/[0.05] hover:scale-105 transition-all duration-200 cursor-pointer"
+              className="absolute top-[18px] right-[18px] w-8 h-8 rounded-full flex items-center justify-center text-[#6E756F] hover:text-navy hover:bg-navy/[0.05] hover:scale-105 transition-all duration-200 cursor-pointer"
               aria-label="Close modal"
             >
               <X className="w-4 h-4" />
             </button>
 
             {/* CLEAN HORIZONTAL HEADER */}
-            <div className="flex items-center gap-3.5 relative z-10 animate-in fade-in slide-in-from-bottom-1 duration-300">
+            <div className="flex items-center gap-3.5 relative z-10">
               {/* EXACT 48px Desktop / 44px Mobile SCHEMESETU LANDING PAGE LOGO MARK */}
               <div className="w-[44px] h-[44px] sm:w-[48px] sm:h-[48px] rounded-full border border-navy bg-[#FBF8F1] ring-1 ring-marigold/60 flex items-center justify-center font-serif font-bold text-xl sm:text-2xl text-navy shadow-sm flex-none hover:scale-[1.03] transition-transform duration-200">
                 S
               </div>
               
               <div>
-                <h3 id="auth-modal-title" className="font-serif font-bold text-[21px] sm:text-[22px] text-navy leading-tight">
+                <h3 id="auth-modal-title" className="font-serif font-bold text-[20px] sm:text-[22px] text-navy leading-tight">
                   Scheme<span className="text-marigold italic font-normal">Setu</span> Assistant
                 </h3>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#2C6350] flex-none" />
-                  <span className="text-[10px] sm:text-[11px] font-bold text-marigold uppercase tracking-[0.12em] font-sans">
+                  <span className="text-[10px] font-bold text-[#2C6350] uppercase tracking-[0.12em] font-sans">
                     AUTHENTICATION REQUIRED
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* MESSAGE AREA WITH SMALL GOLD EYEBROW */}
-            <div className="text-center mt-5 relative z-10 animate-in fade-in slide-in-from-bottom-2 duration-350">
-              <span className="text-[10px] font-bold text-marigold uppercase tracking-[0.14em] block font-sans mb-1">
-                PERSONALIZED ASSISTANCE
-              </span>
-              <p id="auth-modal-desc" className="text-[15px] sm:text-[17px] text-[#5C5643] leading-[1.5] max-w-[390px] mx-auto font-sans font-medium">
-                Please log in to access your personalized SchemeSetu Assistant.
+            {/* MAIN MESSAGE WITH SPACIOUS BREATHING ROOM */}
+            <div className="text-center mt-7 relative z-10">
+              <p id="auth-modal-desc" className="text-[15px] sm:text-[17px] text-[#5C5643] leading-[1.55] max-w-[370px] mx-auto font-sans font-normal">
+                Log in to unlock your personalized SchemeSetu Assistant.
+              </p>
+              
+              <p className="text-[12.5px] text-[#7A7568] max-w-[350px] mx-auto mt-2.5 font-sans">
+                Get scheme recommendations, eligibility guidance, and application support.
               </p>
             </div>
 
-            {/* COMPACT SUBTLE FEATURE ROW (NO HEAVY CARDS) */}
-            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-4 text-[12px] font-sans text-[#4B554D] relative z-10 animate-in fade-in slide-in-from-bottom-2 duration-400">
-              <div className="flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-[#2C6350]/15 text-[#2C6350] flex items-center justify-center text-[10px] font-bold">✓</span>
-                <span>Personalized guidance</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-[#2C6350]/15 text-[#2C6350] flex items-center justify-center text-[10px] font-bold">✓</span>
-                <span>Eligibility matching</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-[#2C6350]/15 text-[#2C6350] flex items-center justify-center text-[10px] font-bold">✓</span>
-                <span>Application help</span>
-              </div>
-            </div>
-
-            {/* SUBTLE DIVIDER */}
-            <div className="my-5 border-t border-navy/10 relative z-10" />
-
-            {/* BUTTONS COMPOSITION */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10 animate-in fade-in slide-in-from-bottom-3 duration-450">
+            {/* SPACIOUS BUTTON AREA */}
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 mt-7 relative z-10">
               <button
                 type="button"
                 onClick={handleLoginRedirect}
                 disabled={navigatingLogin}
-                className="w-full sm:w-[45%] h-[52px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-bold text-sm shadow-[0_8px_20px_rgba(22,33,60,0.14)] hover:bg-[#202F52] hover:-translate-y-[2px] active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer group"
+                className="w-full sm:w-[44%] h-[50px] sm:h-[52px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-bold text-sm shadow-[0_8px_20px_rgba(22,33,60,0.14)] hover:bg-[#202F52] hover:-translate-y-[1px] active:translate-y-0 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer group"
               >
                 {navigatingLogin ? (
                   <span className="flex items-center gap-2">
@@ -310,15 +292,15 @@ export const Chatbot = () => {
               <button
                 type="button"
                 onClick={() => setShowAuthModal(false)}
-                className="w-full sm:w-[55%] h-[52px] bg-transparent border border-navy/16 text-navy rounded-[12px] font-semibold text-sm hover:bg-navy/[0.04] hover:-translate-y-[1px] active:translate-y-0 transition-all flex items-center justify-center cursor-pointer"
+                className="w-full sm:w-[56%] h-[50px] sm:h-[52px] bg-transparent border border-navy/16 text-navy rounded-[12px] font-semibold text-sm hover:bg-navy/[0.04] hover:-translate-y-[1px] active:translate-y-0 transition-all flex items-center justify-center cursor-pointer"
               >
                 Continue Browsing
               </button>
             </div>
 
-            {/* TRUST FOOTER */}
-            <div className="mt-3.5 text-center text-[11px] text-[#7A7568] font-sans relative z-10">
-              🔒 Your profile remains protected and private.
+            {/* MINIMAL TEXT-ONLY TRUST FOOTER */}
+            <div className="mt-[18px] text-center text-[11px] text-[#8A8478] font-sans relative z-10">
+              Your profile remains protected and private.
             </div>
 
           </div>
