@@ -380,8 +380,8 @@ export const Landing = () => {
           {/* Header Block */}
           <div className="text-center max-w-[900px] mx-auto mb-[32px] md:mb-[42px] lg:mb-[48px]">
             <ScrollReveal delay={0}>
-              <div className="inline-flex items-center gap-2.5 h-[38px] px-4.5 py-1.5 rounded-full bg-[#FBF8F1]/90 backdrop-blur-sm border border-[#16213C]/15 text-[#16213C] font-semibold text-[13px] tracking-[0.06em] shadow-sm mb-3.5 mx-auto">
-                <span className="w-2 h-2 rounded-full bg-[#B7975A] shadow-[0_0_8px_rgba(183,151,90,0.6)] flex-none" />
+              <div className="inline-flex items-center justify-center gap-[9px] h-[40px] px-4 rounded-full bg-[#FBF8F1]/85 backdrop-blur-sm border border-[#16213C]/14 text-[#2C6350] font-sans font-semibold text-[13px] tracking-[0.04em] leading-none shadow-[0_4px_14px_rgba(22,33,60,0.06)] hover:bg-[#FBF8F1] hover:border-[#B7975A]/35 transition-all duration-300 mb-5 mx-auto cursor-default group">
+                <span className="w-[7px] h-[7px] rounded-full bg-[#B7975A] shadow-[0_0_0_3px_rgba(183,151,90,0.10)] group-hover:shadow-[0_0_0_4px_rgba(183,151,90,0.20)] transition-all duration-300 flex-none" />
                 <span>{t('navRitual')}</span>
               </div>
             </ScrollReveal>
