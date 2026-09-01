@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { Shield, Plus, Edit3, Trash2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Shield, Plus, Edit3, Trash2, CheckCircle2, AlertCircle, MessageSquare } from 'lucide-react';
 
 export const AdminDashboard = () => {
   const { user, isAdmin } = useAuth();
@@ -153,10 +153,16 @@ export const AdminDashboard = () => {
           <h1 className="font-serif font-bold text-3xl text-paper">Scheme Database Administration</h1>
         </div>
 
-        <button onClick={handleOpenCreate} className="btn-primary py-2.5 px-4 text-xs flex items-center gap-1.5">
-          <Plus className="w-4 h-4" />
-          <span>Add New Scheme</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate('/admin/chat')} className="btn-secondary py-2.5 px-4 text-xs flex items-center gap-1.5 bg-white text-navy font-bold">
+            <MessageSquare className="w-4 h-4 text-marigold" />
+            <span>Support Chat Panel</span>
+          </button>
+          <button onClick={handleOpenCreate} className="btn-primary py-2.5 px-4 text-xs flex items-center gap-1.5">
+            <Plus className="w-4 h-4" />
+            <span>Add New Scheme</span>
+          </button>
+        </div>
       </div>
 
       {/* Table */}

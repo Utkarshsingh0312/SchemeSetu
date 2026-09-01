@@ -116,6 +116,16 @@ export const Navbar = () => {
           {user ? (
             <div className="flex items-center gap-[16px] font-sans text-xs">
               
+              {user?.is_admin && (
+                <Link 
+                  to="/admin/chat" 
+                  className="px-3 py-2 rounded-xl bg-[#2C6350] text-[#FBF8F1] font-bold text-xs hover:bg-[#1F4B3E] transition-all flex items-center gap-1.5 shadow-xs whitespace-nowrap"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-marigold" />
+                  <span>Admin Support</span>
+                </Link>
+              )}
+
               {/* MY PASSBOOK (PRIMARY ACTION COMPACT BUTTON WITH SINGLE ARROW) */}
               <Link 
                 to="/passbook" 

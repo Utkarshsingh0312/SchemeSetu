@@ -32,6 +32,7 @@ class User(Base):
     saved_schemes = relationship("SavedScheme", back_populates="user", cascade="all, delete-orphan")
     applications = relationship("Application", back_populates="user", cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
+    conversation = relationship("Conversation", back_populates="user", uselist=False, cascade="all, delete-orphan")
 
 class Profile(Base):
     __tablename__ = "profiles"
@@ -161,3 +162,30 @@ class Notification(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     user = relationship("User", back_populates="notifications")
+
+class Conversation(Base):
+    __tablename__ = "conversations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False, index=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+    user = relationship("User", back_populates="conversation")
+    messages = relationship("ChatMessageRecord", back_populates="conversation", cascade="all, delete-orphan", order_by="ChatMessageRecord.created_at")
+
+class ChatMessageRecord(Base):
+    __tablename__ = "chat_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    conversation_id = Column(Integer, ForeignKey("conversations.id"), nullable=False, index=True)
+    sender_type = Column(String(20), nullable=False) # "user", "ai", "admin"
+    sender_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    message = Column(Text, nullable=False)
+    related_schemes = Column(Text, nullable=True) # JSON list
+    disclaimer = Column(Text, nullable=True)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    conversation = relationship("Conversation", back_populates="messages")
+    sender = relationship("User", foreign_keys=[sender_id])

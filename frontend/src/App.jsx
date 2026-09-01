@@ -18,6 +18,7 @@ import ApplicationsTracker from './pages/ApplicationsTracker';
 import ExploreSchemes from './pages/ExploreSchemes';
 import ProfilePage from './pages/ProfilePage';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminChatPanel from './pages/AdminChatPanel';
 import Auth from './pages/Auth';
 import FAQPage from './pages/FAQPage';
 
@@ -124,6 +125,11 @@ function AppContent() {
           <Route path="/admin/schemes" element={
             <AdminRoute>
               <AdminDashboard />
+            </AdminRoute>
+          } />
+          <Route path="/admin/chat" element={
+            <AdminRoute>
+              <AdminChatPanel />
             </AdminRoute>
           } />
         </Routes>

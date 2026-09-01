@@ -66,14 +66,20 @@ export const applicationsAPI = {
 };
 
 export const chatbotAPI = {
-  query: (queryText) => API.post('/chatbot/query', { query: queryText })
+  query: (queryText) => API.post('/chatbot/query', { query: queryText }),
+  getMessages: () => API.get('/chatbot/messages'),
+  getUnreadCount: () => API.get('/chatbot/unread-count'),
+  markRead: () => API.post('/chatbot/read')
 };
 
 export const adminAPI = {
   getAllSchemes: () => API.get('/admin/schemes'),
   createScheme: (data) => API.post('/admin/schemes', data),
   updateScheme: (id, data) => API.put(`/admin/schemes/${id}`, data),
-  deactivateScheme: (id) => API.delete(`/admin/schemes/${id}`)
+  deactivateScheme: (id) => API.delete(`/admin/schemes/${id}`),
+  getConversations: () => API.get('/admin/conversations'),
+  getConversationMessages: (id) => API.get(`/admin/conversations/${id}`),
+  sendAdminReply: (id, message) => API.post(`/admin/conversations/${id}/messages`, { message })
 };
 
 export default API;
