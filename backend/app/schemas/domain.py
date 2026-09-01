@@ -12,14 +12,6 @@ class UserLogin(BaseModel):
     email: str
     password: str
 
-class OTPRequest(BaseModel):
-    identifier: str
-    purpose: Optional[str] = "login"
-
-class OTPVerify(BaseModel):
-    identifier: str
-    otp_code: str
-
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"

@@ -4,17 +4,16 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useToast } from '../context/ToastContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
-import { Shield, User, Lock, Mail, Phone, Eye, EyeOff, CheckCircle2, ArrowRight, Sparkles, Check, KeyRound, Smartphone } from 'lucide-react';
+import { Shield, User, Lock, Mail, Phone, Eye, EyeOff, CheckCircle2, ArrowRight, Sparkles, Check } from 'lucide-react';
 
 export const Auth = ({ isRegister = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, register, requestOtp, verifyOtp } = useAuth();
+  const { login, register } = useAuth();
   const { lang, t } = useLanguage();
   const { addToast } = useToast();
 
   const [mode, setMode] = useState(isRegister ? 'register' : 'login');
-  const [loginMethod, setLoginMethod] = useState('password');
   
   // Form State
   const [name, setName] = useState('');
@@ -27,10 +26,6 @@ export const Auth = ({ isRegister = false }) => {
   const [agreeTerms, setAgreeTerms] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
-  // OTP State
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpCode, setOtpCode] = useState('');
 
   // Animated Match Percentage Counter
   const [matchPct, setMatchPct] = useState(0);
@@ -132,51 +127,6 @@ export const Auth = ({ isRegister = false }) => {
     }
   };
 
-  const handleSendOtp = async (e) => {
-    e.preventDefault();
-    setError('');
-    const target = mobileNumber || emailOrMobile;
-    if (!target || target.trim().length < 4) {
-      setError(lang === 'hi' ? 'कृपया एक वैध मोबाइल नंबर या ईमेल दर्ज करें।' : 'Please enter a valid mobile number or email.');
-      return;
-    }
-    setLoading(true);
-    try {
-      const res = await requestOtp(target.trim(), 'login');
-      setOtpSent(true);
-      const codeMsg = res.otp_code ? ` (Code: ${res.otp_code})` : '';
-      addToast(lang === 'hi' ? `✓ ओटीपी सफलतापूर्वक भेजा गया${codeMsg}` : `✓ OTP sent successfully!${codeMsg}`, 'info');
-    } catch (err) {
-      setError(err.response?.data?.detail || (lang === 'hi' ? 'ओटीपी भेजने में विफल। कृपया पुन: प्रयास करें।' : 'Failed to send OTP. Please check details and try again.'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    setError('');
-    if (!otpCode || otpCode.trim().length < 4) {
-      setError(lang === 'hi' ? 'कृपया 4 या 6 अंकीय ओटीपी दर्ज करें।' : 'Please enter your OTP code.');
-      return;
-    }
-    setLoading(true);
-    try {
-      const target = mobileNumber || emailOrMobile;
-      await verifyOtp(target.trim(), otpCode.trim());
-      setSignedInSuccess(true);
-      addToast(lang === 'hi' ? '✓ ओटीपी सत्यापित! सफलतापूर्वक लॉगिन हुआ।' : '✓ OTP Verified! Logged in successfully.', 'success');
-      setTimeout(() => {
-        const from = location.state?.from?.pathname || '/eligibility';
-        navigate(from, { replace: true });
-      }, 600);
-    } catch (err) {
-      setError(err.response?.data?.detail || (lang === 'hi' ? 'ओटीपी सत्यापन विफल। कृपया पुन: प्रयास करें।' : 'OTP verification failed. Please check your code and try again.'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -219,11 +169,11 @@ export const Auth = ({ isRegister = false }) => {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 flex flex-col items-center justify-center page-entrance">
+    <div className="min-h-screen py-8 px-4 flex flex-col items-center justify-center page-entrance font-sans">
       <DisclaimerBanner />
 
       {/* CENTERED AUTHENTICATION CONTAINER (1180px Max Width, 42% Left / 58% Right Desktop Split) */}
-      <div className="w-full max-w-[1180px] min-h-[680px] rounded-[26px] overflow-hidden bg-paper border border-navy/15 shadow-2xl my-6 flex flex-col lg:flex-row login-container-entrance">
+      <div className="w-full max-w-[1180px] min-h-[680px] rounded-[26px] overflow-hidden bg-paper border border-navy/15 shadow-2xl my-6 flex flex-col lg:flex-row login-container-entrance font-sans">
         
         {/* LEFT SIDE (42% WIDTH) — DARK GRADIENT BRAND & PASSBOOK PANEL */}
         <div 
@@ -341,7 +291,7 @@ export const Auth = ({ isRegister = false }) => {
           <div className="max-w-[560px] mx-auto w-full">
             
             {/* TOP SEGMENTED CONTROL ([ Login ] [ Register ]) */}
-            <div className="flex justify-end mb-8 animate-stagger-1">
+            <div className="flex justify-end mb-8 animate-stagger-1 font-sans">
               <div className="inline-flex bg-[#FBF8F1] p-1 border border-[#16213C]/15 rounded-full font-sans text-xs font-semibold shadow-sm">
                 <button
                   type="button"
@@ -361,7 +311,7 @@ export const Auth = ({ isRegister = false }) => {
             </div>
 
             {/* LOGIN HEADER */}
-            <div className="mb-6 space-y-1.5 animate-stagger-2">
+            <div className="mb-6 space-y-1.5 animate-stagger-2 font-sans">
               <h2 className="font-serif font-semibold text-[38px] text-[#16213C] leading-tight">
                 {mode === 'login' ? (lang === 'hi' ? 'साइन इन करें 👋' : 'Welcome back 👋') : (lang === 'hi' ? 'प्रोफ़ाइल बनाएं 👋' : 'Create account 👋')}
               </h2>
@@ -382,193 +332,100 @@ export const Auth = ({ isRegister = false }) => {
 
             {/* LOGIN FORM */}
             {mode === 'login' && (
-              <div className="space-y-6">
-                {/* LOGIN METHOD TAB SWITCH */}
-                <div className="grid grid-cols-2 gap-3 font-sans text-xs mb-2 animate-stagger-3">
-                  <button
-                    type="button"
-                    onClick={() => { setLoginMethod('password'); setError(''); }}
-                    className={`py-2.5 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all duration-300 hover:translate-y-[-1px] ${
-                      loginMethod === 'password' 
-                        ? 'bg-[#2C6350]/[0.08] border-[#2C6350] text-[#1F4B3E] shadow-sm' 
-                        : 'bg-white border-[#16213C]/18 text-[#16213C]/70 hover:border-[#16213C]/40'
-                    }`}
+              <form onSubmit={handleLoginSubmit} className="space-y-4 font-sans animate-stagger-3">
+                <div>
+                  <label className="block text-[14px] font-semibold text-[#16213C] mb-2 font-sans">
+                    Email or Mobile Number
+                  </label>
+                  <div className="relative">
+                    <Mail className={`w-4 h-4 absolute left-4 top-4 transition-colors duration-200 ${focusedField === 'email' ? 'text-[#2C6350]' : 'text-[#16213C]/40'}`} />
+                    <input
+                      type="text"
+                      required
+                      onFocus={() => setFocusedField('email')}
+                      onBlur={() => setFocusedField('')}
+                      placeholder="citizen@example.com / 9876543210"
+                      value={emailOrMobile}
+                      onChange={(e) => setEmailOrMobile(e.target.value)}
+                      className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] pl-11 pr-4 text-sm font-sans font-medium text-[#16213C] focus:outline-none focus:border-[#2C6350] focus:ring-4 focus:ring-[#2C6350]/[0.08] transition-all duration-200"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[14px] font-semibold text-[#16213C] mb-2 font-sans">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className={`w-4 h-4 absolute left-4 top-4 transition-colors duration-200 ${focusedField === 'password' ? 'text-[#2C6350]' : 'text-[#16213C]/40'}`} />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      onFocus={() => setFocusedField('password')}
+                      onBlur={() => setFocusedField('')}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] pl-11 pr-11 text-sm font-sans font-medium text-[#16213C] focus:outline-none focus:border-[#2C6350] focus:ring-4 focus:ring-[#2C6350]/[0.08] transition-all duration-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-4 text-[#16213C]/40 hover:text-[#16213C] hover:scale-110 transition-all duration-200"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* REMEMBER + FORGOT ROW */}
+                <div className="flex items-center justify-between pt-1 text-[13px] font-sans">
+                  <label className="flex items-center gap-2 cursor-pointer text-[#16213C]/80 font-medium">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="w-4 h-4 accent-[#1F4B3E] rounded"
+                    />
+                    <span>Remember me</span>
+                  </label>
+
+                  <button 
+                    type="button" 
+                    onClick={() => addToast(lang === 'hi' ? 'पासवर्ड रीसेट लिंक आपके ईमेल पर भेजा गया।' : 'Password reset instructions sent to your email.', 'info')} 
+                    className="text-[#B24B2C] hover:underline font-semibold"
                   >
-                    <KeyRound className="w-4 h-4 text-[#2C6350]" />
-                    <span>Password Login</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setLoginMethod('otp'); setError(''); }}
-                    className={`py-2.5 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold transition-all duration-300 hover:translate-y-[-1px] ${
-                      loginMethod === 'otp' 
-                        ? 'bg-[#2C6350]/[0.08] border-[#2C6350] text-[#1F4B3E] shadow-sm' 
-                        : 'bg-white border-[#16213C]/18 text-[#16213C]/70 hover:border-[#16213C]/40'
-                    }`}
-                  >
-                    <Smartphone className="w-4 h-4 text-[#2C6350]" />
-                    <span>Mobile OTP</span>
+                    Forgot password?
                   </button>
                 </div>
 
-                {/* PASSWORD LOGIN FORM */}
-                {loginMethod === 'password' ? (
-                  <form onSubmit={handleLoginSubmit} className="space-y-4 font-sans animate-stagger-4">
-                    <div>
-                      <label className="block text-[14px] font-semibold text-[#16213C] mb-2 font-sans">
-                        Email or Mobile Number
-                      </label>
-                      <div className="relative">
-                        <Mail className={`w-4 h-4 absolute left-4 top-4 transition-colors duration-200 ${focusedField === 'email' ? 'text-[#2C6350]' : 'text-[#16213C]/40'}`} />
-                        <input
-                          type="text"
-                          required
-                          onFocus={() => setFocusedField('email')}
-                          onBlur={() => setFocusedField('')}
-                          placeholder="citizen@example.com / 9876543210"
-                          value={emailOrMobile}
-                          onChange={(e) => setEmailOrMobile(e.target.value)}
-                          className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] pl-11 pr-4 text-sm font-sans font-medium text-[#16213C] focus:outline-none focus:border-[#2C6350] focus:ring-4 focus:ring-[#2C6350]/[0.08] transition-all duration-200"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-[14px] font-semibold text-[#16213C] mb-2 font-sans">
-                        Password
-                      </label>
-                      <div className="relative">
-                        <Lock className={`w-4 h-4 absolute left-4 top-4 transition-colors duration-200 ${focusedField === 'password' ? 'text-[#2C6350]' : 'text-[#16213C]/40'}`} />
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          required
-                          onFocus={() => setFocusedField('password')}
-                          onBlur={() => setFocusedField('')}
-                          placeholder="••••••••"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] pl-11 pr-11 text-sm font-sans font-medium text-[#16213C] focus:outline-none focus:border-[#2C6350] focus:ring-4 focus:ring-[#2C6350]/[0.08] transition-all duration-200"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-4 text-[#16213C]/40 hover:text-[#16213C] hover:scale-110 transition-all duration-200"
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* REMEMBER + FORGOT ROW */}
-                    <div className="flex items-center justify-between pt-1 text-[13px] font-sans">
-                      <label className="flex items-center gap-2 cursor-pointer text-[#16213C]/80 font-medium">
-                        <input
-                          type="checkbox"
-                          checked={rememberMe}
-                          onChange={(e) => setRememberMe(e.target.checked)}
-                          className="w-4 h-4 accent-[#1F4B3E] rounded"
-                        />
-                        <span>Remember me</span>
-                      </label>
-
-                      <button 
-                        type="button" 
-                        onClick={() => addToast(lang === 'hi' ? 'पासवर्ड रीसेट लिंक आपके ईमेल पर भेजा गया।' : 'Password reset instructions sent to your email.', 'info')} 
-                        className="text-[#B24B2C] hover:underline font-semibold"
-                      >
-                        Forgot password?
-                      </button>
-                    </div>
-
-                    {/* LOGIN BUTTON (HERO INTERACTION WITH SHINE AND HOVER ARROW) */}
-                    <button
-                      type="submit"
-                      disabled={loading || signedInSuccess}
-                      className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all duration-200 btn-shine flex items-center justify-center gap-2 mt-4 group"
-                    >
-                      {signedInSuccess ? (
-                        <span className="flex items-center gap-2 text-marigold font-bold animate-fade-in">
-                          <Check className="w-5 h-5 scale-check-spring" />
-                          <span>✓ Signed in</span>
-                        </span>
-                      ) : loading ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <span className="w-4 h-4 border-2 border-[#FBF8F1] border-t-transparent rounded-full animate-spin" />
-                          <span>Signing in...</span>
-                        </span>
-                      ) : (
-                        <>
-                          <span>Login</span>
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-200" />
-                        </>
-                      )}
-                    </button>
-                  </form>
-                ) : (
-                  /* MOBILE OTP FORM */
-                  <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className="space-y-4 font-sans animate-stagger-4">
-                    <div>
-                      <label className="block text-[14px] font-semibold text-[#16213C] mb-2">
-                        Mobile Number
-                      </label>
-                      <div className="relative">
-                        <Phone className="w-4 h-4 absolute left-4 top-4 text-[#16213C]/40" />
-                        <input
-                          type="tel"
-                          required
-                          disabled={otpSent}
-                          placeholder="9876543210"
-                          value={mobileNumber}
-                          onChange={(e) => setMobileNumber(e.target.value)}
-                          className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] pl-11 pr-4 text-sm font-sans font-medium text-[#16213C] focus:outline-none focus:border-[#2C6350] focus:ring-4 focus:ring-[#2C6350]/[0.08] transition-all disabled:opacity-60"
-                        />
-                      </div>
-                    </div>
-
-                    {otpSent && (
-                      <div className="space-y-2 animate-fade-in">
-                        <label className="block text-[14px] font-semibold text-[#16213C]">
-                          Enter 4-Digit OTP Code
-                        </label>
-                        <input
-                          type="text"
-                          maxLength={4}
-                          required
-                          placeholder="1234"
-                          value={otpCode}
-                          onChange={(e) => setOtpCode(e.target.value)}
-                          className="w-full h-[52px] bg-white border border-[#16213C]/18 rounded-[11px] text-center text-xl font-mono tracking-widest font-bold text-[#16213C] focus:outline-none focus:border-[#2C6350]"
-                        />
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={loading || signedInSuccess}
-                      className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all duration-200 btn-shine flex items-center justify-center gap-2 mt-4 group"
-                    >
-                      {signedInSuccess ? (
-                        <span className="flex items-center gap-2 text-marigold font-bold animate-fade-in">
-                          <Check className="w-5 h-5 scale-check-spring" />
-                          <span>✓ Signed in</span>
-                        </span>
-                      ) : loading ? (
-                        <span className="flex items-center justify-center gap-2">
-                          <span className="w-4 h-4 border-2 border-[#FBF8F1] border-t-transparent rounded-full animate-spin" />
-                          <span>Signing in...</span>
-                        </span>
-                      ) : otpSent ? (
-                        <span>Verify OTP &amp; Login →</span>
-                      ) : (
-                        <span>Continue with Mobile OTP →</span>
-                      )}
-                    </button>
-                  </form>
-                )}
-              </div>
+                {/* LOGIN BUTTON (HERO INTERACTION WITH SHINE AND HOVER ARROW) */}
+                <button
+                  type="submit"
+                  disabled={loading || signedInSuccess}
+                  className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all duration-200 btn-shine flex items-center justify-center gap-2 mt-4 group cursor-pointer"
+                >
+                  {signedInSuccess ? (
+                    <span className="flex items-center gap-2 text-marigold font-bold animate-fade-in">
+                      <Check className="w-5 h-5 scale-check-spring" />
+                      <span>✓ Signed in</span>
+                    </span>
+                  ) : loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-4 h-4 border-2 border-[#FBF8F1] border-t-transparent rounded-full animate-spin" />
+                      <span>Signing in...</span>
+                    </span>
+                  ) : (
+                    <>
+                      <span>Login</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-200" />
+                    </>
+                  )}
+                </button>
+              </form>
             )}
 
-            {/* REGISTER FORM (2-column layout on desktop) */}
+            {/* REGISTER FORM */}
             {mode === 'register' && (
               <form onSubmit={handleRegisterSubmit} className="space-y-4 font-sans animate-stagger-3">
                 <div>
@@ -701,7 +558,7 @@ export const Auth = ({ isRegister = false }) => {
                 <button
                   type="submit"
                   disabled={loading || signedInSuccess}
-                  className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all duration-200 btn-shine flex items-center justify-center gap-2 mt-4 group"
+                  className="w-full h-[54px] bg-[#16213C] text-[#FBF8F1] rounded-[12px] font-sans font-semibold text-base shadow-md hover:bg-[#202F52] hover:translate-y-[-2px] active:translate-y-0 transition-all duration-200 btn-shine flex items-center justify-center gap-2 mt-4 group cursor-pointer"
                 >
                   {signedInSuccess ? (
                     <span className="flex items-center justify-center gap-2 text-marigold font-bold animate-fade-in">
@@ -726,8 +583,8 @@ export const Auth = ({ isRegister = false }) => {
                 <span>
                   Don't have an account?{' '}
                   <button 
-                    onClick={() => { setMode('register'); setError(''); }} 
-                    className="text-[#16213C] font-bold hover:underline hover:text-[#1F4B3E] transition-colors duration-200"
+                    onClick={() => { setMode('login'); setMode('register'); setError(''); }} 
+                    className="text-[#16213C] font-bold hover:underline hover:text-[#1F4B3E] transition-colors duration-200 cursor-pointer"
                   >
                     Create Account →
                   </button>
@@ -736,8 +593,8 @@ export const Auth = ({ isRegister = false }) => {
                 <span>
                   Already have an account?{' '}
                   <button 
-                    onClick={() => { setMode('login'); setError(''); }} 
-                    className="text-[#16213C] font-bold hover:underline hover:text-[#1F4B3E] transition-colors duration-200"
+                    onClick={() => { setMode('register'); setMode('login'); setError(''); }} 
+                    className="text-[#16213C] font-bold hover:underline hover:text-[#1F4B3E] transition-colors duration-200 cursor-pointer"
                   >
                     Login →
                   </button>
