@@ -654,26 +654,91 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-20 text-center bg-paper border-t border-navy/15 relative z-10">
-        <ScrollReveal>
-          <div className="max-w-xl mx-auto px-7 space-y-6">
-            <h2 className="font-serif font-bold italic text-3xl sm:text-4xl text-navy">
-              {lang === 'hi' ? 'आपकी पात्रता यात्रा आज ही शुरू करें।' : 'Your benefits should not depend on how well you search.'}
+      {/* Final CTA Section (Page 5 — Editorial Civic-Tech Conclusion) */}
+      <section className="py-[90px] lg:py-[110px] min-h-[560px] flex items-center justify-center bg-[#F3EEDF] border-t border-[#16213C]/15 relative overflow-hidden z-10 font-sans" id="cta">
+        {/* Barely-visible Ambient Radial Glows */}
+        <div className="absolute -top-32 -left-32 w-[450px] h-[450px] bg-[#B7975A]/[0.08] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-[450px] h-[450px] bg-[#2C6350]/[0.08] rounded-full blur-3xl pointer-events-none" />
+
+        {/* Decorative Editorial Flanking Elements */}
+        <div className="hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 opacity-20 pointer-events-none text-[#16213C] font-serif text-6xl">
+          ✦
+        </div>
+        <div className="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 opacity-20 pointer-events-none text-[#16213C] font-serif text-6xl">
+          ✦
+        </div>
+
+        <div className="max-w-[840px] mx-auto px-4 sm:px-6 w-full text-center relative z-10">
+          
+          {/* Eyebrow */}
+          <ScrollReveal delay={0}>
+            <div className="inline-flex items-center justify-center gap-2 mb-[22px] font-sans font-semibold text-[12px] uppercase tracking-[0.14em] text-[#2C6350]">
+              <span className="text-[#B7975A] text-xs">✦</span>
+              <span>{lang === 'hi' ? 'आपकी सुविधाएं, सरलीकृत' : 'YOUR BENEFITS, SIMPLIFIED'}</span>
+            </div>
+          </ScrollReveal>
+
+          {/* Main Heading */}
+          <ScrollReveal delay={100}>
+            <h2 className="font-serif font-bold text-[34px] sm:text-[44px] lg:text-[54px] leading-[1.02] tracking-[-0.035em] text-[#16213C] max-w-[780px] mx-auto">
+              {lang === 'hi' ? (
+                <>
+                  आपकी योजना लाभ खोजने की <span className="relative inline-block">क्षमता पर नहीं<span className="absolute left-0 right-0 -bottom-1 h-[5px] bg-[#B7975A]/35 rounded-full" /></span> निर्भर करने चाहिए।
+                </>
+              ) : (
+                <>
+                  Your benefits <span className="relative inline-block">should not depend<span className="absolute left-0 right-0 -bottom-1 h-[5px] bg-[#B7975A]/35 rounded-full" /></span> on how well you search.
+                </>
+              )}
             </h2>
-            <p className="text-xs text-ink-soft leading-relaxed">
-              {lang === 'hi' ? 'उन नागरिकों से जुड़ें जो अपनी पात्रता पासबुक का निर्माण कर रहे हैं।' : 'Build your digital eligibility passbook — checked once, valid for every scheme that opens next.'}
+          </ScrollReveal>
+
+          {/* Supporting Description */}
+          <ScrollReveal delay={180}>
+            <p className="text-[#5C5643] text-[15px] sm:text-[16px] leading-[1.65] max-w-[650px] mx-auto mt-[22px] font-medium font-sans">
+              {lang === 'hi'
+                ? 'अपनी डिजिटल पात्रता पासबुक बनाएं — एक बार जांच की गई, अगली हर खुलने वाली योजना के लिए मान्य।'
+                : 'Build your digital eligibility passbook — checked once, valid for every scheme that opens next.'}
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <button onClick={handleGoToAuthOrWizard} className="btn btn-primary big text-base" type="button">
+          </ScrollReveal>
+
+          {/* Compact Editorial Passbook Strip Visual */}
+          <ScrollReveal delay={260}>
+            <div className="max-w-[600px] min-h-[64px] py-3.5 px-5 sm:px-7 mx-auto my-[28px] bg-[#FBF8F1]/75 backdrop-blur-sm border border-[#16213C]/12 rounded-[14px] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs font-sans font-medium text-[#16213C] hover:shadow-md hover:-translate-y-[2px] transition-all duration-300">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#2C6350] animate-pulse" />
+                <span className="text-[#2C6350] font-bold">✓ Profile verified</span>
+              </div>
+              <span className="hidden sm:inline text-[#B7975A] font-bold">•</span>
+              <div className="text-[#16213C] font-semibold">Personalized matching</div>
+              <span className="hidden sm:inline text-[#B7975A] font-bold">•</span>
+              <div className="text-[#16213C]/80 font-normal">Official scheme links</div>
+            </div>
+          </ScrollReveal>
+
+          {/* Focal CTA Button */}
+          <ScrollReveal delay={340}>
+            <div className="flex flex-col items-center justify-center">
+              <button
+                onClick={handleGoToAuthOrWizard}
+                className="w-full sm:w-auto min-w-[280px] max-w-[340px] sm:max-w-none h-[54px] px-7 rounded-[12px] bg-[#16213C] text-[#FBF8F1] font-sans font-semibold text-[15px] shadow-md hover:bg-[#202F52] hover:-translate-y-[2px] active:scale-[0.98] transition-all duration-200 btn-shine inline-flex items-center justify-center gap-2.5 border-b-2 border-b-[#B7975A] group cursor-pointer"
+                type="button"
+              >
                 <span>{user ? t('checkEligibility') : (lang === 'hi' ? 'पात्रता जांचने हेतु लॉग इन करें' : 'Login to Check Eligibility')}</span>
-                <svg className="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                <svg className="w-4 h-4 text-[#FBF8F1] group-hover:translate-x-1 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
                   <path d="M5 12h14M13 5l7 7-7 7"/>
                 </svg>
               </button>
+
+              {/* Secondary Trust Message */}
+              <div className="text-center text-[12px] font-sans text-[#7A7568] mt-4 flex items-center justify-center gap-1.5">
+                <span className="text-[#B7975A]">✦</span>
+                <span>{lang === 'hi' ? 'कोई अंतहीन खोज नहीं। केवल वे योजनाएं जिनके आप पात्र हैं।' : 'No endless searching. Just the schemes you qualify for.'}</span>
+              </div>
             </div>
-          </div>
-        </ScrollReveal>
+          </ScrollReveal>
+
+        </div>
       </section>
     </div>
   );
