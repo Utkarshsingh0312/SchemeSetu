@@ -275,62 +275,94 @@ export const Landing = () => {
         </div>
       </div>
 
-      {/* Why SchemeSetu Section */}
-      <section className="py-16 bg-card/70 border-y border-navy/15 relative z-10" id="why">
-        <div className="max-w-6xl mx-auto px-4 sm:px-7">
-          <ScrollReveal>
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <div className="eyebrow-badge mb-2">
-                <span className="dot"></span>
+      {/* Why SchemeSetu Section (Second Section) */}
+      <section className="py-[44px] md:py-[52px] lg:py-[64px] px-4 md:px-5 lg:px-6 bg-[#F3EEDF] border-y border-[#16213C]/15 relative z-10 font-sans" id="why">
+        <div className="max-w-[1180px] mx-auto w-full">
+          {/* Header Block */}
+          <div className="text-center max-w-[900px] mx-auto mb-[28px] md:mb-[34px] lg:mb-[40px]">
+            <ScrollReveal delay={0}>
+              <div className="inline-flex items-center gap-2 h-[38px] px-4 py-1.5 rounded-full bg-[#FBF8F1] border border-[#16213C]/15 text-[#16213C] font-semibold text-[13px] shadow-sm mb-3.5 mx-auto">
+                <span className="w-2 h-2 rounded-full bg-[#B7975A] flex-none" />
                 <span>{t('navWhy')}</span>
               </div>
-              <h2 className="font-serif font-bold text-3xl sm:text-4xl text-navy">
+            </ScrollReveal>
+
+            <ScrollReveal delay={60}>
+              <h2 className="font-serif font-bold text-[30px] sm:text-[36px] md:text-[40px] lg:text-[48px] leading-[1.12] lg:leading-[1.08] text-[#16213C] tracking-tight max-w-[900px] mx-auto">
                 {lang === 'hi' ? 'पात्र और नामांकित के बीच की दूरी को मिटाना' : 'The gap between eligible and enrolled'}
               </h2>
-              <p className="text-ink-soft text-sm mt-2 leading-relaxed">
+            </ScrollReveal>
+
+            <ScrollReveal delay={120}>
+              <p className="text-[#5C5643] text-[14px] md:text-[16px] leading-[1.5] max-w-[720px] mx-auto mt-3.5 font-medium">
                 {lang === 'hi' ? 'स्कीमसेतु नागरिकों को उनके अधिकारों और कल्याणकारी योजनाओं से पारदर्शी रूप से जोड़ता है।' : 'SchemeSetu transparently connects citizens directly to their official government rights.'}
               </p>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
+          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <ScrollReveal delay={0}>
-              <div className="p-6 bg-paper rounded-xl border border-navy/15 card-hover-effect space-y-2">
-                <div className="font-mono text-xs text-marigold font-bold">01</div>
-                <h4 className="font-serif text-lg font-bold text-navy">{lang === 'hi' ? 'स्पष्टता' : 'Clarity'}</h4>
-                <p className="text-xs text-ink-soft leading-relaxed">
-                  {lang === 'hi' ? 'सरल और स्पष्ट भाषा में हर योजना की पात्रता का स्पष्टीकरण।' : 'No scheme names hidden in bureaucratic jargon. Every match explained in plain language.'}
-                </p>
+          {/* 4 Feature Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6">
+            {/* Card 1 */}
+            <ScrollReveal delay={80}>
+              <div className="group relative bg-[#FBF8F1] border border-[#16213C]/12 rounded-[18px] p-5 sm:p-6 lg:p-[26px] min-h-[195px] flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#2C6350]/40 hover:-translate-y-1 transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#16213C] to-[#2C6350] opacity-80 group-hover:opacity-100 transition-opacity" />
+                <div>
+                  <div className="font-mono text-[13px] font-bold text-[#B7975A] tracking-wider">01</div>
+                  <h3 className="font-serif text-[22px] lg:text-[24px] font-bold text-[#16213C] group-hover:text-[#2C6350] transition-colors duration-200 mt-2.5">
+                    {lang === 'hi' ? 'स्पष्टता' : 'Clarity'}
+                  </h3>
+                  <p className="text-[14px] text-[#5C5643] leading-[1.55] mt-2.5 font-normal">
+                    {lang === 'hi' ? 'सरल और स्पष्ट भाषा में हर योजना की पात्रता का स्पष्टीकरण।' : 'No scheme names hidden in bureaucratic jargon. Every match explained in plain language.'}
+                  </p>
+                </div>
               </div>
             </ScrollReveal>
 
-            <ScrollReveal delay={100}>
-              <div className="p-6 bg-paper rounded-xl border border-navy/15 card-hover-effect space-y-2">
-                <div className="font-mono text-xs text-marigold font-bold">02</div>
-                <h4 className="font-serif text-lg font-bold text-navy">{lang === 'hi' ? 'प्रमाण' : 'Proof'}</h4>
-                <p className="text-xs text-ink-soft leading-relaxed">
-                  {lang === 'hi' ? 'सटीक नियम मिलान दिखाता है कि आपकी कौन सी जानकारी पात्र बनाती है।' : 'Each match shows exactly which of your details qualified you — never a black-box answer.'}
-                </p>
+            {/* Card 2 */}
+            <ScrollReveal delay={160}>
+              <div className="group relative bg-[#FBF8F1] border border-[#16213C]/12 rounded-[18px] p-5 sm:p-6 lg:p-[26px] min-h-[195px] flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#2C6350]/40 hover:-translate-y-1 transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#2C6350] to-[#B7975A] opacity-80 group-hover:opacity-100 transition-opacity" />
+                <div>
+                  <div className="font-mono text-[13px] font-bold text-[#B7975A] tracking-wider">02</div>
+                  <h3 className="font-serif text-[22px] lg:text-[24px] font-bold text-[#16213C] group-hover:text-[#2C6350] transition-colors duration-200 mt-2.5">
+                    {lang === 'hi' ? 'प्रमाण' : 'Proof'}
+                  </h3>
+                  <p className="text-[14px] text-[#5C5643] leading-[1.55] mt-2.5 font-normal">
+                    {lang === 'hi' ? 'सटीक नियम मिलान दिखाता है कि आपकी कौन सी जानकारी पात्र बनाती है।' : 'Each match shows exactly which of your details qualified you — never a black-box answer.'}
+                  </p>
+                </div>
               </div>
             </ScrollReveal>
 
-            <ScrollReveal delay={200}>
-              <div className="p-6 bg-paper rounded-xl border border-navy/15 card-hover-effect space-y-2">
-                <div className="font-mono text-xs text-marigold font-bold">03</div>
-                <h4 className="font-serif text-lg font-bold text-navy">{lang === 'hi' ? 'तैयारी' : 'Readiness'}</h4>
-                <p className="text-xs text-ink-soft leading-relaxed">
-                  {lang === 'hi' ? 'दस्तावेज़ सूची और अंतिम तिथि पहले ही बता दी जाती है।' : 'Document checklist and deadline given upfront, so applying on government portals is straightforward.'}
-                </p>
+            {/* Card 3 */}
+            <ScrollReveal delay={240}>
+              <div className="group relative bg-[#FBF8F1] border border-[#16213C]/12 rounded-[18px] p-5 sm:p-6 lg:p-[26px] min-h-[195px] flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#2C6350]/40 hover:-translate-y-1 transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#B7975A] to-[#C45B38] opacity-80 group-hover:opacity-100 transition-opacity" />
+                <div>
+                  <div className="font-mono text-[13px] font-bold text-[#B7975A] tracking-wider">03</div>
+                  <h3 className="font-serif text-[22px] lg:text-[24px] font-bold text-[#16213C] group-hover:text-[#2C6350] transition-colors duration-200 mt-2.5">
+                    {lang === 'hi' ? 'तैयारी' : 'Readiness'}
+                  </h3>
+                  <p className="text-[14px] text-[#5C5643] leading-[1.55] mt-2.5 font-normal">
+                    {lang === 'hi' ? 'दस्तावेज़ सूची और अंतिम तिथि पहले ही बता दी जाती है।' : 'Document checklist and deadline given upfront, so applying on government portals is straightforward.'}
+                  </p>
+                </div>
               </div>
             </ScrollReveal>
 
-            <ScrollReveal delay={300}>
-              <div className="p-6 bg-paper rounded-xl border border-navy/15 card-hover-effect space-y-2">
-                <div className="font-mono text-xs text-marigold font-bold">04</div>
-                <h4 className="font-serif text-lg font-bold text-navy">{lang === 'hi' ? 'पहुंच' : 'Access'}</h4>
-                <p className="text-xs text-ink-soft leading-relaxed">
-                  {lang === 'hi' ? 'आपकी सभी सहेजी गई और आवेदित योजनाओं की एक दृश्यमान पासबुक।' : 'A visible digital passbook of what you have claimed and what opens next.'}
-                </p>
+            {/* Card 4 */}
+            <ScrollReveal delay={320}>
+              <div className="group relative bg-[#FBF8F1] border border-[#16213C]/12 rounded-[18px] p-5 sm:p-6 lg:p-[26px] min-h-[195px] flex flex-col justify-between shadow-sm hover:shadow-md hover:border-[#2C6350]/40 hover:-translate-y-1 transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#C45B38] to-[#16213C] opacity-80 group-hover:opacity-100 transition-opacity" />
+                <div>
+                  <div className="font-mono text-[13px] font-bold text-[#B7975A] tracking-wider">04</div>
+                  <h3 className="font-serif text-[22px] lg:text-[24px] font-bold text-[#16213C] group-hover:text-[#2C6350] transition-colors duration-200 mt-2.5">
+                    {lang === 'hi' ? 'पहुंच' : 'Access'}
+                  </h3>
+                  <p className="text-[14px] text-[#5C5643] leading-[1.55] mt-2.5 font-normal">
+                    {lang === 'hi' ? 'आपकी सभी सहेजी गई और आवेदित योजनाओं की एक दृश्यमान पासबुक।' : 'A visible digital passbook of what you have claimed and what opens next.'}
+                  </p>
+                </div>
               </div>
             </ScrollReveal>
           </div>
