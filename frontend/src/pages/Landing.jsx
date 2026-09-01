@@ -654,171 +654,94 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Final CTA Section (Page 5 — Polished Premium Editorial Rework) */}
-      <section className="py-[64px] lg:py-[80px] px-4 sm:px-6 lg:px-8 bg-[#F3EEDF] border-t border-[#16213C]/12 relative overflow-hidden z-10 font-sans" id="cta">
-        {/* Subtle Barely-Visible Ambient Lighting (5-7% opacity, 100px+ blur) */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#F4E9D0]/70 rounded-full blur-[110px] pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#E7F1EB]/70 rounded-full blur-[110px] pointer-events-none" />
+      {/* Final CTA Section (Page 5 — Text-Focused Cinematic Editorial CTA) */}
+      <section className="py-[72px] lg:py-[96px] min-h-[560px] flex flex-col items-center justify-center bg-[#F3EEDF] border-t border-[#16213C]/12 relative overflow-hidden z-10 font-sans text-center" id="cta">
+        
+        {/* Animated Ambient Radial Glows (4-7% opacity, 100px+ blur) */}
+        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-[#B7975A]/[0.06] rounded-full blur-[120px] pointer-events-none animate-pulse duration-[10000ms]" />
+        <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-[#2C6350]/[0.06] rounded-full blur-[120px] pointer-events-none animate-pulse duration-[12000ms]" />
+        
+        {/* Soft Center Ambient Radial Glow behind Typography */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[400px] bg-[#B7975A]/[0.05] rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="max-w-[1180px] mx-auto w-full relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-[60px]">
-            
-            {/* LEFT SIDE (52% Width on Desktop) */}
-            <div className="w-full lg:w-[52%] text-center lg:text-left space-y-6">
-              
-              {/* Eyebrow */}
-              <ScrollReveal delay={0}>
-                <div className="inline-flex items-center gap-2 font-sans font-semibold text-[11px] uppercase tracking-[0.16em] text-[#2C6350] mb-4">
-                  <span className="text-[#B7975A] text-xs">✦</span>
-                  <span>{lang === 'hi' ? 'आपकी सुविधाएं, सरलीकृत' : 'YOUR BENEFITS, SIMPLIFIED'}</span>
-                </div>
-              </ScrollReveal>
+        {/* Slow Floating Micro Editorial Symbols */}
+        <div className="hidden lg:block absolute left-12 top-1/4 opacity-30 text-[#B7975A] text-sm animate-bounce duration-[8000ms]">✦</div>
+        <div className="hidden lg:block absolute right-16 top-1/3 opacity-25 text-[#2C6350] text-xs">●</div>
+        <div className="hidden lg:block absolute left-20 bottom-1/4 opacity-25 text-[#16213C] text-sm font-serif">—</div>
+        <div className="hidden lg:block absolute right-24 bottom-1/3 opacity-30 text-[#B7975A] text-sm">✦</div>
 
-              {/* Main Heading */}
-              <ScrollReveal delay={100}>
-                <h2 className="font-serif font-bold text-[34px] sm:text-[42px] lg:text-[52px] leading-[1.02] tracking-[-0.035em] text-[#16213C] max-w-[620px] mx-auto lg:mx-0">
-                  {lang === 'hi' ? (
-                    <>
-                      आपकी योजना लाभ खोजने की <span className="relative inline-block">क्षमता पर नहीं<span className="absolute left-0 right-0 -bottom-1 h-[4px] bg-[#B7975A]/45 rounded-full" /></span> निर्भर करने चाहिए।
-                    </>
-                  ) : (
-                    <>
-                      Your benefits <span className="relative inline-block">should not depend<span className="absolute left-0 right-0 -bottom-1 h-[4px] bg-[#B7975A]/45 rounded-full" /></span> on how well you search.
-                    </>
-                  )}
-                </h2>
-              </ScrollReveal>
-
-              {/* Description */}
-              <ScrollReveal delay={180}>
-                <p className="text-[#5C5643] text-[15px] sm:text-[16px] leading-[1.65] max-w-[520px] mx-auto lg:mx-0 font-medium font-sans mt-[22px]">
-                  {lang === 'hi'
-                    ? 'अपनी डिजिटल पात्रता पासबुक बनाएं — एक बार जांच की गई, अगली हर खुलने वाली योजना के लिए मान्य।'
-                    : 'Build your digital eligibility passbook — checked once, valid for every scheme that opens next.'}
-                </p>
-              </ScrollReveal>
-
-              {/* CTA & Trust Line Container */}
-              <ScrollReveal delay={260}>
-                <div className="pt-2 mt-[26px] flex flex-col items-center lg:items-start space-y-3">
-                  <button
-                    onClick={handleGoToAuthOrWizard}
-                    className="w-full sm:w-[270px] h-[54px] px-7 rounded-[10px] bg-[#16213C] text-[#FBF8F1] font-sans font-semibold text-[15px] shadow-md hover:bg-[#202F52] hover:-translate-y-[2px] active:scale-[0.98] transition-all duration-200 btn-shine inline-flex items-center justify-center gap-2.5 border-b-2 border-b-[#B7975A] group cursor-pointer"
-                    type="button"
-                  >
-                    <span>{user ? t('checkEligibility') : (lang === 'hi' ? 'पात्रता जांचने हेतु लॉग इन करें' : 'Login to Check Eligibility')}</span>
-                    <svg className="w-4 h-4 text-[#FBF8F1] group-hover:translate-x-1 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-                      <path d="M5 12h14M13 5l7 7-7 7"/>
-                    </svg>
-                  </button>
-
-                  <div className="text-[12px] font-sans text-[#7A7568] font-medium tracking-wide">
-                    {lang === 'hi' ? 'सुरक्षित • व्यक्तिगत • आधिकारिक योजना लिंक' : 'Secure • Personalized • Official scheme links'}
-                  </div>
-                </div>
-              </ScrollReveal>
-
+        <div className="max-w-[1100px] mx-auto px-4 sm:px-6 w-full relative z-10 flex flex-col items-center justify-center">
+          
+          {/* Eyebrow */}
+          <ScrollReveal delay={0}>
+            <div className="inline-flex items-center justify-center gap-2 mb-5 font-sans font-semibold text-[11px] uppercase tracking-[0.18em] text-[#2C6350]">
+              <span className="text-[#B7975A] text-xs">✦</span>
+              <span>{lang === 'hi' ? 'आपकी सुविधाएं, सरलीकृत' : 'YOUR BENEFITS, SIMPLIFIED'}</span>
             </div>
+          </ScrollReveal>
 
-            {/* RIGHT SIDE (48% Width on Desktop) — REDESIGNED DIGITAL PASSBOOK PANEL */}
-            <div className="w-full lg:w-[48%] flex justify-center lg:justify-end">
-              <ScrollReveal delay={200}>
-                <div className="relative w-full max-w-[430px]">
-                  
-                  {/* Subtle Offset Layered Depth Card (Physical Passbook Feel) */}
-                  <div className="absolute top-2.5 left-2.5 inset-0 bg-[#FBF8F1]/40 border border-[#16213C]/10 rounded-[18px] pointer-events-none z-0" />
+          {/* Main Typographic Hero (64px Fraunces) */}
+          <ScrollReveal delay={100}>
+            <h2 className="font-serif font-bold text-[34px] sm:text-[48px] lg:text-[64px] leading-[1.0] lg:leading-[0.98] tracking-[-0.04em] text-[#16213C] max-w-[900px] mx-auto text-center">
+              {lang === 'hi' ? (
+                <>
+                  आपकी योजना लाभ खोजने की <span className="relative inline-block">क्षमता पर नहीं<span className="absolute left-0 right-0 -bottom-1 lg:-bottom-2 h-[3px] lg:h-[4px] bg-[#B7975A]/45 rounded-full" /></span> निर्भर करने चाहिए।
+                </>
+              ) : (
+                <>
+                  Your benefits <span className="relative inline-block">should not depend<span className="absolute left-0 right-0 -bottom-1 lg:-bottom-2 h-[3px] lg:h-[4px] bg-[#B7975A]/45 rounded-full" /></span> on how well you search.
+                </>
+              )}
+            </h2>
+          </ScrollReveal>
 
-                  {/* Main Digital Passbook Card */}
-                  <div className="w-full bg-[#FBF8F1] border border-[#16213C]/12 rounded-[18px] shadow-[0_22px_55px_rgba(22,33,60,0.12)] overflow-hidden hover:-translate-y-1 transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] group relative z-10">
-                    
-                    {/* Top Accent Line */}
-                    <div className="h-[3px] bg-gradient-to-r from-[#16213C] via-[#2C6350] to-[#B7975A] w-full" />
+          {/* Supporting Text */}
+          <ScrollReveal delay={240}>
+            <p className="text-[#5C5643] text-[16px] sm:text-[18px] leading-[1.6] max-w-[650px] mx-auto mt-6 font-medium font-sans text-center">
+              {lang === 'hi'
+                ? 'अपनी डिजिटल पात्रता पासबुक बनाएं — एक बार जांच की गई, अगली हर खुलने वाली योजना के लिए मान्य।'
+                : 'Build your digital eligibility passbook — checked once, valid for every scheme that opens next.'}
+            </p>
+          </ScrollReveal>
 
-                    <div className="p-6 space-y-4">
-                      {/* Header */}
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-[11px] font-bold text-[#B7975A] tracking-wider uppercase">
-                          DIGITAL ELIGIBILITY PASSBOOK
-                        </span>
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E7F1EB] text-[#2C6350] text-[10px] font-bold">
-                          ✓ PROFILE VERIFIED
-                        </span>
-                      </div>
-
-                      <hr className="border-[#16213C]/10" />
-
-                      {/* Clean Horizontal Profile Area */}
-                      <div className="space-y-1.5 font-sans">
-                        <div className="text-[#7A7568] font-bold uppercase tracking-wider text-[10px]">PROFILE</div>
-                        <div className="flex items-center justify-between text-xs py-1.5 px-3 bg-[#F3EEDF]/50 rounded-lg text-[#16213C]">
-                          <div><span className="text-[#5C5643] text-[11px]">Age:</span> <b>25</b></div>
-                          <span className="text-[#16213C]/20">•</span>
-                          <div><span className="text-[#5C5643] text-[11px]">State:</span> <b>Uttar Pradesh</b></div>
-                          <span className="text-[#16213C]/20">•</span>
-                          <div><span className="text-[#5C5643] text-[11px]">Occupation:</span> <b>Student</b></div>
-                        </div>
-                      </div>
-
-                      {/* Minimal Eligibility Progression Flow */}
-                      <div className="flex items-center justify-between px-2 py-1 text-[11px] font-sans text-[#5C5643]">
-                        <div className="flex items-center gap-1 text-[#2C6350] font-semibold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#2C6350]" />
-                          <span>PROFILE</span>
-                        </div>
-                        <span className="text-[#B7975A] font-bold text-[10px]">────────</span>
-                        <div className="flex items-center gap-1 text-[#B7975A] font-semibold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#B7975A]" />
-                          <span>CHECKED</span>
-                        </div>
-                        <span className="text-[#B7975A] font-bold text-[10px]">────────</span>
-                        <div className="flex items-center gap-1 text-[#16213C] font-semibold">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#16213C]" />
-                          <span>MATCHED</span>
-                        </div>
-                      </div>
-
-                      {/* Matched Schemes Preview (2 Items + Footer Label) */}
-                      <div className="space-y-2 font-sans">
-                        <div className="flex justify-between items-center text-[11px]">
-                          <span className="text-[#7A7568] font-bold uppercase tracking-wider text-[10px]">MATCHED SCHEMES</span>
-                          <span className="text-[#2C6350] font-bold text-[11px]">✓ 3 schemes eligible</span>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <div className="p-2.5 rounded-lg bg-white border border-[#16213C]/10 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="w-4 h-4 rounded-full bg-[#E7F1EB] text-[#2C6350] flex items-center justify-center font-bold text-[10px]">✓</span>
-                              <span className="font-serif font-bold text-xs text-[#16213C]">Ayushman Bharat (PM-JAY)</span>
-                            </div>
-                            <span className="px-2 py-0.5 rounded-full bg-[#E7F1EB] text-[#2C6350] font-mono text-[10px] font-bold">100% MATCH</span>
-                          </div>
-
-                          <div className="p-2.5 rounded-lg bg-white border border-[#16213C]/10 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="w-4 h-4 rounded-full bg-[#E7F1EB] text-[#2C6350] flex items-center justify-center font-bold text-[10px]">✓</span>
-                              <span className="font-serif font-bold text-xs text-[#16213C]">PMAY-G (Gramin Housing)</span>
-                            </div>
-                            <span className="px-2 py-0.5 rounded-full bg-[#E7F1EB] text-[#2C6350] font-mono text-[10px] font-bold">100% MATCH</span>
-                          </div>
-                        </div>
-
-                        <div className="text-center pt-1 text-[#B7975A] font-mono text-[11px] font-bold">
-                          + 5 more eligible schemes
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-              </ScrollReveal>
+          {/* Interactive Feature Statement (Uncontained Horizontal Row) */}
+          <ScrollReveal delay={340}>
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-[30px] font-sans text-[12px] sm:text-[13px] font-semibold text-[#5C5643]">
+              <span className="text-[#2C6350]">✓ Profile verified</span>
+              <span className="text-[#B7975A]">•</span>
+              <span className="text-[#16213C]">Eligibility matched</span>
+              <span className="text-[#B7975A]">•</span>
+              <span className="text-[#7A7568]">Official scheme links</span>
             </div>
+          </ScrollReveal>
 
-          </div>
+          {/* Focal CTA Button */}
+          <ScrollReveal delay={440}>
+            <div className="mt-8 flex flex-col items-center justify-center">
+              <button
+                onClick={handleGoToAuthOrWizard}
+                className="w-full sm:w-[270px] max-w-[270px] h-[54px] px-7 rounded-[10px] bg-[#16213C] text-[#FBF8F1] font-sans font-semibold text-[15px] shadow-md hover:bg-[#202F52] hover:-translate-y-[3px] active:scale-[0.98] transition-all duration-200 btn-shine inline-flex items-center justify-center gap-2.5 border-b-2 border-b-[#B7975A] group cursor-pointer"
+                type="button"
+              >
+                <span>{user ? t('checkEligibility') : (lang === 'hi' ? 'पात्रता जांचने हेतु लॉग इन करें' : 'Login to Check Eligibility')}</span>
+                <svg className="w-4 h-4 text-[#FBF8F1] group-hover:translate-x-1 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
+              </button>
 
-          {/* Bottom Editorial Label */}
-          <div className="mt-12 pt-6 border-t border-[#16213C]/10 text-center font-sans text-[10px] font-semibold tracking-[0.15em] text-[#7A7568] uppercase">
-            SCHEMESETU &nbsp;/&nbsp; DIGITAL ELIGIBILITY PASSBOOK
-          </div>
+              {/* CTA Micro Text */}
+              <div className="text-center text-[12px] font-sans text-[#7A7568] mt-4 flex items-center justify-center gap-1.5 font-medium">
+                <span className="text-[#B7975A]">✦</span>
+                <span>{lang === 'hi' ? 'कोई अंतहीन खोज नहीं। केवल वे योजनाएं जिनके आप पात्र हैं।' : 'No endless searching. Just the schemes you qualify for.'}</span>
+              </div>
+            </div>
+          </ScrollReveal>
+
+        </div>
+
+        {/* Bottom Thin Divider & Editorial Label */}
+        <div className="w-full max-w-[1100px] mx-auto mt-14 pt-6 border-t border-[#16213C]/10 text-center font-sans text-[10px] font-semibold tracking-[0.15em] text-[#7A7568] uppercase relative z-10">
+          SCHEMESETU &nbsp;/&nbsp; DIGITAL ELIGIBILITY
         </div>
       </section>
     </div>
