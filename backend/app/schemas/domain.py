@@ -202,31 +202,3 @@ class ChatResponse(BaseModel):
     answer: str
     related_schemes: List[SchemeOut] = []
     disclaimer: str = "SchemeSetu provides information for discovery and guidance. Final eligibility, benefits, documents and application status must be confirmed on the official government portal."
-
-class ChatMessageRecordOut(BaseModel):
-    id: int
-    conversation_id: int
-    sender_type: str # "user", "ai", "admin"
-    sender_id: Optional[int] = None
-    message: str
-    related_schemes: Optional[Any] = None
-    disclaimer: Optional[str] = None
-    is_read: bool
-    created_at: datetime.datetime
-
-    class Config:
-        from_attributes = True
-
-class ConversationListItemOut(BaseModel):
-    id: int
-    user_id: int
-    user_name: str
-    user_email: str
-    last_message: Optional[str] = None
-    last_message_time: Optional[datetime.datetime] = None
-    unread_count: int = 0
-    created_at: datetime.datetime
-    updated_at: datetime.datetime
-
-class AdminReplyMessage(BaseModel):
-    message: str

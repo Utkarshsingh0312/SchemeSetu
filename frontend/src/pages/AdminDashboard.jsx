@@ -153,16 +153,10 @@ export const AdminDashboard = () => {
           <h1 className="font-serif font-bold text-3xl text-paper">Scheme Database Administration</h1>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/admin/chat')} className="btn-secondary py-2.5 px-4 text-xs flex items-center gap-1.5 bg-white text-navy font-bold">
-            <MessageSquare className="w-4 h-4 text-marigold" />
-            <span>Support Chat Panel</span>
-          </button>
-          <button onClick={handleOpenCreate} className="btn-primary py-2.5 px-4 text-xs flex items-center gap-1.5">
-            <Plus className="w-4 h-4" />
-            <span>Add New Scheme</span>
-          </button>
-        </div>
+        <button onClick={handleOpenCreate} className="btn-primary py-2.5 px-4 text-xs flex items-center gap-1.5">
+          <Plus className="w-4 h-4" />
+          <span>Add New Scheme</span>
+        </button>
       </div>
 
       {/* Table */}
