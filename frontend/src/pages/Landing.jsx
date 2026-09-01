@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import ScrollReveal from '../components/ScrollReveal';
+import { UserRound, Sparkles, SearchCheck, ArrowUpRight, Check } from 'lucide-react';
 
 export const Landing = () => {
   const navigate = useNavigate();
@@ -369,64 +370,185 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-16 relative z-10" id="how">
-        <div className="max-w-6xl mx-auto px-4 sm:px-7">
-          <ScrollReveal>
-            <div className="text-center max-w-2xl mx-auto mb-14">
-              <div className="eyebrow-badge mb-2">
-                <span className="dot"></span>
-                <span>{t('navRitual')}</span>
-              </div>
-              <h2 className="font-serif font-bold text-3xl sm:text-4xl text-navy">
-                {lang === 'hi' ? 'पात्रता से नामांकन तक चार आसान चरण' : 'Four steps from eligible to enrolled'}
-              </h2>
-              <p className="text-ink-soft text-sm mt-2">
-                {lang === 'hi' ? 'अपनी डिजिटल पासबुक एक बार बनाएं — स्कीमसेतु स्वतः आपके मानदंडों का मूल्यांकन करता है।' : 'Build your digital passbook once — SchemeSetu evaluates your criteria automatically.'}
-              </p>
-            </div>
-          </ScrollReveal>
+      {/* How It Works Section (Page 3 — 4-Step Connected Journey) */}
+      <section className="py-[52px] md:py-[64px] lg:py-[76px] px-4 md:px-5 lg:px-6 bg-[#F3EEDF] border-t border-[#16213C]/15 relative overflow-hidden z-10 font-sans" id="how">
+        {/* Subtle Ambient Radial Glows */}
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#2C6350]/[0.07] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#B7975A]/[0.08] rounded-full blur-3xl pointer-events-none" />
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="max-w-[1180px] mx-auto w-full relative z-10">
+          {/* Header Block */}
+          <div className="text-center max-w-[900px] mx-auto mb-[32px] md:mb-[42px] lg:mb-[48px]">
             <ScrollReveal delay={0}>
-              <div className="bg-paper border border-navy/20 p-6 rounded-xl space-y-3 card-hover-effect">
-                <div className="font-mono text-xs text-terracotta font-bold">STEP 01</div>
-                <h4 className="font-serif font-bold text-lg text-navy">{lang === 'hi' ? 'अपनी प्रोफ़ाइल बनाएं' : 'Create Your Profile'}</h4>
-                <p className="text-xs text-ink-soft leading-relaxed">
-                  {lang === 'hi' ? 'अपने बारे में बुनियादी जनसांख्यिकी, आय, व्यवसाय और सामाजिक वर्ग दर्ज करें।' : 'Tell us about yourself once: demographics, income, occupation, and category.'}
-                </p>
+              <div className="inline-flex items-center gap-2.5 h-[38px] px-4.5 py-1.5 rounded-full bg-[#FBF8F1]/90 backdrop-blur-sm border border-[#16213C]/15 text-[#16213C] font-semibold text-[13px] tracking-[0.06em] shadow-sm mb-3.5 mx-auto">
+                <span className="w-2 h-2 rounded-full bg-[#B7975A] shadow-[0_0_8px_rgba(183,151,90,0.6)] flex-none" />
+                <span>{t('navRitual')}</span>
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={100}>
-              <div className="bg-paper border border-navy/20 p-6 rounded-xl space-y-3 card-hover-effect">
-                <div className="font-mono text-xs text-terracotta font-bold">STEP 02</div>
-                <h4 className="font-serif font-bold text-lg text-navy">{lang === 'hi' ? 'व्यक्तिगत मिलान प्राप्त करें' : 'Get Personalized Matches'}</h4>
-                <p className="text-xs text-ink-soft leading-relaxed">
-                  {lang === 'hi' ? 'स्कीमसेतु आपकी प्रोफ़ाइल की तुलना सक्रिय केंद्र और राज्य योजना नियमों से करता है।' : 'SchemeSetu compares your profile with active central and state scheme rules in real time.'}
-                </p>
-              </div>
+              <h2 className="font-serif font-bold text-[30px] sm:text-[36px] md:text-[42px] lg:text-[48px] leading-[1.12] lg:leading-[1.08] text-[#16213C] tracking-tight max-w-[900px] mx-auto">
+                {lang === 'hi' ? (
+                  <>
+                    पात्रता से <span className="relative inline-block">नामांकन<span className="absolute left-0 right-0 -bottom-1 h-[3px] bg-gradient-to-r from-[#B7975A] to-[#2C6350] rounded-full" /></span> तक चार आसान चरण
+                  </>
+                ) : (
+                  <>
+                    Four steps from eligible to <span className="relative inline-block">enrolled<span className="absolute left-0 right-0 -bottom-1 h-[3px] bg-gradient-to-r from-[#B7975A] to-[#2C6350] rounded-full" /></span>
+                  </>
+                )}
+              </h2>
             </ScrollReveal>
 
-            <ScrollReveal delay={200}>
-              <div className="bg-paper border border-navy/20 p-6 rounded-xl space-y-3 card-hover-effect">
-                <div className="font-mono text-xs text-terracotta font-bold">STEP 03</div>
-                <h4 className="font-serif font-bold text-lg text-navy">{lang === 'hi' ? 'पात्रता का कारण समझें' : 'Understand Why'}</h4>
-                <p className="text-xs text-ink-soft leading-relaxed">
-                  {lang === 'hi' ? 'सटीक नियम मिलान देखें — आयु, आय सीमा, व्यवसाय या राज्य निवास नियम।' : 'See exact matched criteria — age, income ceiling, occupation, or state rules.'}
-                </p>
-              </div>
+            <ScrollReveal delay={180}>
+              <p className="text-[#5C5643] text-[14px] md:text-[16px] leading-[1.5] max-w-[700px] mx-auto mt-3.5 font-medium">
+                {lang === 'hi' ? 'अपनी डिजिटल पासबुक एक बार बनाएं — स्कीमसेतु स्वतः आपके मानदंडों का मूल्यांकन करता है।' : 'Build your digital passbook once — SchemeSetu evaluates your criteria automatically.'}
+              </p>
             </ScrollReveal>
+          </div>
 
-            <ScrollReveal delay={300}>
-              <div className="bg-paper border border-navy/20 p-6 rounded-xl space-y-3 card-hover-effect">
-                <div className="font-mono text-xs text-terracotta font-bold">STEP 04</div>
-                <h4 className="font-serif font-bold text-lg text-navy">{lang === 'hi' ? 'आवेदन करें और ट्रैक करें' : 'Apply & Track'}</h4>
-                <p className="text-xs text-ink-soft leading-relaxed">
-                  {lang === 'hi' ? 'दस्तावेज़ चेकलिस्ट तैयार करें, आधिकारिक पोर्टल खोलें और प्रगति ट्रैक करें।' : 'Prepare document checklists, open official portals, and track progress.'}
-                </p>
-              </div>
-            </ScrollReveal>
+          {/* 4-Step Connected Journey Container */}
+          <div className="relative">
+            {/* Desktop Horizontal Connecting Line (Behind Cards) */}
+            <div className="hidden lg:block absolute top-[48px] left-[8%] right-[8%] h-[2px] bg-gradient-to-r from-[#2C6350]/30 via-[#B7975A]/40 to-[#C45B38]/30 pointer-events-none z-0" />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 relative z-10">
+              
+              {/* STEP 01 — Create Your Profile */}
+              <ScrollReveal delay={280}>
+                <div className="group relative bg-[#FBF8F1] border border-[#16213C]/12 rounded-[20px] p-6 lg:p-[26px] min-h-[220px] flex flex-col justify-between shadow-sm hover:shadow-lg hover:border-[#2C6350]/40 hover:-translate-y-1.5 transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#2C6350] opacity-80 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      {/* Step Circular Badge */}
+                      <div className="w-[42px] h-[42px] rounded-full bg-[#E7F1EB] border border-[#2C6350]/20 flex items-center justify-center font-mono font-bold text-sm text-[#16213C] group-hover:bg-[#2C6350] group-hover:text-[#FBF8F1] group-hover:scale-105 transition-all duration-300 shadow-xs">
+                        01
+                      </div>
+                      {/* Step Icon */}
+                      <div className="w-9 h-9 rounded-xl bg-[#2C6350]/10 flex items-center justify-center group-hover:translate-y-[-2px] transition-transform duration-300">
+                        <UserRound className="w-5 h-5 text-[#2C6350]" />
+                      </div>
+                    </div>
+
+                    <div className="font-mono text-[11px] font-bold text-[#2C6350] uppercase tracking-wider mb-1">
+                      STEP 01
+                    </div>
+
+                    <h3 className="font-serif text-[22px] lg:text-[24px] font-bold text-[#16213C] group-hover:text-[#2C6350] transition-colors duration-200">
+                      {lang === 'hi' ? 'अपनी प्रोफ़ाइल बनाएं' : 'Create Your Profile'}
+                    </h3>
+
+                    <p className="text-[14px] text-[#5C5643] leading-[1.55] mt-2.5 font-normal">
+                      {lang === 'hi' ? 'अपने बारे में बुनियादी जनसांख्यिकी, आय, व्यवसाय और सामाजिक वर्ग दर्ज करें।' : 'Tell us about yourself once: demographics, income, occupation, and category.'}
+                    </p>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* STEP 02 — Get Personalized Matches */}
+              <ScrollReveal delay={380}>
+                <div className="group relative bg-[#FBF8F1] border border-[#16213C]/12 rounded-[20px] p-6 lg:p-[26px] min-h-[220px] flex flex-col justify-between shadow-sm hover:shadow-lg hover:border-[#B7975A]/50 hover:-translate-y-1.5 transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#B7975A] opacity-80 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      {/* Step Circular Badge */}
+                      <div className="w-[42px] h-[42px] rounded-full bg-[#F4E9D0] border border-[#B7975A]/30 flex items-center justify-center font-mono font-bold text-sm text-[#16213C] group-hover:bg-[#B7975A] group-hover:text-[#FBF8F1] group-hover:scale-105 transition-all duration-300 shadow-xs">
+                        02
+                      </div>
+                      {/* Step Icon */}
+                      <div className="w-9 h-9 rounded-xl bg-[#B7975A]/15 flex items-center justify-center group-hover:translate-y-[-2px] transition-transform duration-300">
+                        <Sparkles className="w-5 h-5 text-[#B7975A]" />
+                      </div>
+                    </div>
+
+                    <div className="font-mono text-[11px] font-bold text-[#B7975A] uppercase tracking-wider mb-1">
+                      STEP 02
+                    </div>
+
+                    <h3 className="font-serif text-[22px] lg:text-[24px] font-bold text-[#16213C] group-hover:text-[#2C6350] transition-colors duration-200">
+                      {lang === 'hi' ? 'व्यक्तिगत मिलान प्राप्त करें' : 'Get Personalized Matches'}
+                    </h3>
+
+                    <p className="text-[14px] text-[#5C5643] leading-[1.55] mt-2.5 font-normal">
+                      {lang === 'hi' ? 'स्कीमसेतु आपकी प्रोफ़ाइल की तुलना सक्रिय केंद्र और राज्य योजना नियमों से करता है।' : 'SchemeSetu compares your profile with active central and state scheme rules in real time.'}
+                    </p>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* STEP 03 — Understand Why */}
+              <ScrollReveal delay={480}>
+                <div className="group relative bg-[#FBF8F1] border border-[#16213C]/12 rounded-[20px] p-6 lg:p-[26px] min-h-[220px] flex flex-col justify-between shadow-sm hover:shadow-lg hover:border-[#16213C]/40 hover:-translate-y-1.5 transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#16213C] opacity-80 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      {/* Step Circular Badge */}
+                      <div className="w-[42px] h-[42px] rounded-full bg-[#16213C]/10 border border-[#16213C]/20 flex items-center justify-center font-mono font-bold text-sm text-[#16213C] group-hover:bg-[#16213C] group-hover:text-[#FBF8F1] group-hover:scale-105 transition-all duration-300 shadow-xs">
+                        03
+                      </div>
+                      {/* Step Icon */}
+                      <div className="w-9 h-9 rounded-xl bg-[#16213C]/10 flex items-center justify-center group-hover:translate-y-[-2px] transition-transform duration-300">
+                        <SearchCheck className="w-5 h-5 text-[#16213C]" />
+                      </div>
+                    </div>
+
+                    <div className="font-mono text-[11px] font-bold text-[#16213C] uppercase tracking-wider mb-1">
+                      STEP 03
+                    </div>
+
+                    <h3 className="font-serif text-[22px] lg:text-[24px] font-bold text-[#16213C] group-hover:text-[#2C6350] transition-colors duration-200">
+                      {lang === 'hi' ? 'पात्रता का कारण समझें' : 'Understand Why'}
+                    </h3>
+
+                    <p className="text-[14px] text-[#5C5643] leading-[1.55] mt-2.5 font-normal">
+                      {lang === 'hi' ? 'सटीक नियम मिलान देखें — आयु, आय सीमा, व्यवसाय या राज्य निवास नियम।' : 'See exact matched criteria — age, income ceiling, occupation, or state rules.'}
+                    </p>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+              {/* STEP 04 — Apply & Track */}
+              <ScrollReveal delay={580}>
+                <div className="group relative bg-[#FBF8F1] border border-[#16213C]/12 rounded-[20px] p-6 lg:p-[26px] min-h-[220px] flex flex-col justify-between shadow-sm hover:shadow-lg hover:border-[#C45B38]/40 hover:-translate-y-1.5 transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#C45B38] opacity-80 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      {/* Step Circular Badge */}
+                      <div className="w-[42px] h-[42px] rounded-full bg-[#C45B38]/10 border border-[#C45B38]/25 flex items-center justify-center font-mono font-bold text-sm text-[#16213C] group-hover:bg-[#C45B38] group-hover:text-[#FBF8F1] group-hover:scale-105 transition-all duration-300 shadow-xs">
+                        04
+                      </div>
+                      {/* Step Icon */}
+                      <div className="w-9 h-9 rounded-xl bg-[#C45B38]/10 flex items-center justify-center group-hover:translate-y-[-2px] transition-transform duration-300">
+                        <ArrowUpRight className="w-5 h-5 text-[#C45B38]" />
+                      </div>
+                    </div>
+
+                    <div className="font-mono text-[11px] font-bold text-[#C45B38] uppercase tracking-wider mb-1">
+                      STEP 04
+                    </div>
+
+                    <h3 className="font-serif text-[22px] lg:text-[24px] font-bold text-[#16213C] group-hover:text-[#2C6350] transition-colors duration-200">
+                      {lang === 'hi' ? 'आवेदन करें और ट्रैक करें' : 'Apply & Track'}
+                    </h3>
+
+                    <p className="text-[14px] text-[#5C5643] leading-[1.55] mt-2.5 font-normal">
+                      {lang === 'hi' ? 'दस्तावेज़ चेकलिस्ट तैयार करें, आधिकारिक पोर्टल खोलें और प्रगति ट्रैक करें।' : 'Prepare document checklists, open official portals, and track progress.'}
+                    </p>
+                  </div>
+
+                  {/* Completion Accent Indicator */}
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E7F1EB] border border-[#2C6350]/30 text-[#2C6350] font-bold text-[12px] mt-4 self-start">
+                    <Check className="w-3.5 h-3.5 text-[#2C6350]" />
+                    <span>{lang === 'hi' ? 'आवेदन के लिए तैयार' : 'Ready to apply'}</span>
+                  </div>
+                </div>
+              </ScrollReveal>
+
+            </div>
           </div>
         </div>
       </section>
