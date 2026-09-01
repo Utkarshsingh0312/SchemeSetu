@@ -45,8 +45,8 @@ export const Navbar = () => {
     >
       <div className="max-w-[1180px] mx-auto px-4 sm:px-7 h-full flex items-center">
         
-        {/* 1. BRAND AREA */}
-        <Link to="/" className="flex items-center gap-3 group flex-none cursor-pointer mr-[42px]">
+        {/* 1. BRAND AREA (150ms ENTRANCE) */}
+        <Link to="/" className="flex items-center gap-3 group flex-none cursor-pointer mr-[42px] animate-hero-fade-up" style={{ animationDelay: '150ms' }}>
           {/* EXACT SCHEMESETU LANDING PAGE LOGO MARK (42px x 42px) */}
           <div className="w-[42px] h-[42px] rounded-full border border-navy bg-[#FBF8F1] ring-1 ring-marigold/60 flex items-center justify-center font-serif font-bold text-xl text-navy shadow-xs group-hover:rotate-[4deg] group-hover:scale-[1.03] transition-transform duration-200 flex-none">
             S
@@ -58,8 +58,8 @@ export const Navbar = () => {
           </div>
         </Link>
 
-        {/* 2. MAIN NAVIGATION LINKS (ONLY: Why SchemeSetu, How It Works, FAQ) */}
-        <nav className="hidden lg:flex items-center gap-[30px] font-sans text-[14px] font-medium text-[#16213C]">
+        {/* 2. MAIN NAVIGATION LINKS (300ms ENTRANCE) */}
+        <nav className="hidden lg:flex items-center gap-[30px] font-sans text-[14px] font-medium text-[#16213C] animate-hero-fade-up" style={{ animationDelay: '300ms' }}>
           <a 
             href="/#why" 
             onClick={(e) => handleNavClick(e, 'why')}
@@ -88,8 +88,8 @@ export const Navbar = () => {
           </a>
         </nav>
 
-        {/* 3. RIGHT CONTROLS GROUP (MARGIN-LEFT: AUTO) */}
-        <div className="hidden md:flex items-center gap-[18px] ml-auto flex-none">
+        {/* 3. RIGHT CONTROLS GROUP (450ms ENTRANCE) */}
+        <div className="hidden md:flex items-center gap-[18px] ml-auto flex-none animate-hero-fade-up" style={{ animationDelay: '450ms' }}>
           
           {/* LANGUAGE SWITCHER */}
           <button 
