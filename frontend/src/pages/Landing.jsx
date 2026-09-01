@@ -12,9 +12,10 @@ export const Landing = () => {
   const { lang, t } = useLanguage();
 
   const [openFaq, setOpenFaq] = useState(null);
-  const [matchCount, setMatchCount] = useState(3);
+  const [matchCount, setMatchCount] = useState(0);
   const [ringPct, setRingPct] = useState(0);
   const [ringDeg, setRingDeg] = useState(0);
+  const [spotlightPos, setSpotlightPos] = useState({ x: 50, y: 50 });
 
   // 3D tilt refs
   const stageRef = useRef(null);
@@ -39,23 +40,23 @@ export const Landing = () => {
   }, []);
 
   useEffect(() => {
-    // Number flicker animation (3 -> 9 -> 2 -> 5 -> 7)
-    const seq = [3, 9, 2, 5, 7];
-    let idx = 0;
+    // Smooth Count-up animation (0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7)
+    let currentMatches = 0;
+    const targetMatches = 7;
     const timer = setTimeout(() => {
       const interval = setInterval(() => {
-        setMatchCount(seq[idx]);
-        idx++;
-        if (idx >= seq.length) {
+        currentMatches++;
+        setMatchCount(currentMatches);
+        if (currentMatches >= targetMatches) {
           clearInterval(interval);
         }
-      }, 90);
-    }, 550);
+      }, 150);
+    }, 450);
 
     // Ring percentage animation (0 -> 82%)
     let startTime = null;
     const targetPct = 82;
-    const duration = 900;
+    const duration = 1200;
 
     const animFrame = (now) => {
       if (!startTime) startTime = now;
@@ -75,7 +76,7 @@ export const Landing = () => {
 
     const ringDelayTimer = setTimeout(() => {
       requestAnimationFrame(animFrame);
-    }, 550);
+    }, 450);
 
     return () => {
       clearTimeout(timer);
@@ -89,6 +90,12 @@ export const Landing = () => {
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
     passbookRef.current.style.transform = `rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+
+    // Cursor Spotlight calculations
+    const pRect = passbookRef.current.getBoundingClientRect();
+    const px = Math.min(Math.max(((e.clientX - pRect.left) / pRect.width) * 100, 0), 100);
+    const py = Math.min(Math.max(((e.clientY - pRect.top) / pRect.height) * 100, 0), 100);
+    setSpotlightPos({ x: px, y: py });
   };
 
   const handleMouseLeave = () => {
@@ -202,83 +209,98 @@ export const Landing = () => {
         >
           <div className="blob" />
 
-          <div ref={passbookRef} className="passbook" id="passbook">
-            {/* Top Row */}
-            <div className="row-top">
+          <div ref={passbookRef} className="passbook group/passbook" id="passbook">
+            {/* Shifting Top Gradient Accent Line */}
+            <div className="passbook-top-accent" />
+
+            {/* Subtle Hover Reflection Shine */}
+            <div className="passbook-shine" />
+
+            {/* Desktop Cursor Spotlight (Radial Gradient) */}
+            <div 
+              className="absolute inset-0 pointer-events-none rounded-[26px] opacity-75 hidden md:block z-0" 
+              style={{ 
+                background: `radial-gradient(280px circle at ${spotlightPos.x}% ${spotlightPos.y}%, rgba(44,99,80,0.08), transparent 70%)` 
+              }} 
+            />
+
+            {/* Top Row (100ms) */}
+            <div className="row-top relative z-10 animate-stagger-1">
               <div className="badge-live">
                 <span className="dot"></span>
                 <span>DIGITAL PASSBOOK</span>
               </div>
-              <div className="secure-label">
-                🔒 SECURE PROFILE
+              <div className="secure-label flex items-center gap-1">
+                <span className="lock-float">🔒</span> SECURE SCHEMES
               </div>
             </div>
 
-            {/* Greeting Row */}
-            <div className="greet-row">
+            {/* Greeting Row (260ms & 420ms) */}
+            <div className="greet-row relative z-10 animate-stagger-2">
               <div>
                 <div className="hello">{lang === 'hi' ? 'नमस्ते 👋' : 'Hello 👋'}</div>
                 <div className="headline">
-                  <span className="num" id="matchNum">{matchCount}</span>{' '}
+                  <span className="num font-bold transition-all duration-300 transform inline-block" id="matchNum">{matchCount}</span>{' '}
                   {lang === 'hi' ? 'संभावित पात्र योजनाएं' : 'possible matches'}
                 </div>
               </div>
 
               <div 
-                className="ring-wrap" 
+                className="ring-wrap shadow-sm transition-transform duration-300 hover:scale-105" 
                 style={{
                   background: `conic-gradient(var(--gold) 0deg, var(--green-2) ${ringDeg}deg, #e4ddcc ${ringDeg}deg)`
                 }}
               >
-                <span className="ring-pct">{ringPct}%</span>
+                <span className="ring-pct font-mono font-bold text-xs">{ringPct}%</span>
               </div>
             </div>
 
-            {/* Match Card Preview */}
-            <div className="match-card">
+            {/* Match Card Preview (500ms) */}
+            <div className="match-card relative z-10 animate-stagger-3 border border-[#16213C]/10 shadow-xs">
               <div className="match-top">
-                <span className="top-match-label">TOP MATCH</span>
-                <span className="match-pill">96% match</span>
+                <span className="top-match-label text-[11px] font-bold text-[#C45B38] tracking-wider">TOP MATCH</span>
+                <span className="match-pill bg-[#2C6350] text-[#FBF8F1] text-[11px] font-bold px-3 py-1 rounded-full shadow-xs">96% match</span>
               </div>
 
-              <div className="scheme-name">
-                PM-KISAN (Kisan Samman)
+              <div className="scheme-name font-serif font-bold text-[19px] text-[#16213C] hover:text-[#2C6350] transition-colors duration-200 mt-2 cursor-pointer group/title relative">
+                <span>PM-KISAN (Kisan Samman)</span>
+                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#2C6350] group-hover/title:w-full transition-all duration-300" />
               </div>
 
-              <div className="scheme-price">
+              <div className="scheme-price text-[14px] text-[#C45B38] font-semibold italic mt-0.5 mb-3 inline-block transition-transform duration-200 hover:-translate-y-[1px]">
                 ₹6,000 / year · direct transfer
               </div>
 
               <hr className="divider" />
 
-              <div className="recheck">
-                🔒 {lang === 'hi' ? 'आपकी पात्रता लॉग इन के बाद सुरक्षित रूप से जांची जाती है' : 'Your eligibility is matched securely after login'}
+              <div className="recheck text-xs text-[#5C5643] flex items-center gap-1.5 mb-3 font-medium">
+                <span className="lock-float">🔒</span> {lang === 'hi' ? 'आपकी पात्रता लॉग इन के बाद सुरक्षित रूप से जांची जाती है' : 'Your eligibility is matched securely after login'}
               </div>
 
               <div className="checklist">
-                <div className="check-item">
+                <div className="check-item transition-all duration-200">
                   <span className="tick">✓</span>
                   <span>{lang === 'hi' ? 'राज्य:' : 'State:'} <b>Uttar Pradesh</b></span>
                 </div>
-                <div className="check-item">
+                <div className="check-item transition-all duration-200">
                   <span className="tick">✓</span>
                   <span>{lang === 'hi' ? 'व्यवसाय:' : 'Occupation:'} <b>Farmer</b></span>
                 </div>
-                <div className="check-item">
+                <div className="check-item transition-all duration-200">
                   <span className="tick">✓</span>
                   <span>{lang === 'hi' ? 'आय:' : 'Income:'} <b>Below ₹2L</b></span>
                 </div>
               </div>
             </div>
 
-            {/* Login Gate Action Button */}
-            <button onClick={handleGoToAuthOrWizard} className="stamp-btn" type="button">
-              <span>🔐</span>
-              <span>{user ? t('checkEligibility') : (lang === 'hi' ? 'अपनी पात्र योजनाएं देखने के लिए लॉग इन करें' : 'Login to See Your Eligible Schemes')}</span>
+            {/* Login Gate Action Button (850ms + attention pulse) */}
+            <button onClick={handleGoToAuthOrWizard} className="stamp-btn btn-shine cta-attention-pulse relative z-10 shadow-md hover:-translate-y-[2px] active:scale-[0.97] transition-all duration-200 border-b-2 border-b-[#B7975A]" type="button">
+              <span className="lock-float text-base">🔐</span>
+              <span className="font-sans font-bold text-[14px]">{user ? t('checkEligibility') : (lang === 'hi' ? 'अपनी पात्र योजनाएं देखने के लिए लॉग इन करें' : 'Login to See Your Eligible Schemes')}</span>
             </button>
 
-            {/* Stamp */}
-            <div className="stamp">
+            {/* Stamp (Floating & Pop) */}
+            <div className="stamp font-mono tracking-wider shadow-md">
               PROFILE<br />
               VERIFIED<br />
               SCHEMES
