@@ -21,15 +21,21 @@ export const Landing = () => {
   const passbookRef = useRef(null);
 
   useEffect(() => {
-    if (window.location.hash) {
-      const targetId = window.location.hash.replace('#', '');
-      const element = document.getElementById(targetId);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 150);
-      }
+    // Disable browser automatic scroll restoration on refresh
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
     }
+
+    // Always clear hash on initial page load / refresh and start at top (Hero)
+    if (window.location.hash) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
+    });
   }, []);
 
   useEffect(() => {
