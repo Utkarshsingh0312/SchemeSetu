@@ -553,41 +553,104 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* FAQ Accordion Section */}
-      <section className="py-16 bg-card/60 border-t border-navy/15 relative z-10" id="faq">
-        <div className="max-w-3xl mx-auto px-4 sm:px-7">
-          <ScrollReveal>
-            <div className="text-center mb-12">
-              <div className="eyebrow-badge mb-2">
-                <span className="dot"></span>
+      {/* FAQ Accordion Section (Redesigned Editorial & Interactive) */}
+      <section className="py-[64px] lg:py-[100px] px-4 sm:px-6 bg-[#F3EEDF] border-t border-[#16213C]/15 relative overflow-hidden z-10 font-sans" id="faq">
+        {/* Subtle Ambient Radial Glows */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#B7975A]/[0.08] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#2C6350]/[0.07] rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-[820px] mx-auto w-full relative z-10">
+          {/* Header Block */}
+          <div className="text-center max-w-[680px] mx-auto mb-[44px] sm:mb-[48px]">
+            <ScrollReveal delay={0}>
+              <div className="inline-flex items-center justify-center gap-[9px] h-[38px] px-[15px] rounded-full bg-[#FBF8F1] border border-[#16213C]/14 text-[#2C6350] font-sans font-semibold text-[12px] tracking-[0.06em] leading-none shadow-[0_4px_14px_rgba(22,33,60,0.06)] hover:bg-[#FBF8F1] hover:border-[#B7975A]/35 transition-all duration-300 mb-4 mx-auto cursor-default group">
+                <span className="w-[7px] h-[7px] rounded-full bg-[#B7975A] shadow-[0_0_0_3px_rgba(183,151,90,0.10)] flex-none" />
                 <span>{t('navFaq')}</span>
               </div>
-              <h2 className="font-serif font-bold text-3xl text-navy">{t('faqTitle')}</h2>
-              <p className="text-xs text-ink-soft mt-1">{t('faqSubtitle')}</p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={80}>
+              <h2 className="font-serif font-bold text-[32px] sm:text-[40px] lg:text-[48px] leading-[1.05] tracking-[-0.025em] text-[#16213C] max-w-[650px] mx-auto">
+                {lang === 'hi' ? (
+                  <>
+                    अक्सर पूछे जाने वाले <span className="relative inline-block">सवाल<span className="absolute left-0 right-0 -bottom-1 h-[5px] bg-[#B7975A]/30 rounded-full" /></span>
+                  </>
+                ) : (
+                  <>
+                    Frequently Asked <span className="relative inline-block">Questions<span className="absolute left-0 right-0 -bottom-1 h-[5px] bg-[#B7975A]/30 rounded-full" /></span>
+                  </>
+                )}
+              </h2>
+            </ScrollReveal>
+
+            <ScrollReveal delay={140}>
+              <p className="text-[#6B6659] text-[15px] sm:text-[16px] leading-[1.6] max-w-[650px] mx-auto mt-3.5 font-medium">
+                {t('faqSubtitle')}
+              </p>
+            </ScrollReveal>
+          </div>
+
+          {/* Editorial FAQ Rows */}
+          <div className="space-y-3">
+            {faqs.map((faq, i) => {
+              const isOpen = openFaq === i;
+              const numStr = `0${i + 1}`;
+              return (
+                <ScrollReveal key={i} delay={200 + i * 60}>
+                  <div 
+                    className={`group rounded-[16px] p-5 sm:p-[22px_24px] mb-3 transition-all duration-250 ease-out border shadow-[0_4px_18px_rgba(22,33,60,0.035)] hover:shadow-[0_8px_24px_rgba(22,33,60,0.07)] hover:-translate-y-[2px] ${
+                      isOpen 
+                        ? 'bg-gradient-to-br from-[#FBF8F1] to-[#F4E9D0] border-[#B7975A]/35 border-l-[4px] border-l-[#B7975A]' 
+                        : 'bg-[#FBF8F1] border-[#16213C]/12 hover:border-[#2C6350]/25'
+                    }`}
+                  >
+                    <button
+                      onClick={() => setOpenFaq(isOpen ? null : i)}
+                      className="w-full text-left flex items-center justify-between gap-3 font-sans focus:outline-none cursor-pointer"
+                      type="button"
+                      aria-expanded={isOpen}
+                    >
+                      <div className="flex items-center gap-3 sm:gap-4 pr-2">
+                        {/* Number */}
+                        <span className="font-mono text-[11px] font-bold text-[#B7975A] tracking-[0.08em] flex-none">
+                          {numStr}
+                        </span>
+                        {/* Question */}
+                        <span className={`font-serif font-semibold text-[16px] sm:text-[18px] leading-[1.35] transition-colors duration-200 ${isOpen ? 'text-[#2C6350]' : 'text-[#16213C] group-hover:text-[#2C6350]'}`}>
+                          {faq.q}
+                        </span>
+                      </div>
+
+                      {/* Circular Plus Icon */}
+                      <div className={`w-[34px] h-[34px] rounded-full border border-[#16213C]/15 flex items-center justify-center font-sans font-bold text-sm text-[#16213C] transition-all duration-250 flex-none ml-2 ${
+                        isOpen 
+                          ? 'bg-[#2C6350] border-[#2C6350] text-[#FBF8F1] rotate-45 shadow-sm' 
+                          : 'bg-transparent group-hover:bg-[#E7F1EB] group-hover:border-[#2C6350]/30 group-hover:text-[#2C6350]'
+                      }`}>
+                        +
+                      </div>
+                    </button>
+
+                    {/* Answer Animation */}
+                    {isOpen && (
+                      <div className="text-[14px] sm:text-[15px] font-sans text-[#5C5643] leading-[1.7] mt-3.5 pt-3.5 border-t border-[#16213C]/10 animate-fade-in pl-7 sm:pl-8">
+                        {faq.a}
+                      </div>
+                    )}
+                  </div>
+                </ScrollReveal>
+              );
+            })}
+          </div>
+
+          {/* Centered Trust Statement */}
+          <ScrollReveal delay={440}>
+            <div className="text-center mt-10 text-[#7A7568] font-serif italic text-[14px] flex items-center justify-center gap-2.5">
+              <span className="text-[#B7975A] text-xs">✦</span>
+              <span>{lang === 'hi' ? 'स्पष्टता के लिए निर्मित। नागरिकों के लिए डिज़ाइन किया गया।' : 'Built for clarity. Designed for citizens.'}</span>
+              <span className="text-[#B7975A] text-xs">✦</span>
             </div>
           </ScrollReveal>
-
-          <div className="space-y-4">
-            {faqs.map((faq, i) => (
-              <ScrollReveal key={i} delay={i * 80}>
-                <div className="bg-paper border border-navy/15 rounded-xl p-5 transition-all">
-                  <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full text-left font-serif font-semibold text-base text-navy flex justify-between items-center hover:text-terracotta transition-colors"
-                    type="button"
-                  >
-                    <span>{faq.q}</span>
-                    <span className="font-mono text-xl text-marigold ml-2">{openFaq === i ? '−' : '+'}</span>
-                  </button>
-                  {openFaq === i && (
-                    <p className="text-xs font-sans text-ink-soft leading-relaxed mt-3 pt-3 border-t border-navy/10 animate-fade-in">
-                      {faq.a}
-                    </p>
-                  )}
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
         </div>
       </section>
 
