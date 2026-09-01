@@ -23,6 +23,18 @@ export const Navbar = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  const handleNavClick = (e, targetId) => {
+    setMobileMenuOpen(false);
+    if (location.pathname === '/') {
+      e.preventDefault();
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        window.history.pushState(null, '', `#${targetId}`);
+      }
+    }
+  };
+
   return (
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 border-b border-navy/10 font-sans ${
@@ -50,7 +62,8 @@ export const Navbar = () => {
         <nav className="hidden lg:flex items-center gap-[30px] font-sans text-[14px] font-medium text-[#16213C]">
           <a 
             href="/#why" 
-            className="hover:text-[#2C6350] hover:-translate-y-[1px] transition-all relative py-1 group/link whitespace-nowrap"
+            onClick={(e) => handleNavClick(e, 'why')}
+            className="hover:text-[#2C6350] hover:-translate-y-[1px] transition-all relative py-1 group/link whitespace-nowrap cursor-pointer"
           >
             <span>{t('navWhy')}</span>
             <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-marigold group-hover/link:w-full transition-all duration-200" />
@@ -58,7 +71,8 @@ export const Navbar = () => {
 
           <a 
             href="/#how-it-works" 
-            className="hover:text-[#2C6350] hover:-translate-y-[1px] transition-all relative py-1 group/link whitespace-nowrap"
+            onClick={(e) => handleNavClick(e, 'how-it-works')}
+            className="hover:text-[#2C6350] hover:-translate-y-[1px] transition-all relative py-1 group/link whitespace-nowrap cursor-pointer"
           >
             <span>{t('navRitual')}</span>
             <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-marigold group-hover/link:w-full transition-all duration-200" />
@@ -66,7 +80,8 @@ export const Navbar = () => {
 
           <a 
             href="/#faq" 
-            className="hover:text-[#2C6350] hover:-translate-y-[1px] transition-all relative py-1 group/link whitespace-nowrap"
+            onClick={(e) => handleNavClick(e, 'faq')}
+            className="hover:text-[#2C6350] hover:-translate-y-[1px] transition-all relative py-1 group/link whitespace-nowrap cursor-pointer"
           >
             <span>{t('navFaq')}</span>
             <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-marigold group-hover/link:w-full transition-all duration-200" />
@@ -179,9 +194,9 @@ export const Navbar = () => {
       {/* MOBILE NAVIGATION DRAWER (EXCLUDES Explore Schemes & Strong Matches) */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#FBF8F1] border-b border-navy/15 px-6 py-6 space-y-4 font-sans text-sm animate-in slide-in-from-top-2 duration-200">
-          <a href="/#why" className="block text-navy font-semibold hover:text-[#2C6350]">{t('navWhy')}</a>
-          <a href="/#how-it-works" className="block text-navy font-semibold hover:text-[#2C6350]">{t('navRitual')}</a>
-          <a href="/#faq" className="block text-navy font-semibold hover:text-[#2C6350]">{t('navFaq')}</a>
+          <a href="/#why" onClick={(e) => handleNavClick(e, 'why')} className="block text-navy font-semibold hover:text-[#2C6350] cursor-pointer">{t('navWhy')}</a>
+          <a href="/#how-it-works" onClick={(e) => handleNavClick(e, 'how-it-works')} className="block text-navy font-semibold hover:text-[#2C6350] cursor-pointer">{t('navRitual')}</a>
+          <a href="/#faq" onClick={(e) => handleNavClick(e, 'faq')} className="block text-navy font-semibold hover:text-[#2C6350] cursor-pointer">{t('navFaq')}</a>
 
           {user ? (
             <div className="pt-4 border-t border-navy/12 space-y-3 font-sans">

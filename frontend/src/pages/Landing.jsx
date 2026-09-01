@@ -21,6 +21,18 @@ export const Landing = () => {
   const passbookRef = useRef(null);
 
   useEffect(() => {
+    if (window.location.hash) {
+      const targetId = window.location.hash.replace('#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     // Number flicker animation (3 -> 9 -> 2 -> 5 -> 7)
     const seq = [3, 9, 2, 5, 7];
     let idx = 0;
@@ -277,7 +289,7 @@ export const Landing = () => {
       </div>
 
       {/* Why SchemeSetu Section (Second Section) */}
-      <section className="py-[44px] md:py-[52px] lg:py-[64px] px-4 md:px-5 lg:px-6 bg-[#F3EEDF] border-y border-[#16213C]/15 relative z-10 font-sans" id="why">
+      <section className="py-[44px] md:py-[52px] lg:py-[64px] px-4 md:px-5 lg:px-6 bg-[#F3EEDF] border-y border-[#16213C]/15 relative z-10 font-sans scroll-mt-[90px]" id="why">
         <div className="max-w-[1180px] mx-auto w-full">
           {/* Header Block */}
           <div className="text-center max-w-[900px] mx-auto mb-[28px] md:mb-[34px] lg:mb-[40px]">
@@ -371,7 +383,7 @@ export const Landing = () => {
       </section>
 
       {/* How It Works Section (Page 3 — 4-Step Connected Journey) */}
-      <section className="py-[52px] md:py-[64px] lg:py-[76px] px-4 md:px-5 lg:px-6 bg-[#F3EEDF] border-t border-[#16213C]/15 relative overflow-hidden z-10 font-sans" id="how">
+      <section className="py-[52px] md:py-[64px] lg:py-[76px] px-4 md:px-5 lg:px-6 bg-[#F3EEDF] border-t border-[#16213C]/15 relative overflow-hidden z-10 font-sans scroll-mt-[90px]" id="how-it-works">
         {/* Subtle Ambient Radial Glows */}
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#2C6350]/[0.07] rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#B7975A]/[0.08] rounded-full blur-3xl pointer-events-none" />
@@ -554,7 +566,7 @@ export const Landing = () => {
       </section>
 
       {/* FAQ Accordion Section (Redesigned Editorial & Interactive) */}
-      <section className="py-[64px] lg:py-[100px] px-4 sm:px-6 bg-[#F3EEDF] border-t border-[#16213C]/15 relative overflow-hidden z-10 font-sans" id="faq">
+      <section className="py-[64px] lg:py-[100px] px-4 sm:px-6 bg-[#F3EEDF] border-t border-[#16213C]/15 relative overflow-hidden z-10 font-sans scroll-mt-[90px]" id="faq">
         {/* Subtle Ambient Radial Glows */}
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#B7975A]/[0.08] rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#2C6350]/[0.07] rounded-full blur-3xl pointer-events-none" />
@@ -655,7 +667,7 @@ export const Landing = () => {
       </section>
 
       {/* Final CTA Section (Page 5 — Text-Focused Cinematic Editorial CTA) */}
-      <section className="py-[72px] lg:py-[96px] min-h-[560px] flex flex-col items-center justify-center bg-[#F3EEDF] border-t border-[#16213C]/12 relative overflow-hidden z-10 font-sans text-center" id="cta">
+      <section className="py-[72px] lg:py-[96px] min-h-[560px] flex flex-col items-center justify-center bg-[#F3EEDF] border-t border-[#16213C]/12 relative overflow-hidden z-10 font-sans text-center scroll-mt-[90px]" id="cta">
         
         {/* Animated Ambient Radial Glows (4-7% opacity, 100px+ blur) */}
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-[#B7975A]/[0.06] rounded-full blur-[120px] pointer-events-none animate-pulse duration-[10000ms]" />
