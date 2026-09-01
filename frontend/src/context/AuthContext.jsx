@@ -43,6 +43,16 @@ export const AuthProvider = ({ children }) => {
     return userData;
   };
 
+  const loginWithGoogle = async (credential) => {
+    const res = await authAPI.googleLogin(credential);
+    const accessToken = res.data.access_token;
+    const userData = res.data.user;
+    localStorage.setItem('schemesetu_token', accessToken);
+    setToken(accessToken);
+    setUser(userData);
+    return userData;
+  };
+
   const logout = () => {
     localStorage.removeItem('schemesetu_token');
     setToken(null);
@@ -50,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, isAdmin: user?.is_admin || false }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, loginWithGoogle, logout, isAdmin: user?.is_admin || false }}>
       {children}
     </AuthContext.Provider>
   );
