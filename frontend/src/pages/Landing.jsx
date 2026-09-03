@@ -225,7 +225,7 @@ export const Landing = () => {
             />
 
             {/* Top Row (100ms) */}
-            <div className="row-top relative z-10 animate-stagger-1">
+            <div className="row-top relative z-10 animate-stagger-1 pr-[94px] sm:pr-[102px]">
               <div className="badge-live">
                 <span className="dot"></span>
                 <span>DIGITAL PASSBOOK</span>

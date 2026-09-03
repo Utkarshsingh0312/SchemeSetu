@@ -695,24 +695,28 @@ body {
 
 .stamp {
   position: absolute;
-  top: -24px;
-  right: -20px;
-  width: 96px;
-  height: 96px;
+  top: 14px;
+  right: 14px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   background: var(--paper);
   border: 2px dashed #C45B38;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: #C45B38;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   letter-spacing: .04em;
-  line-height: 1.4;
-  box-shadow: 0 10px 26px -10px rgba(196,91,56,.35);
+  line-height: 1.35;
+  box-shadow: 0 8px 22px -6px rgba(196,91,56,.3);
   animation: stampFloat 3.5s ease-in-out infinite alternate;
+  z-index: 20;
+  pointer-events: none;
+  box-sizing: border-box;
 }
 
 @keyframes stampFloat {
@@ -801,13 +805,7 @@ body {
   display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
 }
 
-.stamp {
-  position: absolute; top: -34px; right: -30px; width: 104px; height: 104px; border-radius: 50%;
-  background: var(--paper); border: 2px dashed var(--terracotta); display: flex; align-items: center;
-  justify-content: center; text-align: center; color: var(--terracotta); font-size: 11px; font-weight: 700;
-  letter-spacing: .04em; line-height: 1.5; box-shadow: 0 10px 26px -10px rgba(90,30,20,.35);
-  transform: scale(1) rotate(0deg); animation: stampFloat 4s ease-in-out infinite;
-}
+
 
 /* SCHEME LEDGER MARQUEE TICKER */
 .ledger {
@@ -1035,13 +1033,13 @@ body {
   .stamp,
   .verification-stamp,
   .profile-stamp {
-    width: 82px;
-    height: 82px;
-    top: -14px;
-    right: 6px;
-    font-size: 9px;
-    line-height: 1.35;
-    z-index: 10;
+    width: 80px;
+    height: 80px;
+    top: 12px;
+    right: 12px;
+    font-size: 8.5px;
+    line-height: 1.3;
+    z-index: 20;
   }
 
   .ledger-item {
@@ -1082,11 +1080,13 @@ body {
   .stamp,
   .verification-stamp,
   .profile-stamp {
-    width: 74px;
-    height: 74px;
-    right: 4px;
-    top: -12px;
+    width: 72px;
+    height: 72px;
+    top: 10px;
+    right: 10px;
     font-size: 8px;
+    line-height: 1.25;
+    z-index: 20;
   }
 
   .ring-wrap {
