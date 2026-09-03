@@ -224,8 +224,8 @@ export const Landing = () => {
               }} 
             />
 
-            {/* Top Row (100ms) */}
-            <div className="row-top relative z-10 animate-stagger-1 pr-[86px] sm:pr-[94px]">
+            {/* Top Header Row (100ms) */}
+            <div className="row-top relative z-10 animate-stagger-1 pr-[78px] sm:pr-[84px] mb-3">
               <div className="badge-live">
                 <span className="dot"></span>
                 <span>DIGITAL PASSBOOK</span>
@@ -235,23 +235,24 @@ export const Landing = () => {
               </div>
             </div>
 
-            {/* Greeting Row (260ms & 420ms) */}
-            <div className="greet-row relative z-10 animate-stagger-2">
-              <div className="max-w-[210px] sm:max-w-[230px]">
-                <div className="hello">{lang === 'hi' ? 'नमस्ते 👋' : 'Hello 👋'}</div>
-                <div className="headline">
-                  <span className="num font-bold transition-all duration-300 transform inline-block" id="matchNum">{matchCount}</span>{' '}
+            {/* Greeting & Match Summary Section (260ms & 420ms) */}
+            <div className="greet-section relative z-10 animate-stagger-2">
+              <div className="hello text-[14px] text-[#5C5648] font-medium">{lang === 'hi' ? 'नमस्ते 👋' : 'Hello 👋'}</div>
+              
+              <div className="flex items-center justify-between gap-3 mt-0.5">
+                <div className="headline font-serif italic font-bold text-[22px] sm:text-[24px] text-[#16213C] leading-tight pr-2">
+                  <span className="num font-sans not-italic font-bold transition-all duration-300 transform inline-block" id="matchNum">{matchCount}</span>{' '}
                   {lang === 'hi' ? 'संभावित पात्र योजनाएं' : 'possible matches'}
                 </div>
-              </div>
 
-              <div 
-                className="ring-wrap shadow-sm transition-transform duration-300 hover:scale-105 mt-[36px] sm:mt-[38px] flex-none" 
-                style={{
-                  background: `conic-gradient(var(--gold) 0deg, var(--green-2) ${ringDeg}deg, #e4ddcc ${ringDeg}deg)`
-                }}
-              >
-                <span className="ring-pct font-mono font-bold text-xs">{ringPct}%</span>
+                <div 
+                  className="ring-wrap shadow-xs transition-transform duration-300 hover:scale-105 flex-none" 
+                  style={{
+                    background: `conic-gradient(var(--gold) 0deg, var(--green-2) ${ringDeg}deg, #e4ddcc ${ringDeg}deg)`
+                  }}
+                >
+                  <span className="ring-pct font-mono font-bold text-xs">{ringPct}%</span>
+                </div>
               </div>
             </div>
 
