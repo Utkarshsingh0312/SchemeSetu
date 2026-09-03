@@ -225,7 +225,7 @@ export const Landing = () => {
             />
 
             {/* Top Row (100ms) */}
-            <div className="row-top relative z-10 animate-stagger-1 pr-[94px] sm:pr-[102px]">
+            <div className="row-top relative z-10 animate-stagger-1 pr-[86px] sm:pr-[94px]">
               <div className="badge-live">
                 <span className="dot"></span>
                 <span>DIGITAL PASSBOOK</span>
@@ -237,7 +237,7 @@ export const Landing = () => {
 
             {/* Greeting Row (260ms & 420ms) */}
             <div className="greet-row relative z-10 animate-stagger-2">
-              <div>
+              <div className="max-w-[210px] sm:max-w-[230px]">
                 <div className="hello">{lang === 'hi' ? 'नमस्ते 👋' : 'Hello 👋'}</div>
                 <div className="headline">
                   <span className="num font-bold transition-all duration-300 transform inline-block" id="matchNum">{matchCount}</span>{' '}
@@ -246,7 +246,7 @@ export const Landing = () => {
               </div>
 
               <div 
-                className="ring-wrap shadow-sm transition-transform duration-300 hover:scale-105" 
+                className="ring-wrap shadow-sm transition-transform duration-300 hover:scale-105 mt-[36px] sm:mt-[38px] flex-none" 
                 style={{
                   background: `conic-gradient(var(--gold) 0deg, var(--green-2) ${ringDeg}deg, #e4ddcc ${ringDeg}deg)`
                 }}

@@ -695,10 +695,10 @@ body {
 
 .stamp {
   position: absolute;
-  top: 14px;
+  top: 12px;
   right: 14px;
-  width: 90px;
-  height: 90px;
+  width: 82px;
+  height: 82px;
   border-radius: 50%;
   background: var(--paper);
   border: 2px dashed #C45B38;
@@ -708,11 +708,11 @@ body {
   justify-content: center;
   text-align: center;
   color: #C45B38;
-  font-size: 9.5px;
+  font-size: 8.5px;
   font-weight: 700;
   letter-spacing: .04em;
   line-height: 1.35;
-  box-shadow: 0 8px 22px -6px rgba(196,91,56,.3);
+  box-shadow: 0 8px 20px -6px rgba(196,91,56,.28);
   animation: stampFloat 3.5s ease-in-out infinite alternate;
   z-index: 20;
   pointer-events: none;
@@ -1033,12 +1033,12 @@ body {
   .stamp,
   .verification-stamp,
   .profile-stamp {
-    width: 80px;
-    height: 80px;
-    top: 12px;
+    width: 74px;
+    height: 74px;
+    top: 10px;
     right: 12px;
-    font-size: 8.5px;
-    line-height: 1.3;
+    font-size: 8px;
+    line-height: 1.25;
     z-index: 20;
   }
 
@@ -1080,20 +1080,20 @@ body {
   .stamp,
   .verification-stamp,
   .profile-stamp {
-    width: 72px;
-    height: 72px;
-    top: 10px;
+    width: 66px;
+    height: 66px;
+    top: 8px;
     right: 10px;
-    font-size: 8px;
-    line-height: 1.25;
+    font-size: 7.5px;
+    line-height: 1.2;
     z-index: 20;
   }
 
   .ring-wrap {
-    width: 54px;
-    height: 54px;
-    min-width: 54px;
-    min-height: 54px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
   }
 
   .headline {
