@@ -153,12 +153,12 @@ export const Landing = () => {
 
         {/* Left Copy Column */}
         <div className="hero-copy relative z-10">
-          <span className="eyebrow animate-hero-fade-up" style={{ animationDelay: '100ms' }}>
+          <span className="eyebrow animate-hero-fade-up" style={{ animationDelay: '80ms' }}>
             <span className="dot"></span>
             {lang === 'hi' ? 'सरकारी योजना खोज सरलीकृत' : 'Government scheme discovery, made simple'}
           </span>
 
-          <h1 className="hero-h1 animate-hero-fade-up" style={{ animationDelay: '220ms' }}>
+          <h1 className="hero-h1 animate-hero-fade-up-550" style={{ animationDelay: '180ms' }}>
             <span className="line">
               <span>{lang === 'hi' ? 'अपने लिए बनी' : 'Find schemes made'}</span>
             </span>
@@ -167,13 +167,13 @@ export const Landing = () => {
             </span>
           </h1>
 
-          <p className="lede animate-hero-fade-up" style={{ animationDelay: '340ms' }}>
+          <p className="lede animate-hero-fade-up" style={{ animationDelay: '280ms' }}>
             {lang === 'hi'
               ? 'अपने बारे में कुछ प्रश्नों के उत्तर दें और उन सरकारी योजनाओं की खोज करें जिनके आप पात्र हैं — तुरंत मिलान, सरल स्पष्टीकरण।'
               : 'Answer a few questions about yourself and discover the government schemes you are actually eligible for — matched instantly, explained simply.'}
           </p>
 
-          <div className="cta-row animate-hero-scale-up" style={{ animationDelay: '460ms' }}>
+          <div className="cta-row animate-hero-scale-up-500" style={{ animationDelay: '380ms' }}>
             <button onClick={handleGoToAuthOrWizard} className="btn btn-primary big text-base" type="button">
               <span>{user ? t('checkEligibility') : (lang === 'hi' ? 'पात्रता जांचने हेतु लॉग इन करें' : 'Login to Check Eligibility')}</span>
               <svg className="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
@@ -188,7 +188,7 @@ export const Landing = () => {
             )}
           </div>
 
-          <div className="trust-row animate-hero-fade-up" style={{ animationDelay: '540ms' }}>
+          <div className="trust-row animate-hero-fade-up-450" style={{ animationDelay: '480ms' }}>
             <span className="avatars">
               <span />
               <span />
@@ -204,8 +204,8 @@ export const Landing = () => {
           ref={stageRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="stage animate-hero-scale-up"
-          style={{ animationDelay: '580ms' }}
+          className="stage animate-hero-scale-up-600"
+          style={{ animationDelay: '540ms' }}
         >
           <div className="blob" />
 
