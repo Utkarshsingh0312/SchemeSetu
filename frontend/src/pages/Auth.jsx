@@ -27,6 +27,16 @@ export const Auth = ({ isRegister = false }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Status & Animation State
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [signedInSuccess, setSignedInSuccess] = useState(false);
+  const [focusedField, setFocusedField] = useState('');
+
+  // 3D Parallax Refs
+  const leftPanelRef = useRef(null);
+  const passbookRef = useRef(null);
+
   // Animated Match Percentage Counter
   const [matchPct, setMatchPct] = useState(0);
   const [matchDeg, setMatchDeg] = useState(0);
