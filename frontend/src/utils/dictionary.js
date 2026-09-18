@@ -197,7 +197,7 @@ export const dictionary = {
     a2: "No. SchemeSetu is 100% free and open for all Indian citizens. We never ask for money or banking passwords.",
     q3: "How does the eligibility match engine work?",
     a3: "Our engine evaluates your age, state, income, occupation, category, gender, and special conditions against verified government criteria. We show exact rule overlaps and clearly highlight any missing criteria.",
-    q4: "Are all 894 schemes in the database genuine?",
+    q4: "Are all schemes in the database genuine?",
     a4: "Yes. Every single scheme in our database corresponds to an officially announced Central or State government initiative with valid source links.",
 
     // Auth & Profile
@@ -422,7 +422,7 @@ export const dictionary = {
     a2: "नहीं। स्कीमसेतु सभी भारतीय नागरिकों के लिए 100% निःशुल्क और खुला है। हम कभी भी पैसे या बैंकिंग पासवर्ड नहीं मांगते हैं।",
     q3: "पात्रता मिलान इंजन कैसे काम करता है?",
     a3: "हमारा इंजन सत्यापित सरकारी मानदंडों के विरुद्ध आपकी आयु, राज्य, आय, व्यवसाय, श्रेणी, लिंग और विशेष स्थितियों का मूल्यांकन करता है। हम सटीक नियम मिलान दिखाते हैं और किसी भी कमी को स्पष्ट रूप से उजागर करते हैं।",
-    q4: "क्या डेटाबेस में सभी 894 योजनाएं प्रामाणिक हैं?",
+    q4: "क्या डेटाबेस में सभी योजनाएं प्रामाणिक हैं?",
     a4: "हां। हमारे डेटाबेस में प्रत्येक योजना मान्य स्रोत लिंक के साथ आधिकारिक तौर पर घोषित केंद्र या राज्य सरकार की पहल से मेल खाती है।",
 
     // Auth & Profile
